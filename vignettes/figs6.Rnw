@@ -1,0 +1,59 @@
+\documentclass[12pt, a4paper,  BCOR=8.25mm, DIV=15]{scrartcl}
+\usepackage[utf8]{inputenc}
+
+\newenvironment{itemizz}%
+  {\begin{itemize}%
+    \setlength{\itemsep}{2pt}%
+    \setlength{\parskip}{2pt}}%
+  {\end{itemize}}
+
+\newcommand{\txtt}[1]{{\texttt{#1}}}
+
+\begin{document}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Data (Set 6)}
+
+<<setup, cache=FALSE, echo=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.path='figs/data-', cache.path='cache/data-',
+               fig.align='center', dev='pdf', fig.width=3.5,
+               fig.height=3.5, fig.show='hold', par=TRUE,
+               tidy=FALSE,  comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, crop=knitr::hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
+@ %
+
+\title{6: Data}
+\author{John H Maindonald}
+\maketitle
+
+\vspace*{-24pt}
+
+<<fig6_1, echo=TRUE, eval=TRUE>>=
+fig6.1 <- function(){
+## ---- date-labs ----
+## Labeling of graph: data frame jobs (DAAG)
+library(DAAG, quietly=TRUE); library(lattice)
+fromdate <- as.Date("1Jan1995", format="%d%b%Y")
+startofmonth <- seq(from=fromdate, by="1 month", length=24)
+atdates <- seq(from=fromdate, by="6 month", length=4)
+xyplot(BC ~ startofmonth, data=jobs,
+       scale=list(x=list(at=atdates,
+                         labels=format(atdates, "%b%y"))))
+}
+@ %
+\vspace*{-24pt}
+
+\begin{figure}
+<<fig6_1e, fig.width=5.5, fig.height=3.25, out.width="0.65\\textwidth">>=
+fig6.1()
+@ %
+\caption{Dates are used to label the $x$-axis}\label{fig:simplatparam}
+\end{figure}
+
+\end{document}

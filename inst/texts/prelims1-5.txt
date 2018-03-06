@@ -1,0 +1,2232 @@
+1
+Preliminaries
+
+
+1.1    Installation of R
+Click as indicated in the successive panels to download R for Win-
+dows from the web page http://cran.csiro.au:
+
+                                                                          Figure 1.1: This shows a se-
+                                                                          quence of clicks that will down-
+                                                                          load the R installation file from
+                                                                          cran.csiro.edu. At the time
+                                                                          of writing, the website will of-
+                                                                          fer R-3.0.1 rather than R-2.13.0.
+                                                                          The site cran.csiro.edu is
+                                                                          one of two Australian CRAN
+                                                                          (Comprehensive R Archive Net-
+                                                                          work) sites. The other is: http:
+                                                                          //cran.ms.unimelb.edu.au/
+
+
+
+
+                                                                          Figure 1.2: On 64-bit Windows
+    Click on the downloaded file to start installation. Most users will   systems the default installation
+want to accept the defaults. The eect is to install the R base system,    process creates two icons, one
+plus recommended packages. Windows users will find that one or            for 32-bit R and one for 64-bit R.
+more desktop R icons have been created as part of the installation        Additional icons can be created as
+process.                                                                  desired.
+10    data analysis, graphics, and visualisation using r
+
+    Depending on the tasks that are to be performed, there may be a
+demand to install further packages. Details on how to do this will be
+given in Section 1.3.
+    Some readers may wish to install RStudio before proceeding
+further. See Chapter 3. RStudio has its own command line inter-         Clicking on the RStudio icon to
+face. RStudio has abilities that can be very helpful for managing       start a session will at the same
+workflow.                                                               time start R. RStudio has its own
+                                                                        command line interface, where
+                                                                        users can type R commands.
+1.2      First steps
+                                                                        Readers who have RStudio run-
+Click on an icon to start an R session. This should open an R com-      ning can type their commands in
+mand window, with information provided about the version of R that      the RStudio command line panel.
+is in use.
+
+                                                                        Figure 1.3: Windows command
+                                                                        window at startup. This shows the
+                                                                        default MDI (multiple display)
+                                                                        interface. For running R from the
+                                                                        R Commander, the alternative SDI
+                                                                        (single display) interface may be
+                                                                        required, or may be preferable.
+                                                                        The Mac GUI has a SDI type
+                                                                        interface; there is no other option.
+
+
+
+
+    On the final line, the > prompt in the left hand margin is an
+invitation to start typing R commands:
+
+>
+
+   For example, type 2+5 and press the Enter key. The display
+shows:
+> 2+5
+                                                                        The [1] says, a little strangely,
+[1] 7                                                                   "first requested element will
+                                                                        follow". Here, there is just one
+                                                                        element.
+   The result is 7. The final > indicates that R is ready for another
+command.
+   Try also:
+                                                                                        preliminaries      11
+
+> result         2+5
+> result
+
+[1] 7
+                                                                        The session workspace holds
+   The value 7 is now stored (in the user workspace) with the name      objects that the user has created
+result. Typing result on the command line prints the value 7.           or input, or that were there at the
+   Type ls() to list the objects in the workspace, thus:                start of the session and not later
+                                                                        removed.
+> ls ()
+
+[1] " knitrSet " " oldopt "         " result "     "spar"
+
+Starting from an empty workspace, result was the only object
+stored.
+     Figure 1.4 shows, with annotations, the screen as it appears
+following the above sequence of commands.
+
+                                                                        Figure 1.4: This shows the se-
+                                                                        quence of commands that are
+                                                                        demonstrated in the text, as they
+                                                                        appear on the screen, with added
+                                                                        annotation.
+
+
+
+
+1.2.1      Points to note
+
+Printing         Typing the name of an object (and pressing Enter)
+                 displays (prints) it contents.
+Quitting         To quit, type q()), (not q)
+Case matters     volume is dierent from Volume
+
+    Typing the name of an object (and pressing the Enter key) causes
+the printing of its contents, as above when result was typed. This
+applies to functions also. Thus type q() in order to quit, not q.1      1
+                                                                         Typing q lists the code for the
+    Upon typing q() and pressing the Enter key, a message will          function.
+ask whether to save the workspace image. Clicking Yes (usually
+the safest option) will save the objects that remain in the workspace
+­ any that were there at the start of the session (unless removed or
+overwritten) and any that have been added since. The workspace that
+12   data analysis, graphics, and visualisation using r
+
+has been thus saved is automatically reloaded when an R session is
+restarted in the working directory to which it was saved.
+
+
+                                                                           Figure 1.5: Note the use of the
+                                                                           special characters: ; to separate
+                                                                           multiple commands on the one
+                                                                           line, + (generated by the system)
+                                                                           to denote continuation from pre-
+                                                                           vious line, and # to introduce
+                                                                           comment that extends to end of
+                                                                           line.
+
+
+
+
+    Note that for names of R objects or commands, case is signifi-         2
+                                                                            Under Windows, case does not
+cant. Thus Myr (millions of years, perhaps) diers from myr. For file       distinguish file names. Under
+names,2 the operating system conventions apply.                            Unix (the Mac OS X version is a
+    Commands may, as demonstrated in Figure 1.5, continue over             partial exception), case does so
+                                                                           distinguish.
+more than one line. By default, the continuation prompt is +. As
+with the > prompt, this is generated by R, and appears on the left         Here is a command that extends
+margin. Including it when code is entered will give an error!              over two lines:
+                                                                               > result <-
+                                                                               + 2+5
+
+1.2.2    The working directory
+Associated with each session is a working directory where R will by        Under Windows, if R is started by
+default look for files. In particular:                                     clicking on an R icon, the working
+                                                                           directory is that specified in the
+                                                                           Start in directory specified in the
+· If a command inputs data from a file into the workspace and the          icon Preferences. Subsection 14.1
+  path is not specified, this is where R will look for the file.           has details on how to specify the
+                                                                           Start in directory for an icon.
+
+· If a command outputs results to a file, and the path is not specified,
+  this is where R will place the file.
+
+
+· Upon quitting a session, the "out of the box" setup will ask
+  whether you wish to save an "image" of the session. Answer-
+  ing "Yes" has the result that the contents of the workspace are
+  saved into a file, in the working directory, that has the name
+  .RData. Next time a session is started in that working directory,
+  the workspace from end of the previous session will be restored.
+
+     For regular day to day use of R, it is advisable to have a sepa-      RStudio users will be asked to
+rate working directory for each dierent project.                           specify a working directory when
+                                                                           setting up a new "project".
+                                                                                               preliminaries      13
+
+
+1.3      Installation of R Packages
+ Installation of R Packages (Windows & MacOS X)                                 A fresh install of R packages is
+                                                                               typically required when moving
+ Start R (e.g., click on the R icon). Then use the relevant menu item          to a new major release (e.g., from
+ to install packages via an internet connection. This is (usually) easier      a 3.0 series release to a 3.1 series
+ than downloading, then installing.                                            release).
+ For use of command line instructions to install packages, see below.
+
+    The R GUIs, under both MacOS X and Windows, have helpful                   The MacOS X GUI is especially
+abilities for package installation.                                            good.
+
+
+Installation of packages from the command line
+Alternatively, from an R session and with a live internet connection,
+install from the command line.
+    To install the R Commander from the command line, enter:                   By default, CRAN or a CRAN
+                                                                               mirror is searched for the required
+i n s t a l l . p a c k a g e s ( " Rcmdr " , d e p e n d e n c i e s =TRUE)
+                                                                               package. For Bioconductor pack-
+    Among the dependencies are the graphics packages rgl (3D                   ages, specify the Bioconductor
+                                                                               repository. See Subsection 4.3.1
+dynamic graphics), scatterplot3d, vcd (visualization of categorical
+                                                                               for information about alternative
+data) and colorspace (generation of color palettes, etc).                      repositories.
+
+Installation of Bioconductor packages
+To set your system up for use of Bioconductor packages, type:                  For further details, go to http:
+                                                                               //www.bioconductor.org/
+source ( " http : / / bioconductor.org / biocLite.R " )
+                                                                               install/
+biocLite ()
+
+     Additional packages can be installed at the time of setup, or
+later:
+b i o c L i t e ( c ( " GenomicFeatures " , " AnnotationDbi " ) )
+
+
+
+1.4      The R Commander Graphical User Interface
+                                                                               Novices may find the R Com-
+The R commander gives access to abilities from the lattice and rgl             mander especially helpful for data
+packages, as well as from base graphics.                                       entry, and for graphics.
+   To start the R commander, start R and enter:
+                                                                               At startup, the R Commander
+l i b r a r y ( Rcmdr )                                                        checks whether all packages are
+    This opens an R Commander script window, with the output                   available that are needed for the
+                                                                               full range of features. If some are
+window underneath.                                                             missing, the R commander oers
+    This window can be closed by clicking on the  in the top left              to install them. (This requires a
+corner. If thus closed, enter Commander() to reopen it again later in          live internet connection.)
+the session.
+14    data analysis, graphics, and visualisation using r
+
+                                                                         The code can be run either from
+From GUI to writing code: The R commander displays the code              the R Commander script window
+that it generates. Users can take this code, modify it, and re-run it.   or from the R console window (if
+                                                                         open).
+The active data set: The R Commander has, at any one time, a
+single "active" data set. Start by clicking on the Data drop-down
+menu. Alternative ways to select or create or change the active data
+set are:
+· Click on Active data set, and pick from among data sets, if any, in
+  the workspace.
+· Click on Import data, and follow instructions, to read in data from
+  a file. The data set is read into the workspace, at the same time
+  becoming the active data set.
+· Click on New data set . . . , then entering data via a spreadsheet-
+  like interface.
+· Click on Data in packages, then Read Data from Package. Then
+  select an attached package and choose a data set from among
+  those included with the package.
+· A further possibility is to load data from an R image (.RData)
+  file; click on Load data set . . .
+
+Creating graphs: To draw graphs, click on the Graphs drop-down
+menu. Then, among other possibilities:                                   3
+                                                                          This uses scatterplot() (car
+                                                                         package), which in turn uses
+· Click on Scatterplot . . . to obtain a scatterplot.3                   functions from base graphics.
+· Click on X Y conditioning plot . . . for lattice scatterplots and
+  panels of scatterplots.
+· Click on 3D graph to obtain a 3D scatterplot.4                         4
+                                                                          This uses the R Commander
+                                                                         function scatter3d() that is an
+Statistics (& fitting models): Click on the Statistics drop down         interface to functions in the rgl
+menu to get submenus that give summary statistics and/or carry out       package.
+various statistical tests. This includes (under Contingency tables)
+tables of counts and (under Means) One-way ANOVA. Also, click
+here to get access to the Fit models submenu.
+
+*Models: Click here to extract information from model objects
+once they have been fitted. (NB: To fit a model, go to the Statistics
+drop down menu, and click on Fit models).
+
+
+1.5      Other GUIs for R
+The rattle GUI, aimed broadly at "data mining" (data manipulation,        Note also the abilities in playwith
+                                                                         and latticist for interaction with
+                                                                         graphs. These are both discussed
+                                                                         in Subsection 8.2.11. See also
+                                                                         Figure 8.16
+                                                                          preliminaries   15
+
+regression, classification and clustering) applications, is a powerful
+and sophisticated system. It has a number of features that make it
+attractive for use in standard data mining applications. Subsection
+?? makes brief mention of JGR (Java Graphics for R) and pmg (Poor
+Man's GUI).
+
+
+1.6    Summary
+  One use of R is as a calculator, to evaluate arithmetic expressions.
+  Calculations can be carried out in parallel, across all elements of a
+  vector at once.
+  The R Commander GUI can be helpful in getting quickly into use
+  of R for many standard purposes. It may, depending on require-
+  ments, be limiting for serious use of R.
+  Use q() to quit from an R session. To retain objects in the
+  workspace, accept the oer to save the workspace.
+16   data analysis, graphics, and visualisation using r
+2
+An Overview of R
+
+
+Demonstrations      demo()               # List available demonstrations
+                    demo(graphics) # Demonstrations of base graphics
+Help                The main help function is help(). Note help(help)
+                    help(plot)           # Show the help page for plot()
+Column              width = c(11.3, 13.1, 20, 21.1, 25.8, 13.1)
+objects             height = c(23.9, 18.7, 27.6, 28.5, 36, 23.4)
+                    Read the symbol c as "concatenate", or perhaps "column".
+Dataframe           A data frame is a list of column objects (all of the same length)
+                    widheight <- data.frame(
+                          width = c(11.3, 13.1, 20, 21.1, 25.8, 13.1),
+                          height = c(23.9, 18.7, 27.6, 28.5, 36, 23.4)
+                          }
+Other topics        Arithmetic operations; simple plots; input of data from a file.
+
+
+
+2.1      Practice with R commands
+                                                                            The R language has the standard
+Try the following                                                           abilities for evaluating arithmetic
+2+3              # Simple arithmetic                                        and logical expressions. A wide
+                                                                            variety of functions extends these
+[1] 5                                                                       basic arithmetic and logical abili-
+                                                                            ties.
+1:5              # The numbers 1, 2, 3, 4, 5
+
+[1] 1 2 3 4 5
+
+mean ( 1 : 5 )
+
+[1] 3
+
+sum ( 1 : 5 )    # Sum the numbers 1, 2, 3, 4, 5
+18    data analysis, graphics, and visualisation using r
+
+
+[1] 15
+
+
+( 2 : 4 ) ^9         # 2 ^ 9 (2 to the power of 9), 3 ^ 9, 4 ^ 9
+
+[1]            512       19683 262144
+
+      In addition to log(), note log2() and log10():                               A change by a factor of 2 is a one
+                                                                                   unit change on a log2 scale. A
+log2 ( c (0 .5 , 1 , 2 , 4 ) )                                                     change by a factor of 10 is a one
+                                                                                   unit change on a log10 scale.
+[1] -1          0    1    2
+
+    It turns out, surprisingly often, that logarithmic scales are ap-
+prapriate for one or other type of graph. Logarithmic scales focus on
+relative change -- by what factor has the value changed?                           Other relational operators
+    The following uses the relational operator >:                                  ## <          <  == ! =
+(1:5) > 2            # Returns FALSE FALSE              TRUE      TRUE      TRUE
+
+[1] FALSE FALSE               TRUE    TRUE     TRUE
+
+Common functions that R users should quickly get to know include                   Use the function help() to get
+print(), plot() and help().                                                        information on other functions.
+                                                                                   Thus, type help(plot) to view the
+                                                                                   help page for plot().
+Demonstrations
+The following are some of the available demonstrations:
+demo ( image )           # Type <Enter > to see each new graph                      Visually appealing demonstra-
+demo ( g r a p h i c s )                                                           tions include:
+library ( lattice )                                                                demo ( image )
+demo ( l a t t i c e )                                                             demo ( p e r s p )
+                                                                                   demo ( p l o t m a t h )   # Symbols
+     Especially for demo(lattice), it pays to stretch the graphics
+window to cover a substantial part of the screen. Place the cursor on              For the following, the vcd package
+the lower right corner of the graphics window, hold down the left                  must be installed:
+mouse button, and pull.                                                            l i b r a r y ( vcd )
+     The following lists available demonstrations:                                 demo ( m o s a i c )
+
+## List demonstrations in attached packages
+demo ( )
+## List demonstrations in all installed packages
+demo ( p a c k a g e = . p a c k a g e s ( a l l . a v a i l a b l e = TRUE ) )
+
+
+
+2.2      A Short R Session
+We will work with the data set shown in Table 2.1:
+                                                                                          an overview of r      19
+
+
+                                             thickness   width   height   weight   volume     type
+              Aird's Guide to Sydney              1.30   11.30    23.90     250       351     Guide
+          Moon's Australia handbook               3.90   13.10    18.70     840       955     Guide
+         Explore Australia Road Atlas             1.20   20.00    27.60     550       662     Roadmaps
+           Australian Motoring Guide              2.00   21.10    28.50    1360      1203     Roadmaps
+               Penguin Touring Atlas              0.60   25.80    36.00     640       557     Roadmaps
+                Canberra - The Guide              1.50   13.10    23.40     420       460     Guide
+                                                                               Table 2.1: Weights and volumes,
+                                                                               for six Australian travel books.
+Entry of columns of data from the command line
+Data may be entered from the command line, thus:                               Read c as "concatenate", or per-
+                                                                               haps as "column". It joins ele-
+volume             c (351 , 955 , 662 , 1203 , 557 , 460)
+                                                                               ments together into a vector, here
+weight             c (250 , 840 , 550 , 1360 , 640 , 420)
+                                                                               numeric vectors.
+   Now store the descriptions in the character vector
+description:
+description               c ( " Aird ' s Guide t o Sydney " ,
+ "Moon ' s A u s t r a l i a handbook " ,
+ " E x p l o r e A u s t r a l i a Road A t l a s " ,
+ " A u s t r a l i a n M o t o r i n g Guide " ,
+ " Penguin Touring Atlas " , " Canberra                The Guide " )
+
+   The end result is that objects volume, weight and
+description are stored in the workspace.
+
+
+Listing the workspace contents
+Use the function ls() to examine the current contents of the
+workspace.
+ls ()
+
+  [1] " bestTimes "   " description " "hat"
+" knitrSet "
+  [5] "meuse"         " modmat "      "mpg.lm"
+" oldopt "
+  [9] "ord"           "spar"
+" travelbooks " " volume "
+[13] " weight "       "xy"
+
+l s ( p a t t e r n =" ume " )       # Names that include "ume"
+
+[1] " volume "
+
+l s ( p a t t e r n =" ^ d e s " )   # Names that start with "des"
+
+[1] " description "
+20    data analysis, graphics, and visualisation using r
+
+Operations with vectors
+Here are the values of volume
+volume
+
+[1]     351     955      662 1203         557      460
+
+      Here are various arithmetic operations:
+# Final element of volume
+volume [ 6 ]
+
+[1] 460
+
+## Ratio of weight to volume , i.e. , density
+r o u n d ( w e i g h t / volume , 2 )
+
+[1] 0.71 0.88 0.83 1.13 1.15 0.91
+
+
+A simple plot
+                                                                                                                              
+Figure 2.1 plots weight against volume, for the six Australian travel
+
+
+
+
+                                                                                          1200
+books. Note the use of the graphics formula weight ~ volume
+to specify the x and y variables. It takes a similar from to the
+
+                                                                                 weight
+                                                                                                                      
+
+
+
+
+                                                                                          800
+"formulae" that are used in specifying models, and in the functions
+                                                                                                       
+
+
+                                                                                          600
+xtabs() and unstack().                                                                                    
+    Code for Figure 2.1 is:                                                               400
+                                                                                                    
+
+                                                                                                 
+## Code
+p l o t ( w e i g h t  volume , pch =16 , c e x =1 . 5 )                                         400   600     800    1000   1200
+
+    # pch =16: use solid blob as plot symbol                                                                 volume
+
+    # cex =1.5: point size is 1.5 times default                                 Figure 2.1: Weight versus volume,
+## Alternative                                                                  for six Australian travel books.
+p l o t ( volume , w e i g h t , pch =16 , c e x =1 . 5 )
+      The axes can be labeled:
+p l o t ( w e i g h t  volume , pch =16 , c e x =1 . 5 ,
+          x l a b =" Volume ( c u b i c mm) " , y l a b =" Weight ( g ) " )
+   Interactive labeling of points (e.g., with species names) can be             Use text() for non-interactive
+done interactively, using identify():                                           labeling of points.
+i d e n t i f y ( w e i g h t  volume , l a b e l s = d e s c r i p t i o n )
+     Then click the left mouse button above or below a point, or on
+the left or right, depending on where you wish the label to appear.
+Repeat for as many points as required.
+     On most systems, the labeling can be terminated by clicking
+the right mouse button. On the Windows GUI, an alternative is to
+click on the word "Stop" (then on "Stop locator") that appears at the
+top left of the screen, just under "Rgui" on the left of the blue panel
+header of the R window.
+                                                                                          an overview of r       21
+
+Formatting and layout of plots
+There are extensive abilities that may be used to control the format-
+ting and layout of plots, and to add features such as special symbols,
+fitted lines and curves, annotation (including mathematical annota-
+tion), colors and so on.
+
+
+2.3     Data frames ­ Grouping columns of data
+                                                                               Data frames are pervasive in R.
+  Data frames      Store data that have a cases by columns layout.             Most datasets that are included
+                                                                               with R packages are supplied as
+  Creating         Enter from the command line (small datasets)                data frames.
+  data frames      Or: Use read.table() to input from a file.
+  Columns of       travelbooks$weight or travelbooks[, 4]
+  data frames      or travelbooks[, "weight"]
+
+    The following code groups the several columns of Table 2.1
+together, under the name travelbooks. It is tidier to have matched
+columns of data grouped together into a data frame, rather than
+separate objects in the workspace.
+                                                                               The vectors weight, volume and
+## Group columns together into a data frame                                    description were entered earlier,
+travelbooks               data.frame (                                         and (assuming that they remain
+     t h i c k n e s s = c (1 .3 , 3 .9 , 1 .2 , 2 , 0 .6 , 1 . 5 ) ,
+                                                                               in the workspace) need not be
+     w i d t h = c ( 1 1 . 3 , 13 . 1 , 2 0 , 21 . 1 , 25 . 8 , 13 . 1 ) ,
+     h e i g h t = c ( 2 3 . 9 , 18 . 7 , 27 . 6 , 28 . 5 , 3 6 , 23 . 4 ) ,
+                                                                               re-entered.
+     w e i g h t = w e i g h t , # Use values entered earlier
+     volume = volume , # Use values entered earlier
+     t y p e = c ( " Guide " , " Guide " , " Roadmaps " , " Roadmaps " ,
+                      " Roadmaps " , " Guide " ) ,
+     row.names = d e s c r i p t i o n
+)
+## Remove objects that are not now needed.
+rm ( volume , w e i g h t , d e s c r i p t i o n )
+
+It is a matter of convenience whether the description information
+is used to label the rows, or alternatively placed in a column of
+the data frame. Vectors of character, such as type, are by default             While there are many contexts
+stored as factors. In the data as stored, "Guide" is replaced by 1 and         where factor vectors and character
+"Roadmaps" by 2. Stored with the factor is the information that 1 is           vectors are interchangeable, there
+                                                                               are important exceptions.
+"Guide" and 2 is "Roadmaps".
+
+Accessing the columns of data frames
+The following are alternative ways to extract the column weight
+from the data frame:
+t r a v e l b o o k s [ , 4]
+travelbooks [ , " weight " ]
+travelbooks $ weight
+travelbooks [ [ " weight " ] ]       # Reference as a list.
+22     data analysis, graphics, and visualisation using r
+
+    There are several mechanisms that avoid repeated reference to
+the name of the data frame. The following both plot weight against
+volume:
+
+     1. Use the parameter data, where available, in the function call                  Most modeling functions and
+     p l o t ( w e i g h t  volume , d a t a = t r a v e l b o o k s )                 many plotting functions accept a
+                                                                                       data argument.
+     2. Use with(): Take columns from specified data frame
+     ## Take columns from the specified data frame
+     w i t h ( t r a v e l b o o k s , p l o t ( w e i g h t  volume ) )
+
+With both of these mechanisms, columns of the data frame are taken
+in preference to any object of the same name that may happen to be                     Attachment of a data frame:
+in the workspace.                                                                          attach ( travelbooks )
+     A third option, usually best avoided,                                                 p l o t ( w e i g h t  volume )
+     is to use attach() to add the data frame to the search list. In                       detach ( travelbooks )
+                                                                                            ## Detach when not required
+this case, names in the workspace take precedence over column
+names in the attached data frame ­ not usually what is wanted if
+there are names in common.
+     Subsection 4.3.2 will discuss the attaching of packages and
+image files.
+
+
+2.4        Input of Data from a File
+The function read.table() is designed for input from a file into
+a data frame. As an example, observe input of the data in Table 2.1.
+The DAAG package has a function datafile() that is convenient to
+use to place into the working directory this and/or several other files
+that can be used for demonstrating input of data from a file.1                         1
+                                                                                        DAAG must be installed.
+     The first two lines hold the column headings2 and first row of                    2
+                                                                                        The first column holds the row
+data, thus:                                                                            names, and has no header.
+
+                                    thickness     width     height       weight   volume     type
+  Aird's Guide to Sydney                 1.30     11.30      23.90         250       351     Guide
+                     ...
+
+    First store the file in the working directory, datafile() using                    Use of datafile() to place one or
+the function from the DAAG package.                                                    more files in the working directory
+                                                                                       is a convenience for teaching
+## Place the file in the working directory                                             purposes. The same command is
+## NB: DAAG must be installed                                                          used, independent of the setup on
+l i b r a r y (DAAG) # Attach the DAAG package                                         individual computers, to place the
+datafile ( " travelbooks " )                                                           file in the working directory.
+
+
+Data written to file: travelbooks .txt
+
+    Use dir() to check that the file is indeed in the working direc-
+tory:
+                                                                                      an overview of r     23
+
+dir ()                  # List files in working directory
+    The following reads the file into an R data frame:                   Row 1 has column names.
+                                                                         Column 1 has row names.
+## Input the file to the data frame travelbooks
+travelbooks    read.table (" travelbooks.txt " ,
+                           h e a d e r =TRUE , r o w . n a m e s =1)
+    The assignment places the data frame in the workspace, with
+the name travelbooks. The first seven columns are numeric. The
+character data in the final column is by default stored as a factor.
+
+Data input ­ points to note:
+- The R Commmander GUI can be helpful for data input. It displays
+  entry boxes for input settings that users may find it expedient to
+  change.
+- Use the parameter heading to control whether (heading=TRUE)
+  or not (heading=FALSE) the first row of input is used for row
+  names.
+- See help(read.table) for details of parameter settings that may        Section 7.4 discusses common
+  need changing to match the data format.                                types of input errors.
+- Character vectors that are included as columns in data frames          Character vectors and factors can
+  become, by default, factors.                                           often, but by no means always, be
+                                                                         treated as equivalent.
+
+2.5      Help Information
+                                                                         Note also:
+                                                                           help.search() # see below
+  help ( )                  #   Help for the help function                 apropos()
+  help ( plot )             #   Show the help page for plot
+  ? plot                    #   Shorthand for help(plot)
+  example ( p l o t )       #   Run examples from help(plot)
+
+
+Examples that are included on help pages
+All functions have help pages. Most help pages include examples,         To work through the code for an
+which can be run using the function example(). Be warned that,           example, look on the screen for
+even for relatively simple functions, some of the examples may           the code that was used, and copy
+                                                                         or type it following the command
+illustrate non-trivial technical detail.
+                                                                         line prompt. Or get the code from
+                                                                         the help page.
+Access to help resources from a browser screen
+Type help.start() to display a screen that gives a
+browser interface to R's help resources. Note especially                 O cial R manuals include
+Frequently Asked Questions and Packages. Under Packages, click           An Introduction to R, a manual
+on base to get information on base R functions. Standard elemen-         on Writing R Extensions, and so
+                                                                         on.
+tary statistics functions are likely to be found under stats, and base
+graphics functions under graphics.
+24    data analysis, graphics, and visualisation using r
+
+    Also available, after clicking on a package name, is a link
+User guides, package vignettes and other documentation. Click to
+get details of any documentation that is additional to the help pages.
+
+
+Vignettes
+                                                                            Abilities in the knitr package and
+Many packages have vignettes; these are typically pdf or (with ver-         elsewhere allow the creation of
+sion 3.0.x of R) HTML files that give information on the package or         HTML vignettes from HTML or
+on specific aspects of the package. To get details of vignettes that are    R Markdown source files, and of
+available for one or other package, call browseVignettes() with             PDF vignettes from LaTeX. A
+                                                                            Markdown or HTML or LaTeX
+the package name (in character string form) as argument. Thus, to
+                                                                            source document is enhanced
+get details of the vignettes that are available for the knitr package,      with markup in which R code is
+enter browseVignettes(package="knitr").                                     embedded. See Chapter 3.
+    The browser window that appears will list the vignettes, with the
+option to click on links that, in most cases, oer a choice of one of
+PDF and HTML, source, and R code.
+
+
+Searching for key words or strings
+Use help.search() to look for functions that include a specific
+word in their alias or title. For example, to look for a function for bar
+plots, try
+h e l p . s e a r c h ( " bar " )
+?? " bar "                      # Shorthand for help.search (" bar ")
+
+     This draws attention to the function barplot(). Type in
+help(barplot) to see the help page, and/or example(barplot)
+to run the examples.
+     Functions for operating on character strings are likely to have        By default, all available in-
+"str" or "char" in their name. Try                                          stalled packages are searched.
+                                                                            Limiting the search, here to
+h e l p . s e a r c h ( " s t r " , p a c k a g e=" b a s e " )             package="base", will often
+h e l p . s e a r c h ( " c h a r " , p a c k a g e=" b a s e " )           give more manageable and useful
+                                                                            output.
+    The function RSiteSearch() searches web-based resources,
+including R mailing lists, for the text that is given as argument.
+
+
+2.6       Summary and Exercises
+2.6.1      Summary
+- Useful help functions are help() (for getting information on a            NB also: Use apropos() to search
+  known function) and help.search() (for searching for a word               for functions that include a par-
+  that is used in the header for the help file).                            ticular text string as part of their
+                                                                            name.
+- The function help.start(), starts a browser window from
+  which R help information can be accessed.
+                                                                                                     an overview of r    25
+
+- Use read.table(), or an alias such as read.csv(), to input
+  rectangular files. As an alternative, consider use of the R Com-
+  mander GUI.
+- Data frames collect together under one name columns that all
+  have the same length. Columns of a data frame can be any mix of,
+  among other possibilities: logical, numeric, character, or factor.
+- The function with() attaches a data frame temporarily, for the                           Use with() in preference to the
+  duration of the call to with().                                                          attach() / detach() combination.
+- For simple forms of scatterplot, use plot() and associated func-
+  tions, or perhaps the lattice function xyplot().
+
+ 2.6.2    Exercises
+1. Use the function datafile() (DAAG or DAAG), with the argu-                              3
+                                                                                            Alternatively, copy it from
+   ment file=bestTimes, to place the file bestTimes.txt into the                           the web page http://www.
+   working directory.3                                                                     maths.anu.edu.au/~johnm/
+                                                                                           datasets/text/ and place it in
+ (a) Examine the file. (Include the path if the file is not in the work-                   the working directory.
+     ing directory.)
+     ## Input from file that is in working directory
+     d a t a f i l e ( " bestTimes " )
+     ## file.show (" bestTimes.txt ")
+     bestTimes              read.table ( " bestTimes.txt " )
+
+ (b) The bestTimes file has separate columns that show hours,
+     minutes and seconds. Use the following to add the new column
+     Time, then omitting the individual columns as redundant
+     b e s t T i m e s $ Time        with ( bestTimes ,
+                                            h * 60 + min + s e c / 6 0 )
+       # Time in minutes
+     names ( b e s t T i m e s ) [ 2 : 4 ]    # Check column names
+
+     [1] "h"           "min" "sec"
+
+     bestTimes               bestTimes [ ,          (2:4)]
+                                                  # omit columns 2:4
+
+ (c) Here are alternative ways to plot the data
+     p l o t ( Time  D i s t a n c e , d a t a = b e s t T i m e s )
+     ## Now use a log scale
+     p l o t ( l o g ( Time )  l o g ( D i s t a n c e ) , d a t a = b e s t T i m e s )
+     p l o t ( Time  D i s t a n c e , d a t a =b e s t T i m e s , l o g =" xy " )
+
+ (d) Now save the data into an image file in the working directory
+     s a v e ( b e s t T i m e s , f i l e =" b e s t T i m e s . R D a t a " )
+
+     For further explanation of the function save(), see the next
+     chapter.
+26   data analysis, graphics, and visualisation using r
+3
+Enhancing the R Experience ­ RStudio
+
+                                                                         The discussion here has used the
+The url for RStudio is http://www.rstudio.com/ or (preview               beta or preview version 0.98.236
+version) http://www.rstudio.com/ide/download/preview.                    of RStudio.
+Click on the icon for the downloaded installation file to install it.
+An RStudio icon will appear. Click on the icon to start RStudio.
+RStudio should find any installed version of R, and if necessary start
+R. Figure 3.1 shows an RStudio display, immediately after starting
+up and entering, very unimaginatively, 1+1.
+
+
+
+
+                                                                         Figure 3.1: Here is shown the
+                                                                         RStudio interface, after starting up
+                                                                         and entering 1+1.
+28    data analysis, graphics, and visualisation using r
+
+     Techncally, RStudio oers an Interactive Development Environ-          Extensive and careful RStudio
+ment. It provides, from a graphical user interface, a range of abilities   documentation can be accessed,
+that are helpful for organizing and managing work with R. Helpful          assuming an internet connection,
+                                                                           from the Help drop-down menu.
+features of RStudio include:
+                                                                           The notes included here are de-
+· The organisation of work into projects.                                  signed to draw attention to some
+                                                                           of the more important RStudio
+· The recording of files that have been accessed from RStudio, of          abilities and features.
+  help pages accessed, and of plots. The record of files is maintained
+  from one session of a project to the next.
+· By default, a miniature is displayed of any graph that is plotted. A
+  single click expands the miniature to a full graphics window.
+· The editing, maintenance and display of code files.
+· Abilities that assist reproducible reporting. Markup text sur-           Alternative available types of
+  rounds R code that is incorporated into a document, with option          markup are R Markdown or R
+  settings used to control the inclusion of code and/or computer out-      HTML or Sweave with LaTeX.
+  put in the final document. Output may include tables and graphs.
+
+
+3.1      The RStudio file menu
+
+                                                                           Figure 3.2: The RStudio File
+                                                                           drop-down menu. The New File
+                                                                           submenu has been further ex-
+                                                                           panded.
+
+
+
+
+   For now, the RStudio drop-down menus that are of most im-
+mediate importance are File and Help. Here (Figure 3.2) is the File
+menu, with the New File submenu also shown.
+                                                                    enhancing the r experience ­ rstudio   29
+
+     Here, note the possibility of opening a new R script file, and
+entering code into that file. Or, to open an existing R code file, click
+on the Open File... submenu.
+     The key combination <CTRL><ENTER> can be used to send                   Here, <CTRL> is the control key
+code to the command line. Code that has been selected will be sent           and <ENTER> is the Enter key.
+to the command line. Or if no code has been selected, the line on
+which the cursor is placed will be sent to the command line.
+
+3.1.1    Compile a code notebook
+Figure 3.3 shows a script file in the upper left panel. The code has
+been sent to the command line, so that it also appears in the code
+history panel on the upper right.
+
+
+
+
+                                                                             Figure 3.3: Code from the script
+     In Figure 3.3, take particular note of the icon on which you can        window has been sent to the com-
+click to create an R notebook. Upon clicking this icon, the system           mand line.
+will ask for a name for the file. It will then create an HTML file
+that has, along with the code and comment, the compluter output.
+For the code that is shown, the file will include the output from
+summary(cars) and the graph from plot(cars). An alternative to
+clicking on the icon is to click on the File drop-down menu, and then
+on Compile Notebook... .
+30    data analysis, graphics, and visualisation using r
+
+
+3.2      Abilities for reproducible reporting
+There are several dierent types of document where markup code
+can be used to control how text and other document features will
+appear after they have been processed for printing. Perhaps the
+simplest of these languages is Markdown. With the ability added to
+include R code and ouput in the final document, RStudio gives it the
+name R Markdown.
+
+
+3.2.1     R Markdown
+Here is an example of some text that has Markdown type formatting:
+
+Title
+================================================
+
+This is an R Markdown document. Markdown is a
+simple formatting syntax for authoring web pages
+(click the **Help** toolbar button for more
+details on using R Markdown).
+
+The eect of the line of '=' symbols is that after processing, 'Title'
+will appear as a title, in large bold type. The eect of the two sets of
+'**' symbols in '**Help**', is that 'Help' will be printed in bold.
+    R Markdown, as implemented in RStudio, extends standard
+Markdown to allow the inclusion of R code, embedded in suitable
+markup that indicates what is to be done with the code and/or
+any output (including graphs) for purposes of preparation of the
+eventual document. Here is an example of code with surrounding
+markup as required for insertion into an R Markdown document:
+
+```{r plotgph, fig.width=7, fig.height=6, out.width="600px"}
+plot(cars)
+```
+
+      Giving the code chunk a name, here plotgph, is optional. The        Other settings include:
+fig.width and fig.height settings control the size of the output          echo=FALSE (do not show code), &
+plot, before it is scaled to fit within the available line width. The     eval=FALSE (do not evaluate).
+out.width setting controls the width in the final HTML document.
+      R users are strongly encouraged, unless they are currently work-    The knitr function pandoc() can
+ing with Sweave or an equivalent, to use R Markdown for docu-             be used to convert R Markdown
+menting any work that is more than trivial. Markdown uses a very          documents into other formats,
+                                                                          including Microsoft Word and
+simple type of document formatting, which novices should be able
+                                                                          LaTeX.
+to master very quickly for their own use. Those who have the skills
+needed to work with more sophisticated markdown languages may
+still, for some types of work, find benefit in the simplicity and speed
+of working with R markdown.
+                                                                   enhancing the r experience ­ rstudio   31
+
+An R Markdown demonstration
+Click on File | New File | R Markdown. This will display an R
+Markdown document. Ordinarily, one would edit out the text and
+R code and replace it with one's own text and R code chunks. For
+present purposes, the file can be used as it stands. Or you can add
+further text, or modify the code, or add further code chunks. Click
+the Knit HTML button to start the process of generating the HTML
+file. You will be asked to enter a name for the file. An HTML file
+will be generated and displayed in a browser.
+     As a variant on R Markdown, note R Presentation. Click on File
+| New File | R Presentation to display an R Presentation document.
+This is a special type of R Markdown document that is formatted to
+provide slides that can be displayed using a browser.
+
+3.2.2    Other   markup types ­ HTML and LaTeX
+R HTML
+Click on File | New File | R HTML to display an HTML document
+that has embedded R code:
+<!--begin.rcode fig.width=7, fig.height=6, out.width="600px"
+plot(cars)
+end.rcode-->
+
+    Again, the document that appears can be processed just as it
+stands ­ click on Knit HTML.
+
+R Sweave:
+Click on File | New File | R Sweave to display a template for a La-
+TeX file. The web page http://maths-people.anu.edu.au/
+~johnm/r-book/knitr/ has files that demonstrate the use of knitr
+Sweave type markup.
+
+3.2.3   RStudio documentation ­ markup and other
+Very extensive documentation for RStudio is provided online.
+Click on Help | RStudio Docs to go to the relevant web page. For
+R Markdown and R Presentation, note the documentation files for
+Using R Markdown. LATeX users should note the Sweave and
+knitr documentation files.
+
+3.2.4   A strategy for RStudio project management
+RStudio is well designed to assist good project management prac-
+tices, using a strategy similar to the following:
+32     data analysis, graphics, and visualisation using r
+
+     For each new project, set up a new project in its own working
+     directory.
+
+     For each project, maintain one or more script files that holds your
+     code. Script files can be compiled into "notebooks" for purposes
+     of keeping a paper record.
+
+     Script files are readily expanded into R Markdown documents ­ a
+     simple form of "reproducible reporting" document. Such files are
+     readily expanded into a draft for a paper.
+
+     As noted above, the knitr function pandoc() can be used to convert
+     R Markdown documents into other formats, including Microsoft
+     Word and LaTeX. The quality of the conversion should be good
+     enough for a working draft.
+4
+The R Working Environment
+
+                                                                            Important R technical terms in-
+  Object        Objects can be data objects, function objects,              clude object, workspace, working
+                formula objects, expression objects, . . .                  directory, image file, package,
+                Use ls() to list contents of current workspace.             library, database and search list.
+
+  Workspace     User's "database", where the user can make
+                additions or changes or deletions.
+  Working       Default directory for reading or writing files.
+  directory     Use a new working directories for a new project.
+                                                                            Use the relevant menu. or enter
+  Image files   Use to store R objects, e.g., workspace contents.           save.image() on the command
+                (The expected file extension is .RData or .rda)             line, to store or back up workspace
+                                                                            contents. During a long R session,
+  Search list   search() lists `databases' that R will search.              do frequent saves!
+                library() adds packages to the search list
+
+
+
+4.1     The Working Directory and the Workspace
+Each R session has a working directory and a workspace. By default
+R looks in the working directory for files, and saves files that are
+output to it.
+     The workspace is, in R technical language, a "database" that           The workspace is at the base of
+holds all the objects that are under direct user control. It holds ob-      a list of "databases", called the
+jects that the user has created or input, or that were there at the start   search list, that controls access
+                                                                            to packages, objects in other
+of the session and not later removed.
+                                                                            directories, etc.
+     The workspace changes as objects are added or deleted or mod-
+ified. It disappears at the end of the session, but a copy or "image"
+can and usually should be kept. Upon quitting from R (type q(), or
+use the relevant menu item), users are asked whether they wish to
+save the current workspace. It will be saved, with the name .RData,
+into the current working directory. When an R session is next started
+in that working directory, R looks for a workspace .RData, and if
+found reloads it.
+34    data analysis, graphics, and visualisation using r
+
+Setting the Working Directory
+When a session is started by clicking on a Windows icon, the icon's
+Properties specify the Start In directory. The default choice, usually
+an R installation directory, is not satisfactory for long-term use, and
+should be changed.1                                                       1
+                                                                           When a Unix or Linux command
+     It is good practice to use a separate working directory, and as-     starts a session, the default is to
+sociated workspace or workspaces, for each dierent project. On            use the current directory.
+Windows systems, copy an existing R icon, rename it as desired,
+and change the Start In directory to the new working directory. The
+working directory can be changed2 once a session has started, either      2
+                                                                            If the intention is change to a
+from the menu (if available) or from the command line. Changing           new workspace, perhaps save
+the working directory from within a session requires a clear head; it     the existing workspace, then
+is usually best to quit and start a new session.                          type rm(list=ls() to remove
+                                                                          its contents. Then change the
+                                                                          working directory and load the
+                                                                          new workspace.
+4.2      Saving and retrieving R objects
+Cautious users will from time to time save (back up)3 the current         3
+                                                                            Alternatively, and this may be
+workspace image. The command save.image()) saves everything               preferable, maintain a transcript
+in the workspace, by default into a file named .RData in the working      from which work done during
+                                                                          the session can if necessary be
+directory. Or, depending on the implementation, click on the relevant
+                                                                          reproduced.
+menu item.
+     Before making major changes in the workspace, it may be sensi-       In place of archive, it might be
+ble to archive the contents of the current workspace, e.g., into a file   better to use, e.g.,the date when
+with the name archive.RData. Specify                                      the file was created, e.g.:
+     Before saving the workspace, perhaps on quitting the session,        s a v e . i m a g e ( f i l e =" a r c h i v e . R D a t a " )
+consider use of rm() to remove objects that are no longer required.
+Saving the workspace image will then save everything that remains.
+     Use save() to save one or more named objects into an image           The function save.image() calls
+file. The following demonstrate the explicit use of save() and            save(), in order to do its task.
+load() commands:
+volume         c (351 , 955 , 662 , 1203 , 557 , 460)
+weight         c (250 , 840 , 550 , 1360 , 640 , 420)
+s a v e ( volume , w e i g h t , f i l e =" b o o k s . R D a t a " )
+    # Can save many objects in the same file
+rm ( volume , w e i g h t )            # Remove volume and weight
+load ( " books.RData " )               # Recover the saved objects
+
+     An alternative to load("books.RData") is
+attach("books.RData"). This makes the objects available, but
+in a database that is separate from the user's workspace.
+     Two further possibilities are:
+
+- Use dump() to save one or more objects in a text format. For
+  example:
+     volume      c (351 , 955 , 662 , 1203 , 557 , 460)
+                                                                                      the r working environment        35
+
+   weight         c (250 , 840 , 550 , 1360 , 640 , 420)
+   dump ( c ( " volume " , " w e i g h t " ) , f i l e =" v o l w t . R " )
+   rm ( volume , w e i g h t )
+   source ( " volwt.R " )                # Retrieve volume & weight from dumpfile
+- Use the function write.table() to write a data frame to a text
+  file.
+
+
+4.3      Packages, the Search List, and Workspace
+         Maintenance
+                                                                                      For download or installation
+  Packages         Packages are structured collections of R                           of R or CRAN packages, use
+                   functions and/or data and/or other objects.                        for preference a local mirror. In
+                                                                                      Australia http://cran.csiro.au is a
+  Installation     Most users will install R from CRAN binaries.                      good choice. The mirror can be set
+  of packages      Binaries include 'recommended' packages.                           from the Windows or Mac GUI.
+                   Install other packages, as required,                               Alternatively (on any system),
+                                                                                      type chooseCRANmirror() and
+  library()        Use to attach a package, e.g., library(DAAG)                       choose from the list that pops up.
+                   Once attached, a package is added to the list of
+                   "databases" that R searches for objects.
+  attach()         Attach data frames or image files.
+
+An R installation is structured as a library of packages.
+
+· All installations should have the base packages (one of them is
+  called base). These provide the infrastructure for other packages.
+· Binaries that are available from CRAN sites include, also, all the
+  recommended packages.
+· Other packages can be installed as required, from a CRAN mirror
+  site, or from another repository.                                                   To discover which packages are
+                                                                                      attached, enter one of:
+   A number of packages are by default attached                                       search ()
+   at the start of a session. To attach other packages, use                           sessionInfo ()
+library() as required.
+
+4.3.1     Installation of R packages
+                                                                                      NB also download.packages().
+Section 1.3 described the installation of packages from the internet,                 Arguments are a vector of package
+either using the menu or using install.packages().                                    names and a destination directory
+     For command line installation of packages that are in a local                    destdir where the latest file
+directory, call install.packages() with pkgs giving the files                         versions will be saved as .zip
+                                                                                      or (MacOS X) .tar.gz files. The
+(with path, if necessary), and with the argument repos=NULL. If
+                                                                                      menu, or install.packages(),
+for example the binary DAAG_1.11.zip has been downloaded to                           can then be used to install the
+D:\tmp\, it can be installed thus                                                     packages from the local directory.
+ i n s t a l l . p a c k a g e s ( p k g s="D: / DAAG_1.11.zip " , r e p o s =NULL)
+36   data analysis, graphics, and visualisation using r
+
+   On the R command line, be sure to replace the usual Windows
+backslashes by forward slashes.
+   On Unix and Linux systems, the relevant gzipped tar files, once
+downloaded, can be installed using the shell command:
+     R CMD INSTALL xx.tar.gz
+(replace xx.tar.gz by the file name.)
+    Note also the function update.packages(). This identifies
+packages for which updates are available, in each case oering the
+user the option to proceed with the update.
+    Use .path.package() to get the path of a currently attached
+package (by default for all attached packages).
+
+Repositories additional to CRAN
+The menu oers, by default, the option of installing Bioconductor
+packages. To view a list of all repositories known to the R installa-
+tion, and possibly to select one or more, type:                            Figure 4.1: List of available
+                                                                           repositories, obtained by typing
+setRepositories ()                                                         setRepositories(). To select
+                                                                           more than one repository, hold
+    Figure 4.1 shows the result. The repositories can be referred to       down the Windows key, or under
+by number, using the argument ind to setRepositories(). For                MacOS X the command key, while
+example:                                                                   left-clicking.
+s e t R e p o s i t o r i e s ( ind =1:2)   # CRAN and CRAN ( extras )
+
+
+4.3.2     The search path: library() and attach()
+The R system maintains a search path (or list) that determines, at
+any time in a session, where and in what order to look for objects.
+The search path determinines the sequence of databases where R
+looks for objects (functions or data) that may be required.
+    To get a snapshot of the search path, here taken after starting up     Packages other than MASS were
+and entering library(MASS), type:                                          attached at startup.
+
+search ()                                                                  Technically, these are "databases".
+                                                                           Database 1, where R looks first,
+ [1]    ". GlobalEnv "                        " package :DAAG"             is the user workspace, called
+ [3]    " package : survival "                " package : splines "        ".GlobalEnv". If the object is not
+ [5]    " package :boot"                      " package : randomForest "   in database 1, it looks in database
+ [7]    " package : rpart"                    " package : latticeExtra "   2, and so on.
+ [9]    " package : RColorBrewer "            " package : lattice "
+[11]    " package :MASS"                      " package : knitr"
+[13]    "tools: rstudio "                     " package : stats"
+[15]    " package : graphics "                " package : grDevices "
+[17]    " package : utils "                   " package : datasets "
+[19]    " package : methods "                 " Autoloads "
+[21]    " package :base"
+                                                                                               the r working environment           37
+
+Attachment of image files
+                                                                                               Objects that are attached, whether
+Section 2.3 described the attaching of a data frame (or list object).                          data frames or workspaces or
+    It is also possible to attach an R image file, thus:                                       packages (using library()), are
+a t t a c h ( " books.RData " )                                                                added to the search list.
+
+    The session then has access to objects in the file books.RData.
+The file becomes a further "database" on the search list, separate
+from the workspace. Note however that if the object is modified, the
+modified copy becomes part of the workspace.
+    In order to detach such a database, proceed thus:                                          Alternatively type search(), note
+                                                                                               the number that gives the position
+detach ( " f i l e : books.RData " )
+                                                                                               of the database on the search list,
+                                                                                               and supply that number as an
+4.3.3      *Where does the R system keep its files                                             argument to detach().
+                                                                                               Note that R expects (and dis-
+Type R.home() to see where the R system has stored its files.                                  plays) either a single forward slash
+R.home ( )                                                                                     or double backslashes, where
+                                                                                               Windows would show a single
+[1] "/ Library / Frameworks /R. framework / Resources "                                        backslash.
+
+    Notice that the path appears in abbreviated form. Type
+normalizePath(R.home()) to get the more intelligible result
+    [1] "C:\\Program Files\\R\\R-2.15.2"
+    By default, the command system.file() gives the path to the
+base package. For other packages, type, e.g.
+s y s t e m . f i l e ( p a c k a g e="DAAG" )
+
+[1] "/ Library / Frameworks /R. framework / Versions /3.0/ Resources / library /DAAG"
+
+   To get the path to a file viewtemps.RData that is stored with the
+DAAG package in the misc subdirectory, type:
+s y s t e m . f i l e ( " m i s c / v i e w t e m p s . R D a t a " , p a c k a g e="DAAG" )
+
+[1] "/ Library / Frameworks /R. framework / Versions /3.0/ Resources / library /DAAG/misc/ viewtemps . RDa
+
+
+4.3.4      Option Settings
+                                                                                               Type help(options) to get full
+As a simple example consider the number of characters that will be                             details of option settings. There
+printed on the command line, before wrapping:                                                  are a large number.
+o p t i o n s ( ) $ width
+    To change this to 60 characters, do:
+o p t i o n s ( w i d t h =60)
+   The printed result of calculations will, unless the default is
+changed (as has sometimes been done for the output in this docu-
+ment) often show more significant digits of output than are useful.
+The following demonstrates a global (until further notice) change:                             Use signif() to aect one state-
+                                                                                               ment only. For example
+                                                                                                signif(sqrt(10),2)
+                                                                                               NB also the function round().
+38     data analysis, graphics, and visualisation using r
+
+sqrt (10)
+
+[1] 3.162
+
+o p t i o n s ( d i g i t s =2) # Change until further notice ,
+# or until end of session.
+sqrt (10)
+
+[1] 3.2
+
+    Note that options(digits=2) expresses a wish, which R will
+not always obey!
+
+Rounding will sometimes introduce small inconsistencies!
+For example:
+round ( s q r t (372 / 12) , 2)
+
+[1] 5.6
+
+round ( s q r t ( 2 ) * s q r t (372 / 12) , 2)
+
+[1] 7.9
+
+round ( s q r t ( 2 ) * 5 .57 , 2)
+
+[1] 7.9
+
+
+
+4.4       Summary and Exercises
+4.4.1      Summary
+     Each R session has a working directory, where R will by default
+     look for files or store files that are external to R.
+     User-created R objects are added to the workspace, which is at the
+     base of a search list, i.e., a list of "databases" that R will search
+     when it looks for objects.
+     At the end of a session an image of the workspace will typically        Frequent workspace saves are
+     (respond "y" when asked) be saved into the working directory.           less necessary, or perhaps not
+     Additionally, it is good practice to save the workspace from            necessary at all, for users who
+                                                                             maintain a transcript from which
+     time to time during a session. Before making big changes to the
+                                                                             everything done in the session can
+     workspace, a good precaution is to save the existing workspace          if necessary be reproduced.
+     under a name (e.g., Aug27.RData) that is dierent from the the
+     default .RData
+     It is good practice to keep a separate workspace and associated
+     working directory for each major project.
+                                                                          the r working environment       39
+
+   The search path determines the order of search for objects that are
+   accessed from the command line, or that a function requires and
+   are not in the functions environment.
+   Note also the use of attach() to give access to objects in an im-
+   age (.RData or .rda) file. Include the name of the file (optionally
+   preceded by a path) in quotes.
+   R has an extensive help system. Use it!
+
+ 4.4.2    Exercises
+1. Read the data that is stored in the file molclock1.txt into the data
+   frame molclock.4 . Use the function save() to save the data into       4
+                                                                           With the package DAAG attached,
+   an R image file. Delete the data frame molclock, and check that        typing datafile() will store
+   you can recover the data by loading the image file.                    molclock1.txt, molclock2.txt,
+                                                                          and also travelbooks.txt, in your
+                                                                          working directory
+40   data analysis, graphics, and visualisation using r
+5
+Practical Data Analysis ­ Examples
+
+
+
+
+  Scatterplot       Scatterplot matrices can give useful insights on
+  matrices          data that will be used for regression or related
+                    calculations.
+  Transformation    Data often require transformation prior to use
+                    in a regression model.
+  Model             Fitting a regression or other such model gives,
+  objects           in the first place, a model object.
+  Generic           plot(), print() and summary() are examples
+  functions         of generic functions. With a dataframe as
+                    argument plot() gives a scatterplot matrix.
+                    With an lm object . . .
+  Extractor         Use an extractor function to extract output from
+  function          a model object. Extractor fucntions are generic
+                    functions
+  List objects      An lm model object is a list object. Lists are
+                    used extensively in R.
+
+    This chapter will use examples to illustrate common issues in
+the exploration of data and the fitting of regression models. It will
+round out the discussion of Chapters 1 to 2 and 4 by adding some
+furthe important technical details. These include the use of generic
+functions such as plot() and print(), the way that regression
+model objects are structured, and the use of extractor functions to
+extract information from model objects.
+42    data analysis, graphics, and visualisation using r
+
+
+5.1      The Uses of Scatterplot Matrices
+5.1.1     Transformation to an Appropriate Scale
+A first step, before plotting any graphs, is to elicit basic information
+on the columns in the data, including information on relationships
+between explanatory variables. If numeric, it may be important to
+know whether there are enough distinct values that the data can be
+treated as continuous.
+    Transformations are helpful that ensure, if possible, that:                                  A: Unlogged data
+                                                                                                                        
+· All columns have a distribution that is reasonably well spread out
+  over the whole range of values, i.e., it is unsatisfactory to have                                       
+
+
+
+
+                                                                                 2000 4000
+  most values squashed together at one end of the range, with a
+
+
+
+
+                                                                                    brain
+  small number of very small or very large values occupying the
+  remaining part of the range.                                                                   
+
+
+· Relationships between columns (which, except for the relationship
+                                                                                                  
+                                                                                                 
+
+
+
+
+                                                                                        0
+                                                                                                 
+
+  with the outcome variable, we prefer to be weak) are roughly                                   0      2000     5000
+  linear.                                                                                                   body
+
+· the scatter about any relationship is similar across the whole range                           B: Log scales (both axes)
+  of values.                                                                                                             
+
+
+
+
+                                                                                         1e+03
+                                                                                                                
+                                                                                                              
+It may happen that the one transformation, often a logarithmic trans-                                      
+                                                                                                            
+                                                                                                             
+                                                                                                             
+                                                                                                             
+
+                                                                                                           
+formation, will achieve all these at the same time.
+                                                                                                           
+                                                                                   brain                   
+                                                                                                         
+                                                                                 1e+01                  
+                                                                                                        
+
+    The scatterplot in Figure 5.1A, showing data from the dataset                                      
+                                                                                                       
+                                                                                                       
+                                                                                                       
+                                                                                                        
+
+
+mammals (MASS), is is an extreme version of the common situation
+                                                                                                       
+                                                                                                     
+
+where positive (or non-zero) values are squashed together in the                                     
+                                                                                        1e-01
+
+
+
+                                                                                                     
+                                                                                                 
+
+lower part of the range, with a tail out to the right. Such a distribu-                     1e-02             1e+02
+tion is said to be "skewed to the right".                                                                  body
+    Code for Figure 5.1A
+l i b r a r y (MASS)                                                            Figure 5.1: Brain weight (g)
+p l o t ( b r a i n  body , d a t a =mammals , p t y =" s " )                   versus Body weight (kg), for 62
+m t e x t ( s i d e =3 , l i n e =0 . 5 , a d j =0 , "A: Unlogged d a t a " )   species of mammal. Panel A plots
+                                                                                the unlogged data, while Panel B
+    Figure 5.1B shows the scatterplot for the logged data. Code for             has log scales are used for both
+Figure 5.1B is:                                                                 axes. Notice that, in Panel B, the
+                                                                                scales are labeled in the original
+p l o t ( b r a i n  body , d a t a =mammals , l o g =" xy " , p t y =" s " )   (unlogged) units.
+m t e x t ( s i d e =3 , l i n e =0 . 5 , a d j =0 ,
+            "B : Log s c a l e s ( b o t h a x e s ) " )
+
+      Where, as in Figure 5.1A, values are concentrated at one end of
+the range, the small number (perhaps one or two) of values that lie at
+the other end of the range will, in a straight line regression with that
+column as the only explanatory variable, be a leverage point. When
+it is one explanatory variable among several, those values will have
+an overly large say in determining the coe cient for that variable.
+                                                                             practical data analysis ­ examples                                            43
+
+     As happened here, a logarithmic transformation will often re-
+ move much or all of the skew. Also, as happened here, such transfor-
+ mations often bring the added bonus that relationships between the
+ resulting variables are approximately linear.
+
+
+
+ 5.1.2       The Uses of Scatterplot Matrices
+ In subsequent chapters, there will be extensive use of scatterplot
+ matrices. A scatterplot matrix plots every column against every
+ other column, showing the result in the layout used for correlation
+ matrices. Figure 5.2 shows a scatterplot matrix for the trees dataset
+ in the datasets package that is automatically attached when R
+ starts.
+
+  Interpreting Scatterplot Matrices:
+                                                                                                      65          75      85
+
+  For identifying the axes for each panel                                                                                                          
+
+
+
+
+                                                                                                                                                      20
+                                                                                                                                          
+                                                                                                                                         
+
+
+
+
+                                                                                                                                                      16
+                                                                                                                                    
+
+ - look across the row to the diagonal to identify the                            Girth                        
+                                                                                                                 
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+
+
+
+
+                                                                                                                                                      12
+                                                                                                                                   
+                                                                                                                                  
+
+   variable on the vertical axis.
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                               
+
+
+
+
+                                                                                                                                                      8
+ - look up or down the column to the diagonal for the                                                                                              
+                                                                    85
+
+
+                                                                                  
+                                                                                                                                    
+                                                                                                                                    
+   variable on the horizontal axis.
+                                                                                                                                    
+                                                                                                                                   
+                                                                              
+                                                                                                            Height              
+                                                                    75
+
+
+
+
+                                                                                                                                  
+                                                                                                                                  
+                                                                                                                                
+
+  Each below diagonal panel is the mirror image of the                                                                          
+                                                                    65
+
+
+
+
+                                                                                      
+                                                                                                                               
+
+
+  corresponding above diagonal panel.                                                                                      
+
+
+
+
+                                                                                                                                                      70
+                                                                                                                       
+
+
+
+
+                                                                                                                                                      50
+                                                                                                                       
+
+                                                                                   
+                                                                                         
+                                                                                                               
+                                                                                                                                    Volume
+ ## Code used for the plot                                                                                        
+
+
+
+
+                                                                                                                                                      30
+                                                                                   
+                                                                                                                  
+                                                                                                                 
+                                                                              
+                                                                               
+                                                                                                                 
+ p l o t ( t r e e s , c e x . l a b e l s =1 . 5 )
+                                                                                                                
+
+
+
+
+                                                                                                                                                      10
+                                                                                                            
+
+
+     # Calls pairs (trees)                                               8       12      16      20                            10   30   50   70
+
+
+
+
+                                                                                              Figure 5.2: Scatterplot matrix for
+                                                                                              the trees data, obtained using
+      Notice that plot(), called with the dataframe trees, has                                the default plot() method for
+ in turn called the plot method for a data frame, i.e., it has called                         data frames. The scatterplot matrix
+ plot.data.frame() which has in turn called the function                                      is a graphical counterpart of the
+ pairs().                                                                                     correlation matrix.
+      The scatterplot matrix may be examined, if there are enough
+ points, for evidence of:                                                                     The scatterplot matrix should
+                                                                                              be used only as an initial coarse
+1. Strong clustering in the data, and/or obvious outliers;                                    screening device. Skewness in the
+                                                                                              individual distributions is better
+                                                                                              checked with the use of plots of
+2. Clear non-linear relationships, so that a correlation will underesti-
+                                                                                              density estimates.
+   mate the strength of any relationship;
+
+3. Severely skewed distributions, so that the correlation is a biased
+   measure of the strength of relationship.
+44    data analysis, graphics, and visualisation using r
+
+
+5.2       World record times for track and field events
+The first example is for world track and road record times,
+as at 9th August 2006. Data are from the web page http:                                 Note also the use of these data in
+//www.gbrathletics.com/wrec.htm. Data are in the dataset                                the exercise at the end of Chapter
+worldRecords in the DAAG package).                                                      2 (Section 2.6.2)
+
+
+Data exploration
+First, use the function str() to get information on the data frame
+columns:
+l i b r a r y (DAAG)
+s t r ( w o r l d R e c o r d s , v e c . l e n =3)
+'data.frame ':                40 obs. of 5 variables :
+ $ Distance    :              num 0.1 0.15 0.2 0.3 0.4 0.5 0.6 0.8 ...
+ $ roadORtrack :              Factor w/ 2 levels "road "," track ": 2 2 2 2 2 2 2 2 ...
+ $ Place       :              chr " Athens " " Cassino " " Atlanta " ...
+ $ Time        :              num 0.163 0.247 0.322 0.514 ...
+ $ Date        :              Date , format : "2005 -06 -14" ...
+
+     Distinguishing points for track events from those for road events
+is easiest if we use lattice graphics, as in Figure 5.3.
+## Code
+library ( lattice )
+                                                                                                       road             track
+x y p l o t ( Time  D i s t a n c e , s c a l e s = l i s t ( t c k =0 . 5 ) ,
+                                                                                                                                
+
+
+
+              g r o u p s =r o a d O R t r a c k , d a t a =w o r l d R e c o r d s ,           1500                            
+              a u t o . k e y = l i s t ( c o l u m n s = 2 ) , a s p e c t =1)
+## On a a colour device the default is to use                                                   1000
+## different colours , not different symbols ,
+                                                                                         Time
+
+
+
+
+                                                                                                                     
+## to distinguish groups.                                                                        500
+                                                                                                                 
+
+    Clearly increases in Time are not proportional to increases in                                      
+                                                                                                           
+                                                                                                              
+
+                                                                                                   0   
+Distance. Indeed, such a model does not make sense; velocity
+                                                                                                       0   50 100 150 200 250 300
+decreases as the length of the race increases. Proportionality when
+                                                                                                                 Distance
+logarithmic scales are used for the two variables does make sense.
+    Figure 5.4 uses logarithmic scales on both axes. The two panels                     Figure 5.3: World record times
+dier only in the labeling of the scales. The left panel uses labels on                  versus distance, for field and road
+                                                                                        events.
+scales of loge , while the right panel has labels in the orginal units.
+Notice the use of auto.key to obtain a key.
+## Code for Left panel
+x y p l o t ( l o g ( Time )  l o g ( D i s t a n c e ) ,
+              g r o u p s =r o a d O R t r a c k , d a t a =w o r l d R e c o r d s ,
+              s c a l e s = l i s t ( t c k =0 . 5 ) ,
+              a u t o . k e y = l i s t ( c o l u m n s = 2 ) , a s p e c t =1)
+## Right panel
+x y p l o t ( Time  D i s t a n c e , g r o u p s =r o a d O R t r a c k ,
+              d a t a =w o r l d R e c o r d s ,
+              s c a l e s = l i s t ( l o g =10 , t c k =0 . 5 ) ,
+              a u t o . k e y = l i s t ( c o l u m n s = 2 ) , a s p e c t =1)
+                                                                                                              practical data analysis ­ examples        45
+
+
+                    road                  track                           road                track        
+                                                                                                                     Figure 5.4: World record times
+                                                                                                                     versus distance, for field and road
+                                                       
+                                                                  10^3
+                                                                                                                     events, using logarithmic scales.
+                                                                                                        
+                6
+                                             
+                                                 
+                                                                                                  
+                                                                                                                     The left panel uses labels on scales
+                                                                                                  
+                                                                  10^2                                               of loge , while in the right panel,
+   log(Time)
+
+
+
+
+                                                                                               
+                4                       
+                                                                                             
+                                                                                              
+
+
+
+
+                                                           Time
+                                                                                                                     labeling is in the orginal units,
+                                                                                             
+                                                                                            
+                                                                                           
+                2                                                 10^1                  
+                                                                                                                     expressed as powers of 10.
+                                                                                        
+                                                                                     
+                                                                                     
+                                                                                  
+                                                                                 
+                0          
+                                                                  10^0          
+                                                                                 
+                                                                                
+                                                                             
+                                                                          
+               -2
+                     -2     0         2      4         6                 10^-1 10^0        10^1   10^2
+
+                           log(Distance)                                         Distance
+
+
+
+
+Fitting a regression line
+The plots suggest that a line is a good fit. Note however that the
+data span a huge range of distances. The ratio of longest to shortest
+distance is almost 3000:1. Departures from the line are of the order
+of 15% at the upper end of the range, but are so small relative to this
+huge range that they are not obvious.
+     The following uses the function lm() to fit a straight line fit to                                              The name lm is a mnemonic for
+the logged data, then extracting the regression coe cients:                                                          linear model.
+
+worldrec.lm      lm ( l o g ( Time )  l o g ( D i s t a n c e ) ,
+                      d a t a=worldRecords )
+coef ( worldrec.lm )                                                                                                 The equation gives predicted
+                                                                                                                     times:
+  ( Intercept ) log( Distance )                                                                                      [
+                                                                                                                     Time    = e0.7316  Distance1.1248
+        0.7316          1.1248
+                                                                                                                             = 2.08  Distance1.1248
+    There is no dierence that can be detected visually between the                                                   This implies, as would be ex-
+track races and the road races. Careful analysis will in fact find no                                                pected, that kilometers per minute
+dierence.                                                                                                            increase with increasing distance.
+                                                                                                                     Fitting a line to points that are on a
+                                                                                                                     log scale thus allows an immediate
+5.2.1               Summary information from model objects                                                           interpretation.
+In order to avoid recalculation of the model information each time                                                   The name for the model object
+that some dierent information is required, we store the result from                                                  can be chosen at the user's dis-
+the lm() calculation in the model object worldrec.lm.                                                                cretion. Here, worldrec.lm is
+                                                                                                                     used as a reminder that it is a lin-
+     Note that the function abline() can be used
+                                                                                                                     ear model object, based on the
+     with the model object as argument to add a line to the plot of                                                  worldRecords data.
+log(Time) against log(Distance).
+                                                                                                                     Plot points; add line:
+                                                                                                                     p l o t ( l o g ( Time ) 
+Diagnostic plots                                                                                                     log ( Distance ) ,
+                                                                                                                               data = worldRecords )
+Insight into the adequacy of the line can be obtained by examining                                                   abline ( worldrec.lm )
+the "diagnostic" plots, obtained by "plotting" the model object.
+Figure 5.5 following shows the first and last of the default plots.
+Code is:
+46     data analysis, graphics, and visualisation using r
+
+
+                                                                                                                   Figure 5.5: First and last of the
+                     Residuals vs Fitted                                       Residuals vs Leverage               default diagnostic plots, from the
+                                                                                                             1
+                                                                                                                   linear model for log(record time)
+
+
+
+
+                                                      Standardized residuals
+                                         40                                                      40 
+
+
+
+
+                                                            0 1 2 3
+                                                                                                             0.5   versus log(distance), for field and
+        0.10
+
+
+
+
+                                           39                                                  39
+                                                                                                                   road events.
+  Residuals
+
+
+
+
+                                           24                                                  24
+
+                                                                                   
+                                                                                                          
+                            
+                                                                                       
+                                                                                  
+                                                                                  
+  0.00
+
+
+
+
+                                                                                        
+                                                                                                       
+                                                                                      
+                                                                                  
+                                                                                  
+                                                                                           
+                                                                                              
+                                                                                                    
+                                                                                  
+       -0.10
+
+
+
+
+                                                                                   
+                                                                                     Cook's distance
+
+
+
+                                                    -2
+               -2      0     2    4   6                                  0.00      0.04 0.08 0.12
+                        Fitted values                                                Leverage
+
+
+
+p l o t ( w o r l d r e c . l m , which=c ( 1 , 5 ) , s u b . c a p t i o n = r e p ( " " , 2 ) )
+
+     By default, there are four "diagnostic" plots. Panel A can be
+used to get an indication whether the relationship really is linear,
+or whether there is some further systematic component that should
+perhaps be modeled. It does show systematic dierences from a
+line. The largest of these is more than a 15% dierence.1 There are                                                 1
+                                                                                                                     A dierence of 0.05 on a scale of
+mechanisms for using a smooth curve to account for the dierences                                                   loge translates to a dierence of
+from a line, if these are thought important enough to model.                                                       just over 5%. A dierence of 0.15
+     The plot in panel B allows an assessment of the extent to which                                               translates to a dierence of just
+                                                                                                                   over 16%, i.e., slightly more than
+individual points are influencing the fitted line. Observation 40 does                                             15%.
+have both a very large leverage and a large Cook's distance. The plot
+on the left makes it clear that this is the point with the largest fitted
+time. Observation 40 is for a 24h race, or 1440 min. Examine
+w o r l d R e c o r d s [ " 40 " , ]
+
+       Distance roadORtrack Place Time        Date
+40        290.2        road Basle 1440 1998 -05 -03
+
+
+
+5.2.2               The model object
+Functions that are commonly used to get information about model
+objects are: print(), summary() and plot(). These are all
+generic functions. The eect of the function depends on the class
+of object that is printed (ie, by default, displayed on the screen) or or
+plotted, or summarized.
+    The function print() may display relatively terse output, while
+summary() may display more extensive output. This varies from
+one type of model object to another.
+    Compare the outputs from the following:
+print ( worldrec.lm )                           # Alternatively , type worldrec.lm
+                                                                        practical data analysis ­ examples   47
+
+
+
+Call:
+lm( formula = log(Time)  log( Distance ), data = worldRecords )
+
+Coefficients :
+  ( Intercept )           log( Distance )
+         0.732                     1.125
+
+summary ( w o r l d r e c . l m )
+
+
+Call:
+lm( formula = log(Time)  log( Distance ), data = worldRecords )
+
+Residuals :
+    Min      1Q              Median          3Q       Max
+-0.0807 -0.0497              0.0028      0.0377    0.1627
+
+Coefficients :
+                        Estimate Std. Error t value Pr(>|t|)
+( Intercept )            0.73160    0.01241      59   <2e -16
+log( Distance )          1.12475    0.00437     257   <2e -16
+
+Residual standard error : 0.0565 on 38 degrees of freedom
+Multiple R2 : 0.999 ,          Adjusted R2 : 0.999
+F- statistic : 6.63e+04 on 1 and 38 DF , p-value: <2e -16
+                                                           Internally, summary(wtvol.lm)
+    used with lm objects, print() calls print.lm(), while  calls UseMethod("summary").
+summary() calls summary.lm(). Note that typing worldrec.lm As wtvol.lm is an lm object, this
+has the same eect as print(worldrec.lm).                   calls summary.lm().
+
+
+5.2.3      The lm model object is a list
+The model object is actually a list. Here are the names of the list
+elements:
+names ( w o r l d r e c . l m )
+
+ [1]    " coefficients "            " residuals "         " effects "
+ [4]    "rank"                      " fitted . values "   " assign "
+ [7]    "qr"                        "df. residual "       " xlevels "
+[10]    "call"                      " terms "             "model "
+
+    These dierent list elements hold all very dierent classes and
+dimensions (or lengths) of object. Hence the use of a list; any collec-
+tion of dierent R objects can be brought together into a list.
+    The following is a check on the model call:
+worldrec.lm $ c a l l
+
+lm( formula = log(Time)  log( Distance ), data = worldRecords )
+48    data analysis, graphics, and visualisation using r
+
+    Commonly required information is best accessed using generic                   Use extractor function coef():
+extractor functions.                                                               coef ( worldrec.lm )
+    Above, attention was drawn to print(), summary()
+and plot(). Other commonly used extractor functions are
+residuals(), coefficients(), and fitted.values(). These
+can be abbreviated to resid(), coef(), and fitted().
+
+
+5.3      Regression with two explanatory variables
+The discussion here will be limited to exploration of data that will be
+used for a regression fit in Section 10.4.
+
+Data exploration
+The dataset nihills in the DAAG package has record times for
+Northern Ireland mountain races. First, get a few details of the data:
+str ( nihills )
+
+'data.frame ':            23 obs. of 4 variables :
+ $ dist : num            7.5 4.2 5.9 6.8 5 4.8 4.3 3 2.5 12 ...
+ $ climb: int            1740 1110 1210 3300 1200 950 1600 1500 1500 5080 ...
+ $ time : num            0.858 0.467 0.703 1.039 0.541 ...
+ $ timef: num            1.064 0.623 0.887 1.214 0.637 ...
+
+    Figure 5.6 uses the lattice function splom() (from the lattice
+package) to give scatterplot matrices, one for the unlogged data, and
+the other for the logged data. This gives a scatterplot matrix that has
+dierent layout from that given by pairs(). The left panel shows
+the unlogged data, while the right panel shows the logged data:
+    In order to show the correlations, the following panel function
+was used:
+showcorr            function (x , y , . . . ){
+    panel.xyplot (x ,y , . . . )
+    xy          current.panel.limits ()
+    rho           p a s t e ( round ( cor ( x , y ) , 3 ) )
+    eps           0 .035 * d i f f ( range ( y ) )
+    p a n e l . t e x t ( max ( x ) , min ( y )+ eps , rho ,
+                          p o s =2 , o f f s e t = 0 . 2 )
+}
+
+     Code for the scatterplot matrix in the left panel is:
+## Scatterplot matrix ; unlogged data
+library ( lattice )
+splom (  n i h i l l s , l o w e r . p a n e l =s h o w c o r r , x l a b =" " )
+
+    For the right panel, first create a data frame from the logged
+data:
+                                                                                                                           practical data analysis ­ examples                                             49
+
+
+                                                                                6                                                                                                
+                                                                                           4 5 6                                                                                     1.5 0.51.01.5
+                                                                                5
+                                                                                4                                                                                                    1.0
+                                                                                                                                                                       
+                                                                                       timef    3                                                                                    0.5 ltimef
+                                                                                                                                                                  
+                                                                                                                                                                                                0.0
+                                                                                                2         
+                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                                  
+                                                                                                                                   
+                                                                                                                                                                                              -0.5
+                                   
+                                                        
+                                                                                1 2 3           1                                                                                -1.0 0.0
+      
+                                  
+                                   
+                                  
+                                                        
+                                                        
+                                                        
+                                                                                                                                                        
+                                                                                                                                                                                              -1.0
+                                                        4                                                                                                                                             
+                                                                    3       4                                                                              1.0 0.0 0.5 1.0
+                                                        3                                                                                                                                       
+                                                                                                                                                           0.5                               
+                                                             time       2                                                                                  0.0 ltime 0.0                  
+                                                                                                                                                                                         
+                                                                                                          
+                                                                                                                                                                                         
+                                                                                                                                                                          -0.5          
+                                                                        1                                                                                                               
+                                                                                                                                  
+                                                                                                                                                                                       
+                                                         1      2                                                                                      -1.0      0.0                   
+     
+                                  
+                                                                                 
+                                                                                                                                                                          -1.0
+                                  
+                                                                                           0.996                                                                                             0.994
+                                                                                                                                                                                                      
+                                  8000 6000                                                                                      9.0
+                                                                                                                                          8.0 8.5 9.0
+                                                                                                                                 8.5                                                            
+                                  6000                                                                                                                                                   
+                                                                                                                                 8.0
+                                                                                                                                       lclimb 8.0
+                                                                                                                                                                                             
+                                                                                                                                                                                         
+                                         climb
+                                              4000                                                                                            7.5                                       
+                                                                                                                                                            
+                                                                                                                                                                                        
+                                                                                                                                                                                       
+                                                                                                            
+                                                                                                                                                                                       
+                                              2000                                                                                                                                      
+                                                                                                                                                                                       
+       
+                                  2000                  
+                                                                                
+                                                                                                                                 7.0 7.5 8.0 7.0                                       
+                                                        
+                                                                    0.973                      0.96                                                                    0.924                       0.92
+                                                                                                                                                                                    
+                                                                                                         3.0                                                                                          
+              10      15                                                                                       2.0 2.5 3.0
+      15                                                                                                 2.5                                                                                 
+                                                                                       
+              dist 10                                                                                    2.0 ldist 2.0                 
+                                                                                                                                          
+                                                                                                                                                             
+                                                                                                                                                              
+                                                                                                                                                                                      
+                                                                                                                                                                                       
+      10                                                                                                                                                                               
+                                                                                                                                                                                      
+                                                                                                                                                            
+                                                                                                                                                                                     
+                                                         
+                                                          
+                                                                                 
+                                                                                                                     1.5        
+                                                                                                                                
+                                                                                                                                
+                                                                                                                                                           
+                                                                                                                                                            
+                                                                                                                                                                                     
+                                                                                                                                                                                      
+                                                                                
+       5      10           5       
+                                                                                                       1.0 1.5 2.0                                                                   
+                                   
+                                                                                
+                                                                                                                                                                                     
+                                              0.913                 0.969                  0.954                     1.0                      0.78                     0.945                 0.933
+
+
+                                                                                                                                              Figure 5.6: Scatterplot matrices
+                                                                                                                                              for the Northern Ireland mountain
+                                                                                                                                              racing data. The left panel is for
+lognihills              log ( n i h i l l s )                                                                                                 the unlogged data, while the right
+names ( l o g n i h i l l s )      p a s t e 0 ( " l " , names ( n i h i l l s ) )                                                            panel is for the logged data. Code
+## Scatterplot matrix ; log scales                                                                                                            has been added that shows the
+splom (  l o g n i h i l l s , l o w e r . p a n e l =s h o w c o r r , x l a b =" " )                                                        correlations, in the lower panel.
+
+
+     Note that the data are positively skewed, i.e., there is a long tail                                                                     Unlike paste(), the function
+to the right, for all variables. For such data, a logarithmic transfor-                                                                       paste0() does not leave spaces
+mation often gives more nearly linear relationships. The relation-                                                                            between text strings that it pastes
+ships between explanatory variables, and between the dependent                                                                                together.
+variable and explanatory variables, are closer to linear when log-
+arithmic scales are used. Just as importantly, the largest unlogged
+value (the same for all variables) will have a leverage, influencing
+the fitted regression, that is enormously larger than that of other
+points. In the logged data, that leverage is hugely reduced.
+     Notice also that the correlation of 0.913 between climb and
+dist in the left panel of Figure 5.6 is very dierent from the corre-
+lation of 0.78 between lclimb and ldist in the right panel. Corre-
+lations where distributions are highly skew are not comparable with
+correlations where distributions are more nearly symmetric. The
+statistical properties are dierent.
+     The following regresses log(time) on log(climb) and
+log(dist):
+
+nihills.lm                           lm ( l t i m e  l c l i m b + l d i s t ,
+                                          data= l o g n i h i l l s )
+50          data analysis, graphics, and visualisation using r
+
+
+5.4            Time series ­ Australian annual climate data
+                                                                                              Data are from the website
+The data frame bomregions2012 from the DAAG package has                                         http://www.bom.gov.au/
+annual rainfall data, both an Australian average and broken down by                           climate/change/
+location within Australia, for 1900 ­ 2012. Figure 5.7 shows annual
+rainfall in the Murray-Darling basin, plotted against year.
+
+                                                                                              Figure 5.7: Annual rainfall in
+             800
+
+
+
+
+                                                                                           
+                                                        
+                                                    
+                                                                                              the Australian Murray-Darling
+                                                                                              Basin. by year. The lowess()
+             700
+
+
+
+
+                                                                 
+                                                                 
+                                                                                              function is used to The dashed
+                                                                    
+                          
+                                                                                              curve with f=2/3 captures the
+             600
+
+
+
+
+                                                                                           
+  mdbRain
+
+
+
+
+                                                 
+                                                                                 
+                     
+                                  
+                                 
+                                       
+                                                                                
+                                                                                              overall trend, while the solid curve
+                                                                               
+                                                                              
+                               
+                                                                                              with f=0.1 captures trends on a
+             500
+
+
+
+
+                                
+                                                                                           
+                            
+                                    
+                                  
+                                                                          
+                      
+                     
+                      
+                           
+                           
+                              
+                                    
+                                                                          
+                                                                                        
+                                                                                        
+                                                                                              scale of around eleven years. (10%
+                    
+             400
+
+
+
+
+                                 
+                    
+                       
+                        
+                          
+                            
+                               
+                                                                    
+                                                                    
+                                                                                              of the 113 year range from 1900
+                                                                     
+                          
+                           
+                             
+                                      
+                                                                                 
+                                                                                              to 2012 is a little more than 11
+             300
+
+
+
+
+                                    
+                         
+                              
+                               
+                                    
+                                                                                              years.)
+                    
+
+                   1900         1920      1940           1960       1980            2000
+
+                                                       Year
+
+
+
+
+## Code
+l i b r a r y (DAAG)
+library ( splines )
+p l o t ( mdbRain  Year , d a t a =b o m r e g i o n s 2 0 1 2 )
+## Calculate and plot curve showing long-term trend
+w i t h ( b o m r e g i o n s 2 0 1 2 , l i n e s ( l o w e s s ( mdbRain  Year ,
+                                                    f =2 / 3 ) , l t y = 2 ) )
+## Calculate and plot curve of short-term trends
+with ( bomregions2012 ,
+           l i n e s ( l o w e s s ( mdbRain  Year , f =0 . 1 ) , l t y = 1 ) )
+
+    The lowess() function has been used to fit smooth curves. The
+parameter f gives the proportion of points, around any point, that
+should be used in determining the fitted smooth at that point. The                            Greatest weight is given to points
+dashed curve with f=2/3 captures the overall trend in the data. The                           near the centre of the smooth, with
+choice of f=0.1 for the solid curve has the eect that somewhat                                weights tailing o to zero at the
+                                                                                              edge of the window.
+more than ten years of data are used in determining each fitted value
+on the smooth.
+    This graph is exploratory. A next step might to model a correla-
+tion structure in residuals from the overall trend. There are extensive
+abilities for this. Note especially lag.plot() (plot series against
+lagged series), arima() (Box-Jenkins type ARIMA modeling) and
+auto.arima() (automatic choice of ARIMA model from the fore-
+cast package).
+                                                                                practical data analysis ­ examples   51
+
+     The cube root of average rainfall has a more symmetric distri-
+ bution than rainfall. Thus, use this in preference to average rainfall
+ when fitting models.
+
+
+ 5.5     Exercises
+1. Plot Time against Distance, for the worldRecords data. Ignor-
+   ing the obvious curvature, fit a straight line model. Use plot.lm
+   to obtain diagnostic plots. What do you notice?
+
+2. The data set LakeHuron (datasets package) has mean July av-
+   erage water surface elevations, in feet, IGLD (1955) for Harbor
+   Beach, Michigan, on Lake Huron, Station 5014, for 1875-1972.
+   Use the following to create a data frame that has the same infor-
+   mation:
+   Year= a s ( t i m e ( LakeHuron ) , " v e c t o r " )
+   huron          d a t a . f r a m e ( y e a r =Year , m e a n . h e i g h t =LakeHuron )
+
+   a) Plot mean.height against year.
+   b) As for many time series, the mean levels are correlated from
+   year to year. To see how each year's mean level is related to the
+   previous year's mean level, use
+    l a g . p l o t ( huron $ mean.height )
+
+   This plots the mean level in each year against the mean level in the
+   previous year.
+   c) *Use the function acf() to plot the autocorrelation function.
+   Compare with the result from the pacf() (partial autocorrelation).
+   What are the graphs telling you? (For an explanation of the auto-
+   correlation function, look up "Autocorrelation" on Wikepedia.)
+52   data analysis, graphics, and visualisation using r
+

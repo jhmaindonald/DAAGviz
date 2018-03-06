@@ -1,0 +1,194 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Analytics, Visualization, and Reporting, with R}
+-->
+
+R and RStudio --- Analytics, Visualization, and Reporting
+========================================================
+author: John Maindonald
+date: August 9 2013
+
+```{r setup, include=FALSE}
+# set global chunk options
+opts_chunk$set(cache=TRUE, dev='png', out.width='350px', dev.args=list(bg='white'), comment=NA, tidy=FALSE)
+```
+
+Strategy
+========================================================
+- Brief comments on R  
+- Check the R setup  
+- Comment on Reproducible Reporting
+- Get to work with R and RStudio
+
+The Two R's of R
+========================================================
+<img src="RandR.png" alt="Robert and Ross" style="width: 1200px"/>  
+Ross and Robert developed the initial version of R at Auckland University in NZ. They wished to create an
+open source version of the earlier AT&T S language.
+
+========================================================
+<IMG STYLE="position:absolute; TOP:-25px; LEFT:40px; WIDTH:800px; HEIGHT:500px" SRC="r-confucius.png" alt="Confucius">
+<DIV style="position: absolute; top:520px; left:-15px; width:980px; height:200px">Learning R without thinking it makes one confused; thinking R without learning it makes one shallow —  Chenshun Lin, at the 6th China R Conference, added R to a famous quote by Confucious, to make a hilarious pun.</DIV>
+
+R is a Language, but also 
+======================================================== 
+- a library of packages (software systems)   
+  &nbsp; .. brings together software from diverse sources,   
+  &nbsp; .. (written in C or Python or (in future?) Julia or ...)
+   
+- a repository for information on    
+  &nbsp; .. statistical methodology  
+  &nbsp; .. computational methods  
+  &nbsp; .. technical application area issues  
+   
+- a meeting place for diverse technical interests  
+  
+Biconductor is a side branch of the R Project  
+<font size="6">http://www.bioconductor.org</font>
+  
+The R Community
+========================================================
+- The R community includes statisticians, computer scientists, machine learners, social scientists, biologists, medical scientists, imaging specialists, physicists, ...   
+   
+- Its members exchange ideas, ask/answer questions,  
+make suggestions, argue, on such email lists as:  
+    &nbsp; bioconductor, r-help, r-downunder,  
+     &nbsp; R-sig-mixed-models, R-sig-Geo, R-sig-Epi,  
+     &nbsp; R-SIG-Finance, R-sig-ecology, R-sig-phylo, ...  
+    
+For an indication of R's wide scope, see the [_R Task Views_]:<br> 
+<font size="6">http://cran.csiro.au/web/views/</font>
+      
+[_R Task Views_]:http://cran.csiro.au/web/views/
+   
+The Future of R
+=================================================
+- R is a door into a huge range of abilities -- a big plus   
+  _ The package management system ensures synchrony  
+   
+- R is a Mature System with a Dated Language Model  
+  _ Other things being equal, maturity wins!  
+   
+- Can speed up by moving critical components to C  
+  _ but this can 'lock in' bugs and bad choices  
+   
+- Move R's abilities to Julia, or Julia's speed to R?    
+  _ R Version 3.1 will be faster (e.g., 1-5x - 10x)  
+  _ Faster interpreters for R -- [pqR, Renjin and Riposte]  
+
+[pqR, Renjin and Riposte]:http://radfordneal.wordpress.com/2013/
+
+Reproducible Research Using R
+========================================================
+- [Frank Harrell and Terri Scott tutorial]:<br>
+ <font color="purple"><i>Reproducible Research with R
+ tutorial</i></font>   
+<font size="6" color="darkblue">http://biostat.mc.vanderbilt.edu/wiki/pub/Main/</font><wbr><font size="6" color="darkblue">ReproducibleResearchTutorial/HarrellScottTutorial-useR2012.pdf</nobr></font> 
+      
+- [Briefer summary]: <font color="purple"><i>Reproducible Research tutorial</i></font><br> 
+<font size="6">http://biostat.mc.vanderbilt.edu/wiki/Main/ReproducibleResearchTutorial</font>
+
+[Frank Harrell and Terri Scott tutorial]:http://biostat.mc.vanderbilt.edu/wiki/pub/Main/ReproducibleResearchTutorial/HarrellScottTutorial-useR2012.pdf
+
+[Briefer summary]:http://biostat.mc.vanderbilt.edu/wiki/Main/ReproducibleResearchTutorial
+ 
+ Irreproducible Research 
+========================================================
+Reinhart and Rogoff: "_Growth in Time of Debt_" (2010)
+   
+<font color="purple">[_Herndon et al_] debunking has created a huge stir.</font>:<br><br> 
+"... [Identified errors] include spreadsheet [mistakes] ..., omission of available data, weighting, and transcription, ... [affecting] countries in the high public debt category.<br>   
+... [The result is] a false image that high public debt ratios inevitably entail sharp declines in GDP growth. ... there is a wide range of GDP growth ... at every level of public debt among the 20 advanced economies that RR survey."  
+
+<font size="6">http://nymag.com/daily/intelligencer/2013/04/grad-student-who-shook-global-austerity-movement.html</font>
+  
+[_Herndon et al_]:http://nymag.com/daily/intelligencer/2013/04/grad-student-who-shook-global-austerity-movement.html  
+
+Herndon et al's Conclusions
+=====================================================
+
+"... RR’s findings have served as an intellectual bulwark in support of austerity politics. The fact that RR’s findings are wrong should therefore lead us to reassess the austerity agenda itself in both Europe and the United States."  
+
+"For econometricians a lesson from the problems in RR is the advantages of reproducible code relative to working spreadsheets. ...   
+  
+[O]ur simplified version of the spreadsheet and R code that reproduces RR and corrected results ... [is] on our website."  
+  
+<font color="blue">Herndon (28yr old Grad Student at UMass) is now famous!</font>
+
+=======================================================
+```{r debt2gdp, echo=FALSE, out.width="640px", fig.width=7.5, fig.height=5, out.width="1200px"}
+library(ggplot2, quietly=TRUE)
+library(mgcv)
+load('RR.RData')
+RR.gam <- gam(dRGDP ~ s(debtgdp, bs="cs"),data=RR)
+res <- residuals(RR.gam)
+m <- ggplot(RR, aes(x=debtgdp,y=dRGDP))
+m <- m + geom_vline(xintercept=90,color='lightgray',size=1.5)
+m <- m + geom_point(color='darkgray', size=1.5) + ylab("Real GDP Growth") + xlab("Public Debt/GDP Ratio") + scale_x_continuous(breaks=seq(0,240,30)) + theme_bw()
+m <- m + geom_smooth(method=gam, color='black',formula= y ~ s(x, bs = "cs"))
+m <- m + geom_segment(aes(x = 90, y = 2.2, xend = 245, yend = 2.2), linetype="dashed", size=0.25, alpha=0.25, color="sienna") + geom_segment(aes(x = 90, y = -0.1, xend = 245, yend = -0.1), linetype="dashed", size=0.25, alpha=0.25, color="sienna")
+keep <- (res>0 & abs(res)>11.15)|(res<0 & abs(res)>10.15) |
+  (RR[,'debtgdp'] > 180 & res<0)
+RRkeep <- RR[keep,]
+hj <- rep(-0.085, sum(keep))
+onleft <- with(RRkeep,(Country %in% c("NZ","Ireland"))|
+                 (debtgdp > 180))
+hj[onleft] <- 1.075
+txlab <- with(RRkeep, paste(iso2c, Year))
+m1 <- m + geom_text(data = RRkeep, aes(x=debtgdp,y=dRGDP, label = txlab), size=3, hjust = hj)
+tagged <- as.character(unique(RRkeep$Country))
+tag2 <- RRkeep[match(tagged, RRkeep[, 'Country']), 'iso2c']
+tag2 <- as.character(tag2)
+leg <- cbind(tag2, tagged)[tag2!=tagged,]
+library(gridExtra)
+print(m1+annotation_custom(tableGrob(leg, gp=gpar(cex=0.7),
+                                     show.colnames=FALSE,
+                                     row.just='left'),
+                           xmin=200, xmax=255, 
+                           ymin=14.25, ymax=27.5))
+```
+
+Using R --- Essential, but Boring 
+=======================================================
+Working directory and workspace  
+  
+Input/Output  
+  
+Data Structures   
+- Vectors  
+  
+- (Non-vector) column objects including factors, dates, ... 
+  
+- Data frames and matrices  
+   
+- Lists; S3 and S4 objects; object classes  
+  
+- Data management 
+
+Functions, classes and methods
+=======================================================
+- Functions in R and R packages  
+   
+- User written functions  
+  
+- Anonymous functions  
+  
+- Generic Functions: plot(); print(); summary(), ...  
+  &nbsp; Leads into "Classes (of R objects) and methods"  
+   
+- S3 methods (loose specification) vs S4 methods (tight)
+
+R Resources
+=======================================================
+- Comprehensive R Archive Network (CRAN)   
+  
+- Help & RStudio's 'Packages' drop-down menu  
+
+- Documentation, supplied with R & elsewhere  
+  
+- Help with the Use of Bioconductor packages  
+  
+- Vignettes can be a good place to start  
+  .. Run the code; then adapt it to your needs  
+  .. Starting ignorant is fine, but staying ...  
+

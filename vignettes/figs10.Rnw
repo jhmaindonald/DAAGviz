@@ -1,0 +1,105 @@
+\documentclass[12pt, a4paper,  BCOR=8.25mm, DIV=15]{scrartcl}
+\usepackage[utf8]{inputenc}
+
+\newenvironment{itemizz}%
+  {\begin{itemize}%
+    \setlength{\itemsep}{2pt}%
+    \setlength{\parskip}{2pt}}%
+  {\end{itemize}}
+
+\newcommand{\txtt}[1]{{\texttt{#1}}}
+
+\begin{document}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Dynamic Interaction with Graphs (Set 10)}
+
+<<setup, cache=FALSE, echo=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.path='figs/data-', cache.path='cache/data-',
+               fig.align='center', dev='pdf', fig.width=3.5,
+               fig.height=3.5, fig.show='hold', par=TRUE,
+               tidy=FALSE,  comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, rgl=function (before, options, envir) 
+{
+    if (before || rgl.cur() == 0) 
+        return()
+    if (!requireNamespace("knitr")) 
+        stop("hook_rgl requires the 'knitr' package.")
+    name <- knitr::fig_path("", options)
+    par3d(windowRect = 100 + options$dpi * c(0, 0, options$fig.width, 
+        options$fig.height))
+    Sys.sleep(0.05)
+    dir <- knitr::opts_knit$get("base_dir")
+    if (is.character(dir)) {
+        if (!file_test("-d", dir)) 
+            dir.create(dir, recursive = TRUE)
+        owd <- setwd(dir)
+        on.exit(setwd(owd))
+    }
+    save_rgl(name, options$dev)
+    if (!isTRUE(options$rgl.keepopen)) 
+        rgl.close()
+    options$fig.num = 1L
+    knitr::hook_plot_custom(before, options, envir)
+}, crop=knitr::hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
+@ %
+
+\title{10: Dynamic Interaction with Graphs}
+\author{John H Maindonald}
+\maketitle
+
+<<doFigs>>=
+doFigs <- FALSE
+@ %
+
+<<fig10_1, echo=TRUE, eval=TRUE>>=
+fig10.1 <- function(){
+## ---- rgl-demo ----
+## The Rcmdr and rgl packages must be installed
+if(!requireNamespace('rgl', quietly=TRUE))stop("Package 'rgl' must be available.")
+if(!requireNamespace('car', quietly=TRUE))stop("Package 'car' must be available.")
+if(!require(DAAG, quietly=TRUE))stop("Package 'DAAG' must be available.")
+rgl::open3d()            # Precedes the call to par3d()
+rgl::par3d(cex=0.75)     # Optional
+                         # Other params: see help(par3d)
+with(nihills, car::scatter3d(x=log(dist), y=log(climb),
+                        z=log(time),
+                        grid=FALSE,
+                        surface=FALSE,
+                        point.col="black",
+                        axis.scales=FALSE))
+}
+@ %
+
+<<supp10_1, echo=TRUE, eval=TRUE>>=
+supp10.1 <- function(){
+if(!require(googleVis))stop("Package 'googleVis' must be available.")
+if(!exists("WorldBank"))stop("Requires dataset 'Worldbank' to be available.")
+M <- gvisMotionChart(WorldBank, idvar="country",
+          timevar="year",
+          xvar="life.expectancy",
+          yvar="fertility.rate",
+          colorvar="region", sizevar="population",
+          options=list(width=700, height=600))
+## Now display the motion chart
+plot(M)
+}
+@ %
+
+<<fig10_1e, echo=TRUE, eval=FALSE>>=
+fig10.1()
+@ %
+
+\begin{figure}
+<<fig10_1e, echo=FALSE, fig.width=3.25, fig.height=3.25, eval=doFigs, out.width="0.65\\textwidth", warning=FALSE, message=FALSE>>=
+@ %
+\caption{Snapshot of 3-D dynamic display.}\label{fig:rgl-ex}
+\end{figure}
+
+\end{document}

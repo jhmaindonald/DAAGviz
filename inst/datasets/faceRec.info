@@ -1,0 +1,9 @@
+This is a meta-analysis on age effects in face recognition, namely between
+young and older participants. The single effect sizes (hits and false alarms)
+are standardized mean differences between younger and older participants.
+
+  SMart <- as.data.set(spss.system.file('SMartschuk.sav'))
+    ## I'd put the .sav file in my working directory
+  faceRec <- as.data.frame(SMart)
+
+  plot (FA ~ MAgeOld, pch=16, cex=1.5, data=SMart)

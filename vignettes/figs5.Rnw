@@ -1,0 +1,321 @@
+\documentclass[12pt, a4paper,  BCOR=8.25mm, DIV=15]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{newfloat}
+\DeclareFloatingEnvironment[name={Supplementary Figure}]{suppfigure}
+
+\newenvironment{itemizz}%
+  {\begin{itemize}%
+    \setlength{\itemsep}{2pt}%
+    \setlength{\parskip}{2pt}}%
+  {\end{itemize}}
+
+\newcommand{\txtt}[1]{{\texttt{#1}}}
+
+\begin{document}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Examples (Set 5)}
+
+<<setup, cache=FALSE, echo=FALSE, purl=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.path='figs/glm-', cache.path='cache/glm-',
+               fig.align='center', dev='pdf', fig.width=3.5,
+               fig.height=3.5, fig.show='hold', par=TRUE,
+               tidy=FALSE,  comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, crop=knitr::hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
+@ %
+
+\title{5: Examples }
+\author{John H Maindonald}
+\maketitle
+
+<<fig5_1, eval=TRUE>>=
+fig5.1A <- function(){
+## ---- brain-bodyA ----
+library(MASS)
+plot(brain ~ body, data=mammals)
+mtext(side=3, line=0.5, adj=0, "A: Unlogged data")
+}
+fig5.1B <- function(){
+## ---- brain-bodyB ----
+plot(brain ~ body, data=mammals, log="xy")
+mtext(side=3, line=0.5, adj=0,
+      "B: Log scales (both axes)")
+}
+fig5.1 <- function(){
+"Run the separate functions fig5.1A() and fig5.1B()."
+}
+@ %
+
+<<fig5_2, eval=TRUE>>=
+fig5.2 <- function(){
+## ---- plot-trees ----
+## Code used for the plot
+plot(trees, cex.labels=1.5)
+  # Calls pairs(trees)
+}
+@ %
+
+<<fig5_3, eval=TRUE>>=
+fig5.3 <- function(){
+## ---- trackVSroad ----
+## Code
+library(lattice)
+xyplot(Time ~ Distance, scales=list(tck=0.5),
+       groups=roadORtrack, data=DAAG::worldRecords,
+       auto.key=list(columns=2), aspect=1)
+## On a a colour device the default is to use
+## different colours, not different symbols,
+## to distinguish groups.
+}
+@ %
+
+<<fig5_4, eval=TRUE>>=
+fig5.4A <- function(){
+## ---- wrTimesA ----
+## Code for Left panel
+parset <- list(layout.widths=list(left.padding=2.5,
+                                  right.padding=2.5))
+xyplot(log(Time) ~ log(Distance),
+       groups=roadORtrack, data=DAAG::worldRecords,
+       scales=list(tck=0.5),
+       par.settings=parset,
+       auto.key=list(columns=2), aspect=1)
+}
+fig5.4B <- function(){
+## ---- wrTimesB ----
+## Right panel
+xyplot(Time ~ Distance, groups=roadORtrack,
+       data=DAAG::worldRecords,
+       scales=list(log=10, tck=0.5),
+       auto.key=list(columns=2), aspect=1)
+}
+fig5.4 <- function(){
+"Run the separate functions fig5.4A() and fig5.4B()."
+}
+@ %
+
+<<suppfig5_1, eval=TRUE>>=
+suppfig5.1 <- function(){
+## ---- timevsDist ----
+plot(log(Time) ~ log(Distance),
+     data = DAAG::worldRecords)
+abline(worldrec.lm)
+}
+@ %
+
+<<fig5_5, eval=TRUE>>=
+fig5.5 <- function(){
+## ---- diag12 ----
+plot(worldrec.lm, which=c(1,5), sub.caption=rep("",2))
+}
+@ %
+
+<<showcorr, eval=TRUE, echo=FALSE>>=
+## ---- showcorr ----
+showcorr <- function(x,y,...){
+    panel.xyplot(x,y,...)
+    xy <- current.panel.limits()
+    rho <- paste(round(cor(x,y),3))
+    eps <- 0.035*diff(range(y))
+    panel.text(max(x), min(y)+eps, rho,
+               pos=2, offset=-0.2)
+}
+@ %
+
+<<fig5_6, eval=TRUE>>=
+fig5.6A <- function(){
+## ---- nihills-spmA ----
+## Scatterplot matrix; unlogged data
+library(lattice)
+splom(~DAAG::nihills,  lower.panel=showcorr, xlab="")
+}
+fig5.6B <- function(){
+## ---- nihills-spmB ----
+lognihills <- log(DAAG::nihills)
+names(lognihills) <- paste0("l", names(DAAG::nihills))
+## Scatterplot matrix; log scales
+splom(~ lognihills, lower.panel=showcorr, xlab="")
+}
+fig5.6 <- function(){
+  print("Run the separate functions fig5.6A() and fig5.6B()")
+}
+@ %
+
+<<fig5_7, eval=TRUE>>=
+fig5.7 <- function(){
+## Requires ggplot2
+tomato <- within(DAAG::tomato, trt <- relevel(trt, ref="water only"))
+ggplot2::quickplot(weight, trt, data=DAAG::tomato, xlab="Weight (g)", ylab="")
+}
+@ %
+
+<<fig5_8, eval=TRUE>>=
+fig5.8 <- function(){
+opar <- par(xpd=TRUE, mar=c(3.1,3.1,0.6,3.6), mgp=c(2.25, 0.5, 0))
+with(DAAG::rice, interaction.plot(x.factor=fert,
+                            trace.factor=variety,
+                            ShootDryMass,
+                            cex.lab=1.4))
+par(opar)
+}
+@ %
+
+<<fig5_9, eval=TRUE>>=
+fig5.9 <- function(){
+## ---- MDBrainfall ----
+## Code
+plot(mdbRain ~ Year, data=DAAG::bomregions2012)
+## Calculate and plot curve showing long-term trend
+with(DAAG::bomregions2012, lines(lowess(mdbRain ~ Year,
+                           f=2/3), lty=2))
+## Calculate and plot curve of short-term trends
+with(DAAG::bomregions2012,
+     lines(lowess(mdbRain ~ Year, f=0.1), lty=1))
+}
+@ %
+
+<<figset_5>>=
+figset5 <- function(){
+    if(!requireNamespace('DAAG'))stop('DAAG must be installed')
+  if(!requireNamespace('ggplot2'))stop('ggplot2 must be installed')
+  }
+@ %
+
+<<do-figset5>>=
+figset5()
+if(!exists("worldrec.lm")){
+    worldrec.lm <- lm(log(Time) ~ log(Distance),
+                      data=DAAG::worldRecords)
+}
+@ %
+
+
+\begin{figure}
+<<fig5_1e, fig.width=4, fig.height=4.5, echo=FALSE, top=2, rt=2, crop=TRUE, out.width="0.47\\textwidth">>=
+opar <- par(pty="s")
+fig5.1A()
+fig5.1B()
+par(opar)
+@ %
+\caption{Brain weight (g) versus Body weight (kg), for 62 species of mammal.
+Panel A plots the unlogged data, while Panel B has log scales are used for
+both axes. Notice that, in Panel B, the scales are
+  labeled in the original (unlogged) units.
+  \label{fig:Animals}}
+\end{figure}
+
+\begin{figure}
+\begin{minipage}[c]{0.525\textwidth}
+\fbox{\parbox{\textwidth}{{\bf Interpreting Scatterplot Matrices:}\\[4pt]
+For identifying the axes for each panel
+\begin{itemizz}
+\item[-] look across the row to the diagonal to identify the variable on
+ the vertical axis.
+\item[-] look up or down the column to the diagonal for the
+  variable on the horizontal axis.
+\end{itemizz}
+Each below diagonal panel is the mirror image of the
+corresponding above diagonal panel.
+}}
+\vspace*{6pt}
+\end{minipage}
+\begin{minipage}[c]{0.46\textwidth}
+<<fig5_2e, left=2, fig.width=4.5, fig.height=4.5, out.width="0.97\\textwidth">>=
+fig5.2()
+@ %
+\end{minipage}
+\caption{Scatterplot matrix for the \txtt{trees} data, obtained
+  using the default \txtt{plot()} method for data frames.  The
+  scatterplot matrix is a graphical counterpart of the correlation
+  matrix.\label{fig:trees}}
+\end{figure}
+
+\begin{figure}
+<<fig5_3e, out.width="0.6\\textwidth">>=
+fig5.3()
+@ %
+\caption{World record times versus distance, for field and road
+  events.\label{fig:wrnolog}}
+\end{figure}
+
+\begin{figure}
+<<fig5_4e, out.width="0.47\\textwidth">>=
+fig5.4A()
+fig5.4B()
+@ %
+\caption{World record times versus distance, for field and road
+  events, using logarithmic scales.  The left panel uses labels on
+  scales of $\log_e$, while in the right panel, labeling is in the
+  orginal units, expressed as powers of 10.}
+\label{fig:wrlog}
+\end{figure}
+
+\begin{suppfigure}
+<<suppfig5_1e, out.width="0.47\\textwidth">>=
+suppfig5.1()
+@ %
+\caption{log(time) versus log(distance), with a fitted line.}
+\end{suppfigure}
+
+\begin{figure}
+<<fig5_5e, fig.width=3.25, fig.height=3.25, top=2, rt=1.6, out.width="0.47\\textwidth">>=
+fig5.5()
+@ %
+      \caption{First and last of the default diagnostic plots, from the
+        linear model for log(record time) versus log(distance), for
+        field and road events.}
+\label{fig:wr-diag}
+\end{figure}
+
+\begin{figure}
+\vspace*{-6pt}
+<<fig5_6e, fig.width=5.25, fig.height=5.25, out.width="0.47\\textwidth">>=
+fig5.6A()
+fig5.6B()
+@ %
+\caption{Scatterplot matrices for the Northern Ireland mountain racing
+  data. The left panel is for the unlogged data, while the right panel is
+for the logged data.  Code has been added that shows the correlations,
+in the lower panel.\label{fig:nimra}}
+\end{figure}
+
+\begin{figure}
+\vspace*{-6pt}
+<<fig5_7e, echo=FALSE, fig.width=5, fig.height=2, out.width="0.98\\textwidth">>=
+fig5.7()
+@ %
+\caption{Weights (g) of tomato plants grown under four different
+  treatments.\label{fig:Tomato}}
+\end{figure}
+
+\begin{figure}
+<<fig5_8e, echo=FALSE, fig.width=3.75, fig.height=3.25, rt=2, out.width="0.55\\textwidth">>=
+fig5.8()
+@ %
+    \caption{Interaction plot for the terms \txtt{fert} and
+      \txtt{variety}, with \txtt{ShootDryMass} as the dependent
+      variable. Notice that for fertilizer F10, there is a huge
+      variety difference in the response. For the other fertilizers,
+      there is no difference of consequence.\label{fig:rice-interact}}
+\end{figure}
+
+
+\begin{figure}
+<<fig5_9e, fig.width=5.5, fig.height=3.25, out.width="0.65\\textwidth">>=
+fig5.9()
+@ %
+\caption{Annual rainfall in the Australian Murray-Darling Basin.
+by year.  The \txtt{lowess()} function is used to
+The dashed curve with \txtt{f=2/3} captures the
+overall trend, while the solid curve with \txtt{f=0.1}
+captures trends on a scale of around eleven years. (10\% of the 113 year
+range from 1900 to 2012 is a little more than 11 years.)\label{fig:mdbRain}}
+\end{figure}
+
+\end{document}

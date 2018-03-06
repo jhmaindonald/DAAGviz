@@ -1,0 +1,5 @@
+\.DS_Store
+inst/doc/.*[.]pdf$
+inst/doc/Sweavel.sty$
+vignettes/\.install\_extras$
+inst/doc/\.install\_extras$
