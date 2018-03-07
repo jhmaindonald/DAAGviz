@@ -21,6 +21,7 @@
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
 \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
 
 \usepackage{framed}
 \makeatletter
@@ -810,7 +811,7 @@ same in all 4 plots.}\label{fig:4sim-nimff}
 
 \end{knitrout}
 \caption{The vertical scales in both ``term plot'' panels show
-  $\log(\rm{time})$, centered to a mean of zero. The partial residuals
+  $\log(\mbox{time})$, centered to a mean of zero. The partial residuals
   in the left panel are for the effect of $\txtt{ldist}$, while those
   in the right panel are for the effect of $\txtt{lgradient}$, i.e.,
   \txtt{log(climb/dist)}. Smooth curves (dashes) have been passed
@@ -860,7 +861,9 @@ same in all 4 plots.}\label{fig:4sim-nimff}
 \begin{alltt}
 \hlkwa{if}\hlstd{(check4Elec)}\hlkwd{fig11.14}\hlstd{()}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Loading required namespace: car}}\end{kframe}
 
 {\centering \includegraphics[width=0.775\textwidth]{figs/reg-Elec-spm-11_14-1} 
 

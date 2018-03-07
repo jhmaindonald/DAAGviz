@@ -21,6 +21,7 @@
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
 \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
 
 \usepackage{framed}
 \makeatletter
@@ -422,7 +423,7 @@
 \hlstd{fig9.17} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- qplot-smooth ----}
 \hlcom{## Default loess smooth, with SE bands added.}
-\hlstd{ggplot2}\hlopt{::}\hlkwd{quickplot}\hlstd{(Year, mdbRain,} \hlkwc{data}\hlstd{=DAAG}\hlopt{::}\hlstd{bomregions2011,}
+\hlstd{ggplot2}\hlopt{::}\hlkwd{quickplot}\hlstd{(Year, mdbRain,} \hlkwc{data}\hlstd{=DAAG}\hlopt{::}\hlstd{bomregions2015,}
           \hlkwc{geom}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"point"}\hlstd{,}\hlstr{"smooth"}\hlstd{),} \hlkwc{se}\hlstd{=}\hlnum{TRUE}\hlstd{,}
           \hlkwc{method}\hlstd{=}\hlstr{"loess"}\hlstd{,} \hlkwc{span}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,}
           \hlkwc{ylab}\hlstd{=}\hlstr{"Av. rainfall, M-D basin"}\hlstd{)}
@@ -451,7 +452,7 @@
 \hlstd{supp9.4} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- twenty5080 ----}
 \hlcom{## Supplementary figure 4}
-\hlstd{ggplot2}\hlopt{::}\hlkwd{quickplot}\hlstd{(Year, mdbRain,} \hlkwc{data}\hlstd{=DAAG}\hlopt{::}\hlstd{bomregions2012,}
+\hlstd{ggplot2}\hlopt{::}\hlkwd{quickplot}\hlstd{(Year, mdbRain,} \hlkwc{data}\hlstd{=DAAG}\hlopt{::}\hlstd{bomregions2015,}
           \hlkwc{geom}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"point"}\hlstd{,} \hlstr{"quantile"}\hlstd{),}
           \hlkwc{formula} \hlstd{= y} \hlopt{~} \hlkwd{ns}\hlstd{(x,}\hlnum{5}\hlstd{),}
           \hlkwc{quantiles}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.2}\hlstd{,}\hlnum{0.5}\hlstd{,}\hlnum{0.8}\hlstd{) )}
@@ -501,23 +502,21 @@
 \end{alltt}
 
 
-{\ttfamily\noindent\itshape\color{messagecolor}{\\Attaching package: 'MASS'
+{\ttfamily\noindent\itshape\color{messagecolor}{\\Attaching package: 'MASS'}}
 
-The following object is masked from 'package:DAAG':
+{\ttfamily\noindent\itshape\color{messagecolor}{The following object is masked from 'package:DAAG':
 
-\ \ \ \ hills
+\ \ \ \ hills}}
 
+{\ttfamily\noindent\itshape\color{messagecolor}{\\Attaching package: 'ggplot2'}}
 
-Attaching package: 'ggplot2'
+{\ttfamily\noindent\itshape\color{messagecolor}{The following object is masked from 'package:latticeExtra':
 
-The following object is masked from 'package:latticeExtra':
+\ \ \ \ layer}}
 
-\ \ \ \ layer
+{\ttfamily\noindent\itshape\color{messagecolor}{\\Attaching package: 'SparseM'}}
 
-
-Attaching package: 'SparseM'
-
-The following object is masked from 'package:base':
+{\ttfamily\noindent\itshape\color{messagecolor}{The following object is masked from 'package:base':
 
 \ \ \ \ backsolve}}\end{kframe}
 \end{knitrout}

@@ -212,7 +212,7 @@ both axes. Notice that, in Panel B, the scales are
 
 \begin{figure}
 \begin{minipage}[c]{0.525\textwidth}
-\fbox{\parbox{\textwidth}{{\bf Interpreting Scatterplot Matrices:}\\[4pt]
+\fbox{\parbox{\textwidth}{{\bfseries Interpreting Scatterplot Matrices:}\\[4pt]
 For identifying the axes for each panel
 \begin{itemizz}
 \item[-] look across the row to the diagonal to identify the variable on

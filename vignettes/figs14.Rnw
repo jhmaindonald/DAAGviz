@@ -70,8 +70,7 @@ txcorp <- tm::Corpus(dirSource)
 txcorp <- tm::tm_map(txcorp,
                  tm::content_transformer(
                      function(x) iconv(x, to="UTF-8",
-                                       sub = "byte")),
-                 mc.cores=1)
+                                       sub = "byte")))
 
 <<make-tdm, eval=FALSE>>=
 ctl <- list(stopwords = c(tm::stopwords(), "[1]"),

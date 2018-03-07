@@ -249,26 +249,6 @@ with area of bubbles proportional to concentration.
 River Meuse boundaries are in gray.\label{fig:ZnRiv}}
 \end{figure}
 
-<<supp13_4>>=
-supp13.4 <- function(){
-## ---- show-shape ----
-dsn <- system.file("vectors", package = "rgdal")[1]
-## ---- shape-in ----
-cities <- rgdal::readOGR(dsn=dsn, layer="cities", verbose=FALSE)
-## ---- canada-plot ----
-canada <- subset(cities, COUNTRY=="Canada")
-trellis.par.set(sp.theme())
-spplot(cities, zcol="POPULATION")
-}
-@ %
-
-\begin{suppfigure}
-<<shape-supp13_4, fig.width=8, fig.height=6, out.width="0.97\\textwidth">>=
-supp13.4()
-@ %
-\caption{Plot derived from shapefile information.}
-\end{suppfigure}
-
 \end{document}
 
 

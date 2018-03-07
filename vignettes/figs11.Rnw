@@ -497,7 +497,7 @@ fig11.11B()
 fig11.12()
 @ %
 \caption{The vertical scales in both ``term plot'' panels show
-  $\log(\rm{time})$, centered to a mean of zero. The partial residuals
+  $\log(\mbox{time})$, centered to a mean of zero. The partial residuals
   in the left panel are for the effect of $\txtt{ldist}$, while those
   in the right panel are for the effect of $\txtt{lgradient}$, i.e.,
   \txtt{log(climb/dist)}. Smooth curves (dashes) have been passed

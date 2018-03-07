@@ -21,6 +21,7 @@
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
 \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
 
 \usepackage{framed}
 \makeatletter
@@ -264,7 +265,9 @@
 \end{alltt}
 
 
-{\ttfamily\noindent\itshape\color{messagecolor}{Loading required namespace: DAAG\\Loading required namespace: ggplot2}}\begin{alltt}
+{\ttfamily\noindent\itshape\color{messagecolor}{Loading required namespace: DAAG}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{Loading required namespace: ggplot2}}\begin{alltt}
 \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{"worldrec.lm"}\hlstd{))\{}
     \hlstd{worldrec.lm} \hlkwb{<-} \hlkwd{lm}\hlstd{(}\hlkwd{log}\hlstd{(Time)} \hlopt{~} \hlkwd{log}\hlstd{(Distance),}
                       \hlkwc{data}\hlstd{=DAAG}\hlopt{::}\hlstd{worldRecords)}
@@ -295,7 +298,7 @@ both axes. Notice that, in Panel B, the scales are
 
 \begin{figure}
 \begin{minipage}[c]{0.525\textwidth}
-\fbox{\parbox{\textwidth}{{\bf Interpreting Scatterplot Matrices:}\\[4pt]
+\fbox{\parbox{\textwidth}{{\bfseries Interpreting Scatterplot Matrices:}\\[4pt]
 For identifying the axes for each panel
 \begin{itemizz}
 \item[-] look across the row to the diagonal to identify the variable on

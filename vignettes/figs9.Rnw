@@ -304,7 +304,7 @@ print(c("The Figure 9.16 screen display was obtained using the playwith GUI.",
 fig9.17 <- function(){
 ## ---- qplot-smooth ----
 ## Default loess smooth, with SE bands added.
-ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2011,
+ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2015,
           geom=c("point","smooth"), se=TRUE,
           method="loess", span=0.5, xlab="",
           ylab="Av. rainfall, M-D basin")
@@ -325,7 +325,7 @@ ggplot2::quickplot(wt, ht, data=DAAG::ais,
 supp9.4 <- function(){
 ## ---- twenty5080 ----
 ## Supplementary figure 4
-ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2012,
+ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2015,
           geom=c("point", "quantile"),
           formula = y ~ ns(x,5),
           quantiles=c(0.2,0.5,0.8) )

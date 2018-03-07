@@ -21,6 +21,7 @@
 \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
 \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
 \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
 
 \usepackage{framed}
 \makeatletter
@@ -421,41 +422,6 @@ Start by attaching required packages:
 with area of bubbles proportional to concentration.
 River Meuse boundaries are in gray.\label{fig:ZnRiv}}
 \end{figure}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{supp13.4} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- show-shape ----}
-\hlstd{dsn} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"vectors"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"rgdal"}\hlstd{)[}\hlnum{1}\hlstd{]}
-\hlcom{## ---- shape-in ----}
-\hlstd{cities} \hlkwb{<-} \hlstd{rgdal}\hlopt{::}\hlkwd{readOGR}\hlstd{(}\hlkwc{dsn}\hlstd{=dsn,} \hlkwc{layer}\hlstd{=}\hlstr{"cities"}\hlstd{,} \hlkwc{verbose}\hlstd{=}\hlnum{FALSE}\hlstd{)}
-\hlcom{## ---- canada-plot ----}
-\hlstd{canada} \hlkwb{<-} \hlkwd{subset}\hlstd{(cities, COUNTRY}\hlopt{==}\hlstr{"Canada"}\hlstd{)}
-\hlkwd{trellis.par.set}\hlstd{(}\hlkwd{sp.theme}\hlstd{())}
-\hlkwd{spplot}\hlstd{(cities,} \hlkwc{zcol}\hlstd{=}\hlstr{"POPULATION"}\hlstd{)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{suppfigure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{supp13.4}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.97\textwidth]{figs/map-shape-supp13_4-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Plot derived from shapefile information.}
-\end{suppfigure}
 
 \end{document}
 

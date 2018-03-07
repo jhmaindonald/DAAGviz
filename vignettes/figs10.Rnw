@@ -54,7 +54,7 @@ oldopt <- options(digits=4)
 \author{John H Maindonald}
 \maketitle
 
-<<doFigs>>=
+<<set-doFigs, cache=FALSE, eval=TRUE>>=
 doFigs <- FALSE
 @ %
 
@@ -92,12 +92,12 @@ plot(M)
 }
 @ %
 
-<<fig10_1e, echo=TRUE, eval=FALSE>>=
+<<fig10_1e, echo=TRUE, eval=doFigs>>=
 fig10.1()
 @ %
 
 \begin{figure}
-<<fig10_1e, echo=FALSE, fig.width=3.25, fig.height=3.25, eval=doFigs, out.width="0.65\\textwidth", warning=FALSE, message=FALSE>>=
+<<fig10_1e, echo=FALSE, fig.width=3.25, fig.height=3.25, eval=FALSE, out.width="0.65\\textwidth", warning=FALSE, message=FALSE>>=
 @ %
 \caption{Snapshot of 3-D dynamic display.}\label{fig:rgl-ex}
 \end{figure}
