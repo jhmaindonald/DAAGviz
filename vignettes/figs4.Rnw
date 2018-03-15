@@ -28,14 +28,14 @@ pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 @ %
 
-\title{6: Data}
+\title{4: Data}
 \author{John H Maindonald}
 \maketitle
 
 \vspace*{-24pt}
 
-<<fig6_1, echo=TRUE, eval=TRUE>>=
-fig6.1 <- function(){
+<<fig4_1, echo=TRUE, eval=TRUE>>=
+fig4.1 <- function(){
 ## ---- date-labs ----
 ## Labeling of graph: data frame jobs (DAAG)
 library(DAAG, quietly=TRUE); library(lattice)
@@ -50,8 +50,8 @@ xyplot(BC ~ startofmonth, data=jobs,
 \vspace*{-24pt}
 
 \begin{figure}
-<<fig6_1e, fig.width=5.5, fig.height=3.25, out.width="0.65\\textwidth">>=
-fig6.1()
+<<fig4_1e, fig.width=5.5, fig.height=3.25, out.width="0.65\\textwidth">>=
+fig4.1()
 @ %
 \caption{Dates are used to label the $x$-axis}\label{fig:simplatparam}
 \end{figure}

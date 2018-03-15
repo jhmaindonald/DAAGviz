@@ -13,12 +13,12 @@
 
 \begin{document}
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Graphics (Set 9)}
+%\VignetteIndexEntry{Further methods (Set 9)}
 
 <<setup, cache=FALSE, echo=FALSE, purl=FALSE>>=
 library(knitr)
-options(replace.assign=FALSE,width=72)
-opts_chunk$set(fig.path='figs/gph-', cache.path='cache/gph-',
+options(replace.assign=FALSE,width=54)
+opts_chunk$set(fig.path='figs/xmeth-', cache.path='cache/xmeth-',
                fig.align='center', dev='pdf', fig.width=3.5,
                fig.height=3.5, fig.show='hold', par=TRUE,
                tidy=FALSE,  comment=NA)
@@ -30,543 +30,570 @@ pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 @ %
 
-\title{9: Graphics}
+\title{10: Further Methods}
 \author{John H Maindonald}
 \maketitle
+\vspace{-0.5cm}
 
-\vspace*{-1cm}
-
-<<doFigs>>=
+<<doFigs, cache=FALSE>>=
 doFigs <- TRUE
 @ %
+\vspace{-0.5cm}
 
-<<fig9_1, eval=TRUE>>=
+<<fig9_1>>=
 fig9.1 <- function(){
-## ---- brain-body ----
-plot(Brainwt ~ Bodywt, xlim=c(0, 300),
-     ylim=c(0,1500), data=primates,
-     xlab="Body weight (kg)",
-     ylab="Brain weight (g)")
-# Specify xlim to allow room for the labels
-with(primates,
-     text(Brainwt ~ Bodywt,
-          labels=rownames(primates), pos=4))
-# pos: pos=1 (below), 2 (left), 3 (above)
+## ---- smooth-ohms ----
+## Plot points
+plot(ohms ~ juice, data=fruitohms)
+## Add smooth curve, using default
+## smoothing window
+with(fruitohms,
+     lines(lowess(ohms ~ juice), col="gray", lwd=2))
 }
 @ %
 
-<<supp9_1, eval=TRUE>>=
-supp9.1 <- function(){
-if(!require(RColorBrewer))stop("RColorBrewer must be installed")
-## ---- col-plots ----
-opt <- options(width=75)
-colpal <- rev(list(
-    "Default palette" = palette()[1:8],  cm.colors = cm.colors(12),
-    terrain.colors = terrain.colors(12), heat.colors = heat.colors(12),
-    blueRamp = colorRampPalette(c(blues9, "white"))(12),
-    "Brewer-Set1" = brewer.pal(8, "Set1"),
-    "Brewer-Dark2" = brewer.pal(8, "Dark2")))
-palnam <- names(colpal)
-plot(1, 1, xlim=c(0.5,12.5), ylim=c(0,length(palnam)+0.5), type="n",
-     axes=FALSE, xlab="", ylab="")
-for(i in 1:length(palnam)){
-    len <- length(colpal[[i]])
-    points(1:len, rep(i,len), pch=15, col=colpal[[i]], cex=5.5)
-    legend(1, i+0.025, palnam[i], adj=0, box.col="white", bg="white",
-           x.intersp=0, y.intersp=0, yjust=0)
+\begin{figure}
+<<fig9_2>>=
+fig9.2A <- function(){
+    if(!exists("eyeAmpM.gam"))
+eyeAmpM.gam <- mgcv::gam(amp ~ s(x,y), data=subset(eyeAmp, Sex=="m"))
+        if(!exists("eyeAmpF.gam"))
+eyeAmpF.gam <- mgcv::gam(amp ~ s(x,y), data=subset(eyeAmp, Sex=="f"))
+lims <- range(c(predict(eyeAmpF.gam), predict(eyeAmpM.gam)))
+mgcv::vis.gam(eyeAmpM.gam, plot.type='contour', color="cm", zlim=lims, main="")
 }
-options(opt)
+fig9.2B <- function(){
+    if(!exists("eyeAmpM.gam"))
+    eyeAmpM.gam <- mgcv::gam(amp ~ s(x,y), data=subset(eyeAmp, Sex=="m"))
+    if(!exists("eyeAmpF.gam"))
+    eyeAmpF.gam <- mgcv::gam(amp ~ s(x,y), data=subset(eyeAmp, Sex=="f"))
+lims <- range(c(predict(eyeAmpF.gam), predict(eyeAmpM.gam)))
+mgcv::vis.gam(eyeAmpF.gam, plot.type='contour', color="cm", zlim=lims, main="")
 }
-@ %
-
-<<fig9_2, eval=TRUE>>=
 fig9.2 <- function(){
-## ---- alpha-ex ----
-## Sample from the 15992 rows
-dfsamp <- cps1[sample(nrow(cps1), 3000), ]
-plot(re78 ~ re75, data=dfsamp, pch=20, cex=0.5,
-     col="black")
-mtext(side=3, line=0.5, "A: 100% opacity", adj=0)
-plot(re78 ~ re75, data=dfsamp, pch=20, cex=0.5,
-     col=adjustcolor("black", alpha=0.4))
-mtext(side=3, line=0.5, "B: 40% opacity", adj=0)
-blueRamp <- colorRampPalette(c("white", blues9))
-with(dfsamp, smoothScatter(re75~re74,
-                           colramp=blueRamp))
-mtext(side=3, line=0.5, "C: Color density plot",
-      adj=0)
+print("Run the separate figures fig9.2A() and fig9.2B()")
 }
 @ %
+\end{figure}
 
-<<fig9_3, eval=TRUE>>=
+<<fig9_3>>=
 fig9.3 <- function(){
-## ---- aspect ----
-plot((1:30)*0.92, sin((1:30)*0.92),
-     xlab="", ylab="")
+## ---- ant111b ----
+# ant111b is in DAAG
+Site <- with(ant111b, reorder(site, harvwt,
+                              FUN=mean))
+stripplot(Site ~ harvwt, data=ant111b,
+          scales=list(tck=0.5),
+          xlab="Harvest weight of corn")
 }
 @ %
 
-<<supp9_2, eval=TRUE>>=
-supp9.2 <- function(){
-## ---- Animals-body-brain ----
-## Supplementary figure 9.2
-library(MASS)
-oldpar <- par(pch=16, pty="s", mfrow=c(2,2))
-with(Animals, {      # bracket several R statements
-  plot(body, brain)
-  plot(sqrt(body), sqrt(brain))
-  plot(body^0.1, brain^0.1)
-  plot(log(body), log(brain))
-})                   # close both sets of brackets
-par(oldpar)          # Restore former settings
-}
-@ %
-
-<<fig9_4, eval=TRUE>>=
+<<fig9_4>>=
 fig9.4 <- function(){
-## ---- poss-hist ----
-ftotlen <- subset(possum, sex=="f")[, "totlngth"]
-## Left panel: breaks at 72.5, 77.5,..
-hist(ftotlen, breaks = 72.5 + (0:5)*5, freq=FALSE,
-     xlab="Total length", ylim=c(0,0.11),
-     main ="A: Breaks at 72.5, 77.5,...")
-## Now superimpose a density curve, as in Fig. 7.3
-lines(density(ftotlen))
-##
-## Panel B: breaks at 75, 80, ...
-hist(ftotlen, breaks = 75 + (0:5)*5, freq=FALSE,
-     xlab="Total length", ylim=c(0,0.11),
-     main="B: Breaks at 75, 80, ...")
+## ---- Erie1 ----
+plot(Erie, xlab="",
+     ylab="Level (m)")
 }
 @ %
 
-<<supp9_3, eval=TRUE>>=
-supp9.3 <- function(){
-## ---- fposs-density ----
-## Supplementary figure 9.3
-with(subset(possum, sex=="f"),
-     plot(density(totlngth), type="l"))
+<<fig9_5A>>=
+fig9.5A <- function(){
+## ---- lagErie ----
+## Panel A
+lag.plot(Erie, lags=3,
+         do.lines=FALSE,
+         layout=c(1,3),
+         main="  ")
+mtext(side=3, line=2, adj=0,
+      "A: Lag plots, at lags of 1, 2 and 3")
 }
-@ %
-
-<<fig9_5, eval=TRUE>>=
+fig9.5B <- function(){
+## ---- acfErie ----
+## Panel B
+acf(Erie, main="")
+mtext(side=3, line=1, adj=0, cex=1.25,
+      "B: Autocorrelation function")
+}
 fig9.5 <- function(){
-## ---- boxplot ----
-## Code
-with(subset(possum, sex=="f"),
-     {boxplot(totlngth, horizontal=TRUE)
-      rug(totlngth)} )
+"Run the separate functions fig9.5A() and fig9.5B()."
 }
 @ %
 
-<<fig9_6, eval=TRUE>>=
+<<fig9_6>>=
 fig9.6 <- function(){
-## ---- possum-qqn ----
-ftotlen <- subset(possum, sex == "f")[, "totlngth"]
-ylabel <- expression(bold("Data"))
-xy <- qqnorm(ftotlen, xlab="", ylab=ylabel)
-usr <- par()$usr
-fillcol <- adjustcolor("gray60", alpha=0.2)
-rect(usr[1], usr[3],
-     usr[2], usr[4], col=fillcol)
-for(i in 1:7) qqnorm(rnorm(43), xlab="",
-                     ylab="Simulated",
-                     main="Q-Q: Simulated")
-# rnorm() generates random samples from a normal
-# distribution with, by default, mean 0 and SD=1.
+## ---- gamErie ----
+df <-  data.frame(
+  height=as.vector(Erie),
+  year=time(Erie))
+obj <- mgcv::gam(height ~ s(year), data=df)
+plot(obj,
+     shift=mean(df$height),
+     residuals=TRUE, pch=1,
+     xlab="",
+     ylab="Height of lake")
 }
 @ %
 
-<<fig9_7, eval=TRUE>>=
+<<fig9_7>>=
 fig9.7 <- function(){
-## ---- plot-expr ----
-yl <- expression("Area = " * pi * r^~2)
-plot(1:5, pi*(1:5)^2, xlab="Radius (r)", ylab=yl)
+## ---- arima-sim ----
+for (i in 1:6){
+ysim <- arima.sim(list(ar=0.85),
+                  n=200)
+df <- data.frame(x=1:200,
+                 y=ysim)
+df.gam <- mgcv::gam(y ~ s(x),
+              data=df)
+plot(df.gam,
+     ylab=paste("Sim", i),
+     residuals=TRUE)
+}
 }
 @ %
 
-<<fig9_8, eval=TRUE>>=
+<<fig9_8>>=
 fig9.8 <- function(){
-## ---- cline-gph ----
-## On the command line: Create and print object
-xyplot(Brainwt ~ Bodywt, data=primates)
-}
-
-<<fig9_9, eval=TRUE>>=
-fig9.9 <- function(){
-## ---- rowSwim ----
-xyplot(ht ~ wt | sport, groups=sex, data=ais,
-       par.settings=simpleTheme(pch=c(4,1)),
-       scales=list(tck=0.5),
-       auto.key=list(space="right"),
-       subset=sport%in%c("Row","Swim"))
+## ---- Erie-fcast ----
+erie.ar <- ar(Erie, order.max=1)
+fc <- forecast::forecast(erie.ar, h=15)
+plot(fc, main="",
+     ylab="Lake level (m)")
+  # 15 time points ahead
 }
 @ %
 
-<<fig9_10, eval=TRUE>>=
-fig9.10 <- function(){
-## ---- grog-simple ----
-## Simple version of plot
-grogplot <- xyplot(
-              Beer+Spirit+Wine ~ Year | Country,
-              data=grog, outer=FALSE,
-              auto.key=list(space="right"))
-## ---- grog-update ----
-## Update trellis object, then print
-ylab <- "Amount consumed (per person)"
-parset <- simpleTheme(pch=c(1,3,4))
-finalplot <- update(grogplot, ylim=c(0,5.5),
-                     xlab="", ylab=ylab,
-                     par.settings=parset)
-print(finalplot)
+<<fig9_9>>=
+fig9.9 <- function(){
+## ---- mdb-gam ----
+mdbRain.gam <- mgcv::gam(mdbRain ~ s(Year) + s(SOI),
+                   data=bomregions)
+plot(mdbRain.gam, residuals=TRUE, se=2, pch=1,
+     cex=0.5)
 }
+@ %
+
+<<fig9_10>>=
+fig9.10 <- function(){
+## ---- ar1sims ----
+opar <- par(mar=c(2.1, 3.1, 0.25, 1.1), mgp=c(2.25,0.5,0))
+mdbRain.gam <- mgcv::gam(mdbRain ~ s(Year) + s(SOI),
+                         data=bomregions)
+n <-  dim(bomregions)[1]
+acf(resid(mdbRain.gam), ylab="MDB series")
+for(i in 1:5)acf(rnorm(n), ylab=paste("Sim",i),
+                 col="gray40")
+par(opar)
+}
+@ %
+
+<<load-DAAGviz, warning=FALSE, message=FALSE>>=
+library(DAAGviz, quietly = TRUE)
+@ %
+
+<<use-eventCounts>>=
+if(!requireNamespace('gamclass', quietly=TRUE))print('gamclass must be installed')
+fromDate <- as.Date("2006-01-01")
+dfDay06 <- gamclass::eventCounts(data=gamclass::airAccs, dateCol="Date",
+                       from= fromDate, by='1 day', prefix="num")
+dfDay06$day <- julian(dfDay06$Date, origin=fromDate)
+dfWeek06 <- gamclass::eventCounts(data=gamclass::airAccs, dateCol="Date",
+                        from=fromDate,
+                        by='1 week', prefix="num")
+dfWeek06$day <- julian(dfWeek06$Date, origin=fromDate)
+year <- seq(from=fromDate, to=max(dfDay06$Date), by="1 year")
+atyear=julian(year, origin=fromDate)
 @ %
 
 <<fig9_11, eval=TRUE>>=
-fig9.11 <- function(){
-## ---- strip-grob ----
-library(grid)
-plotnam <- "Stripplot of cuckoo data"
-stripplot(species ~ length, xlab="", data=cuckoos,
-  legend=list(top=list(fun=textGrob,
-                       args=list(label=plotnam,
-                                 x=0))))
-}
-@ %
-
-<<fig9_12, eval=TRUE>>=
-fig9.12 <- function(){
-## ---- jobs-basic ----
-## 1. Create a basic version of the graphics object
-jobsB.xyplot <-
-  xyplot(Ontario+Quebec+BC+Alberta+Prairies+Atlantic ~ Date,
-         data=jobs, type="b", layout=c(3,2), outer=TRUE,
-         ylab="Number of jobs",
-         scales=list(y=list(relation="sliced", log=TRUE)))
-## ---- jobs-enhance ----
-## 2. Code for the enhancements to jobsB.xyplot
-ylabpos <- exp(pretty(log(unlist(jobs[,-7])), 100))
-ylabels <- paste0(round(ylabpos),"\n(", log(ylabpos), ")")
-## Create a date object 'startofmonth'; use instead of 'Date'
-atdates <- seq(from=95, by=0.5, length=5)
-datelabs <- format(seq(from=as.Date("1Jan1995", format="%d%b%Y"),
-                       by="6 month", length=5), "%b%y")
-update(jobsB.xyplot, xlab="", between=list(x=0.5, y=0.5),
-       scales=list(x=list(at=atdates, labels=datelabs),
-                   y=list(at=ylabpos, labels=ylabels), tck=0.6) )
-}
-@ %
-
-<<fig9_13, eval=TRUE>>=
-fig9.13 <- function(){
-## ---- strip-bw ----
-stripplot(species ~ length, data=cuckoos,
-          xlab="Cuckoo egg length (mm)")
-bwplot(species ~ length, data=cuckoos,
-       xlab="Cuckoo egg length (mm)")
-}
-@ %
-
-<<fig9_14, eval=TRUE>>=
-fig9.14 <- function(){
-## ---- lattice-density ----
-## Code
-colset <- c("gray","black")
-densityplot(~ earconch | sex, groups=Pop,
-            data=possum,
-            par.settings=simpleTheme(col=colset),
-            auto.key=list(space="right"))
-}
-@ %
-
-<<fig9_15, eval=TRUE>>=
-fig9.15 <- function(){
-## ---- gph-from ----
-gph <- xyplot(Brainwt ~ Bodywt,  data=primates,
-              xlim=c(0,300))
-## ---- my-panel ----
-my.panel <- function(x,y){
-  panel.xyplot(x,y)
-  panel.text(x,y, labels=rownames(primates), pos=4)
-}
-update(gph, panel=my.panel)
-}
-@ %
-
-<<fig9_16, eval=TRUE>>=
-fig9.16 <- function(){
-print(c("The Figure 9.16 screen display was obtained using the playwith GUI.",
-        "See text for details."), quote=FALSE)
-}
-@ %
-
-<<fig9_17, eval=TRUE>>=
-fig9.17 <- function(){
-## ---- qplot-smooth ----
-## Default loess smooth, with SE bands added.
-ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2015,
-          geom=c("point","smooth"), se=TRUE,
-          method="loess", span=0.5, xlab="",
-          ylab="Av. rainfall, M-D basin")
-}
-@ %
-
-<<fig9_18, eval=TRUE>>=
-fig9.18 <- function(){
-## ---- overlay-dens-simple ----
-## Overlay with boxplots and density contours
-ggplot2::quickplot(wt, ht, data=DAAG::ais,
-          geom=c("boxplot", "point", "density2d"),
-          facets = . ~ sex)
-}
-@ %
-
-<<supp9_4, eval=TRUE>>=
-supp9.4 <- function(){
-## ---- twenty5080 ----
-## Supplementary figure 4
-ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2015,
-          geom=c("point", "quantile"),
-          formula = y ~ ns(x,5),
-          quantiles=c(0.2,0.5,0.8) )
-}
-@ %
-
-<<fig9_19, eval=TRUE>>=
-fig9.19 <- function(){
-## ---- aisRS ----
-## Extract from ais data for rowers and swimmers
-aisRS <- subset(DAAG::ais, sport %in% c("Row","Swim"))
-aisRS$sport <- droplevels(aisRS$sport)
-ggplot2::ggplot(aisRS) +
-  ggplot2::geom_point(aes(wt, ht,
-             color=sex,
-             shape=sport),
-             size=2)
-}
-@ %
-
-<<figset_9>>=
-figset9 <- function(){
-  if(!require(DAAG, quietly=TRUE))stop('DAAG must be installed')
-  if(!require(MASS, quietly=TRUE))stop('MASS must be installed')
-  if(!require(latticeExtra, quietly=TRUE))stop('latticeExtra must be installed')
-  if(!require(ggplot2, quietly=TRUE))stop('ggplot2 must be installed')
-  if(!require(splines, quietly=TRUE))stop('splines must be installed')
-  if(!require(quantreg, quietly=TRUE))stop('quantreg must be installed')
-  if(!require(RColorBrewer, quietly=TRUE))stop('RColorBrewer must be installed')
+fig9.11A <- function(){
+  if(!exists('dfday06')){
+    print(paste("Unable to plot graph.",
+                "Ensure package 'gamclass' is installed."))
+    return()
   }
+dfDay06.gam <-
+  mgcv::gam(formula = num ~ s(day, k=200), family = quasipoisson,
+      data = dfDay06)
+av <- mean(predict(dfDay06.gam))
+plot(dfDay06.gam, xaxt="n", shift=av, trans=exp, rug=FALSE, xlab="",
+     ylab="Estimated rate per day")
+axis(1, at=atyear, labels=format(year, "%Y"))
+mtext(side=3, line=0.75, "A: Events per day, vs date", adj=0)
+}
+fig9.11B <- function(){
+dfWeek06.gam <- mgcv::gam(num~s(day, k=200), data=dfWeek06, family=quasipoisson)
+av <- mean(predict(dfWeek06.gam))
+plot(dfWeek06.gam, xaxt="n", shift=av, trans=exp, rug=FALSE, xlab="",
+      ylab="Estimated rate per week")
+axis(1, at=atyear, labels=format(year, "%Y"))
+mtext(side=3, line=0.75, "B: Events per week, vs date", adj=0)
+}
+fig9.11 <- function(){
+    "Run the separate functions fig9.10A() & fig9.10B()"
+}
 @ %
 
-<<do-figset5>>=
-figset9()
+<<fig9_12>>=
+fig9.12 <- function(){
+## ---- fgl-scores2D ----
+scores <- predict(fgl.lda)$x
+xyplot(scores[,2] ~ scores[,1], groups=fgl$type,
+       xlab="Discriminant 1",
+       ylab="Discriminant 2",
+       aspect=1, scales=list(tck=0.4),
+       auto.key=list(space="right"),
+       par.settings=simpleTheme(alpha=0.6, pch=1:6))
+}
+@ %
+
+<<fig9_13>>=
+## ---- bronchit-first3 ----
+## ---- bronchit-rp ----
+set.seed(47)   # Reproduce tree shown
+fig9.13 <- function(){
+## ---- treefig ----
+opar <- par(mar=rep(1.1,4))
+if(!exists('b.rpart'))b.rpart <- rpart(rfac ~ cig+poll, data=bronchit)
+plot(b.rpart)
+text(b.rpart, xpd=TRUE)
+par(opar)
+}
+@ %
+
+<<fig9_14>>=
+fig9.14 <- function(){
+## ---- rf-x-bronchit ----
+opar <- par(mar=rep(2.1,4))
+set.seed(31)   # Reproduce the trees shown
+num <- 1:nrow(bronchit)
+for(i in 1:12){
+  useobs <- sample(num, replace=TRUE)
+  dset <- bronchit[useobs, ]
+  b.rpart <- rpart(rfac ~ cig+poll, data=dset,
+                   control=rpart.control(maxdepth=2))
+  plot(b.rpart, uniform=TRUE)
+  text(b.rpart, xpd=TRUE, cex=1.2)
+}
+par(opar)
+}
+@ %
+
+<<fig9_15>>=
+fig9.15 <- function(){
+## ---- proximity-plot ----
+parset <- simpleTheme(pch=1:2)
+if(!requireNamespace('randomForest'))
+  return('Fig 12.15 requires randomForest package')
+bronchit.rf <- randomForest::randomForest(rfac ~ cig+poll,
+                            proximity=TRUE,
+                            data=bronchit)
+points <- cmdscale(1-bronchit.rf$proximity)
+xyplot(points[,2] ~ points[,1],
+       groups=bronchit$rfac,
+       xlab="Axis 1", ylab="Axis 2",
+       par.settings=parset, aspect=1,
+       auto.key=list(columns=2))
+}
+@ %
+
+<<fig9_16>>=
+fig9.16 <- function(){
+opar <- par(mar=c(2,3,2,5))
+plot(aupts, axes=FALSE, ann=FALSE, fg="gray",
+     frame.plot=TRUE)
+city <- rownames(aupts)
+pos <- rep(1,length(city))
+pos[city=="Melbourne"]<- 3
+pos[city=="Canberra"] <- 4
+pos[city=="Sydney"] <- 4
+par(xpd=TRUE)
+text(aupts, labels=city, pos=pos)
+par(opar)
+}
+@ %
+
+<<fig9_17, eval=TRUE, echo=FALSE>>=
+fig9.17A <- function(){
+## ---- au-overlay ----
+oz::oz()
+fitcoords <- DAAG::align2D(lat=aulatlong$latitude,
+                      long=aulatlong$longitude,
+                      x1=aupts[,1], x2 = aupts[,2],
+                      wts=NULL)
+x <-with(fitcoords,
+         as.vector(rbind(lat, fitlat, rep(NA,length(lat)))))
+y <-with(fitcoords,
+         as.vector(rbind(long, fitlong, rep(NA,length(long)))))
+points(aulatlong, col="red", pch=16, cex=1.5)
+lines(x, y, col="gray40", lwd=3)
+mtext(side=3, line=0.5, adj=0, "A: From Classical MDS", cex=1.35)
+}
+fig9.17B <- function(){
+## ---- au-sammon ----
+oz::oz()
+aupts.sam <- sammon(audists, trace=FALSE)$points
+wt <- apply(as.matrix(audists), 1,function(x)sum(1/x[x>0]))
+fitcoords <- align2D(lat=aulatlong$latitude,
+                     long=aulatlong$longitude,
+                     x1=aupts.sam[,1], x2 = aupts.sam[,2],
+                     wts=wt)
+x <-with(fitcoords,
+         as.vector(rbind(lat, fitlat, rep(NA,length(lat)))))
+y <-with(fitcoords,
+         as.vector(rbind(long, fitlong, rep(NA,length(long)))))
+points(aulatlong, col="red", pch=16, cex=1.5)
+lines(x, y, col="gray40", lwd=3)
+mtext(side=3, line=0.5, adj=0, "B: From Sammon Scaling", cex=1.35)
+}
+fig9.17 <- function(){
+    "Run the separate functions fig9.16A() & fig9.16B()"
+}
+@ %
+
+\newpage
+
+<<figset_12>>=
+figset12 <- function(){
+    library(MASS)
+    library(lattice)
+    library(DAAGviz)
+    if(!require('DAAG', quietly=TRUE))stop('DAAG must be installed')
+    if(!requireNamespace('mgcv', quietly=TRUE))stop('mgcv must be installed')
+    if(!requireNamespace('oz', quietly=TRUE))stop('oz must be installed')
+  if(!requireNamespace('ggplot2', quietly=TRUE))
+    stop('ggplot2 must be installed')
+}
+@ %
+
+<<do-figset12>>=
+figset12()
+  ## ---- bronchit-rfac ----
+## Now make the outcome variable a factor
+bronchit <-
+  within(bronchit,
+         rfac <- factor(r, labels=c("abs","pres")))
 @ %
 
 
-\begin{figure}[ht]
-<<fig9_1e, fig.width=4, fig.height=4.25, top=2, rt=2, crop=TRUE, out.width="0.47\\textwidth">>=
+\begin{figure}
+<<smooth-ohms-12_1, echo=FALSE, fig.width=4.5, fig.height=3.5, out.width="0.65\\textwidth">>=
 fig9.1()
 @ %
-\caption{Plot of brain weight against body weight, for selected
-primates.}\label{fig:primates}
+  \caption{Resistance in ohms is plotted against apparent juice
+    content.  A smooth curve (in gray) has been added, using the
+    \txtt{lowess} smoother.  The width of the smoothing window was the
+    default fraction $f = \frac{2}{3}$ of the range of values of the
+    $x$-variable.}\label{fig:fruitohms}
 \end{figure}
 
-\begin{suppfigure}[ht]
-<<supp9_1e, fig.width=7.5, fig.height=7, cache=FALSE, crop=TRUE, out.width="0.75\\textwidth">>=
-supp9.1()
+\begin{figure}
+<<plotVIS-12_2, echo=FALSE, fig.width=8.5, fig.height=3.5, out.width="0.97\\textwidth">>=
+opar <- par(mfrow=c(1,2))
+fig9.2A()
+mtext(side=3, line=0.5, adj=0, "A: Response amplitudes, Males")
+fig9.2B()
+mtext(side=3, line=0.5, adj=0, "B: Response amplitudes, Females")
+par(opar)
 @ %
-\caption{Color palettes.}\label{fig:colpal}
-\end{suppfigure}
-
-\begin{figure}[ht]
-<<fig9_2e, dev='png', fig.width=2.5, fig.height=2.75, top=2, out.width="0.32\\textwidth">>=
-fig9.2()
-@ %
-\caption{In Panel A, points are plotted with the 100\% opacity, i.e.,
-  no transparency. In Panel B, \txtt{alpha=0.4}, i.e., 40\% opacity.
-  Panel C uses the function \txtt{smoothScatter()} to show a smoothed
-  color density representation of the data.
-  \label{fig:alpha}.}
+\caption{Estimated contours of left eye responses to visual stimulae,
+projected onto the plane.\label{fig:visAmp}}
 \end{figure}
 
-\begin{figure}[ht]
-<<fig9_3e, fig.width=8, fig.height=2.4, top=1, out.width="0.9\\textwidth">>=
-par(fig=c(0,0.265, 0,1))
+\begin{figure}
+<<ant111b-12_3, echo=FALSE, fig.width=4.5, fig.height=3.5, out.width="0.65\\textwidth">>=
 fig9.3()
-mtext(side=3, line=0.5, "A: 1:1 aspect ratio", adj=0)
-par(fig=c(0.265, 1, 0,1), new=TRUE)
-fig9.3()
-mtext(side=3, line=0.5, "B: 1:3.5 aspect ratio", adj=0)
 @ %
-\caption{Both figures show the same data, but with very different
-  aspect ratios.\label{fig:aspect}}
+\caption{Yields from 4 packages of land on each of eight sites on the
+  Caribbean island of Antigua. Data are a summarized version of a
+  subset of data given in Andrews and Herzberg 1985,
+  pp.\~339-353.\label{fig:caribbean}}
 \end{figure}
 
-\begin{suppfigure}[ht]
-<<supp9_2e, fig.width=5, fig.height=5, out.width="0.8\\textwidth">>=
-supp9.2()
+<<getErie>>=
+## ---- getErie ----
+Erie <- greatLakes[,"Erie"]
 @ %
-\caption{The figure shows a 2 by 2 layout of plots.}
-\end{suppfigure}
 
-\begin{figure}[ht]
-<<fig9_4e, eval=TRUE, fig.width=3.25, fig.height=3.25, left=1, rt=1, bot=2, top=2, out.width="0.47\\textwidth">>=
+\begin{figure}
+<<Erie1-12_4, echo=FALSE, fig.width=5.5, fig.height=2.5, out.width="0.8\\textwidth">>=
 fig9.4()
 @ %
-\caption{The two panels show the same data, but with a different
-choice of breakpoints.\label{fig:densitybreaks}}
+\caption{Level of Lake Erie, in meters.
+}\label{fig:erie}
 \end{figure}
 
-\begin{suppfigure}
-<<supp9_3e, out.width="0.47\\textwidth">>=
-supp9.3()
+\begin{figure}
+<<lagErie-12_5, echo=FALSE, fig.width=6, fig.height=2.75, out.width="0.98\\textwidth">>=
+fig9.5A()
 @ %
-\caption{Density plot for lengths of female possums.}
-\end{suppfigure}
+\vspace*{-3pt}
 
-\clearpage
-
-
-\begin{figure}[ht]
-<<fig9_5e, eval=TRUE, fig.width=3.5, fig.height=2.5, bot=1, out.width="0.42\\textwidth">>=
-fig9.5()
+<<acfErie, echo=FALSE, fig.width=5.4, fig.height=2.5, out.width="0.7\\textwidth">>=
+opar <- par(mar=c(4,4,2.5,0.6), oma=c(0,0,2.5,0))
+fig9.5B()
+par(opar)
 @ %
-\vspace*{-18pt}
-
-\caption{Distribution of lengths of female possums.
-The bars (together making up a 'rug') show actual data values.\label{fig:boxrugs}}
+\caption{Panel A plots Lake Erie levels vs levels at lags 1, 2 and 3
+  respectively. Panel B shows a consistent pattern of decreasing
+  autocorrelation at successive lags.
+}\label{erie-lagplot}
 \end{figure}
 
-\begin{figure}[ht]
-<<fig9_6e, fig.width=4, fig.height=4, top=1, bot=1, rt=1, out.width="0.24\\textwidth">>=
+\begin{figure}
+<<gamErie-12_6, echo=FALSE, fig.width=6.5, fig.height=3.25, out.width="0.75\\textwidth">>=
 fig9.6()
 @ %
-\vspace*{-12pt}
-
-      \caption{Normal probability plots. The top left panel shows the 43 lengths
-of female possums. Other panels are for independent normal
-random samples of size 43.\label{fig:np-plots}}
+\caption{GAM smoothing term, fitted to the Lake Erie Data.
+    Most of the autocorrelation structure has been
+    removed, leaving residuals that are very nearly independent.
+  }\label{lh-smoothplot}
 \end{figure}
 
-\begin{figure}[ht]
-\vspace*{-6pt}
-<<fig9_7e, eval=TRUE, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
+\begin{figure}
+<<arima-sim-12_7, fig.width=3.15, fig.height=3.35, echo=FALSE, out.width="0.32\\textwidth">>=
 fig9.7()
 @ %
-\caption{A mathematical expression is included as part of the
-  $y$-axis label.\label{fig:area}.}
+\caption{The plots are from repeated simulations of an AR1 process with a
+  lag 1 correlation of 0.85.  Smooth curves, assuming independent
+  errors, have been fitted.}\label{fig:ar1fits}
 \end{figure}
 
-\begin{figure}[ht]
-<<fig9_8e, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
+\begin{figure}
+<<Erie-fcast-12_8, echo=FALSE, fig.width=5.5, fig.height=2.5, out.width="0.8\\textwidth", warning=FALSE, message=FALSE>>=
 fig9.8()
 @ %
-\caption{Use of lattice function \txtt{xyplot()} to give a graph.
-  \label{fig:lat-gph}}
+\caption{Predictions, 15 years into the future, of lake levels
+  (m). The shaded areas give 80\% and 95\% confidence bounds.
+}\label{Erie-fcastplot}
 \end{figure}
 
-\begin{figure}[ht]
-<<fig9_9e, fig.width=6, fig.height=3.5, out.width="0.8\\textwidth">>=
+\begin{figure}
+<<mdb-gam-12_9, echo=FALSE, warning=FALSE, fig.width=4.5, fig.height=3.0, out.width="0.47\\textwidth">>=
 fig9.9()
 @ %
-\caption{Height (\texttt{ht}) versus Weight (\texttt{wt}), for
-        rowers (\texttt{Row}) and swimmers (\texttt{Swim}).
-        Different plotting symbols are used to distinguish males from
-        females.}\label{fig:lattice-ais}
+  \caption{Estimated contributions of the model terms to
+    \txtt{mdbRain}, in a GAM model that is the sum of smooth terms in
+    \txtt{Year} and \txtt{Rain}. The dashed curves show pointwise
+    2-SE limits, for the fitted curve.  Note the downturn
+in the trend of \txtt{mdbRain} after about 1985,}\label{fig:mdbRainSM}
 \end{figure}
 
-\begin{figure}[ht]
-<<fig9_10e, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth">>=
+\begin{figure}
+<<ar1sims-12_10, echo=FALSE, warning=FALSE, fig.width=3, left=1, fig.height=2.0, out.width="0.32\\textwidth">>=
 fig9.10()
 @ %
-\caption{Australian and New Zealand apparent per person annual
-  consumption (in liters) of the pure alcohol content of liquor products, for
-  1998 to 2006.\label{fig:allgrog}}
+\caption{The top left panel shows the autocorrelation plot of the
+  residuals from the GAM model \txtt{mdbRain.gam}.  The five remaining
+  panels show autocorrelation plots for a series of independent random
+  normal numbers.}\label{fig:ar1sims}
 \end{figure}
 
-\begin{figure}[ht]
-<<fig9_11e, fig.width=3.5, fig.height=2.5, out.width="0.47\\textwidth", cache=FALSE>>=
-fig9.11()
+\begin{figure*}[h]
+<<au-both-12_11, echo=FALSE, fig.width=4.25, fig.height=3.75, top=2, out.width="0.47\\textwidth">>=
+fig9.11A()
+fig9.11B()
 @ %
-\caption{The argument \txtt{legend} has been used to add text,
-  supplied as a 'grob'.\label{fig:textGrob}}
-\end{figure}
+\caption{Estimated number of events (aircraft crashes) per time
+  interval versus time.  In Panel A, the outcome variable was events
+  per day, while in Panel B it was events per
+  week.\label{fig:planeCrash}}
+\end{figure*}
 
-\begin{figure}[ht]
-<<fig9_12e, fig.width=8.5, fig.height=4, out.width="0.97\\textwidth">>=
+\begin{figure}
+<<fgl-scores2D-12_12, echo=FALSE, fig.width=5, fig.height=3.75, out.width="0.65\\textwidth">>=
+## ---- fgl-lda ----
+fgl.lda <- lda(type ~ ., data=fgl)
 fig9.12()
 @ %
-\caption{Jobs growth in Canadian provinces, between January 1995
-  and December 1996.}\label{fig:jobsplot}
+\caption{Visual representation of a classification rule, derived using
+  {\em linear discriminant analysis}, for the forensic glass data.  A
+  five-dimensional pattern of separation between the categories has
+  been collapsed down to two dimensions.  Some categories may therefore
+be better distinguished than is evident from this figure.
+}
+\label{fig:fgl}
 \end{figure}
 
-\begin{figure}[ht]
-<<fig9_13e-strip-bw, fig.width=3.5, fig.height=2.5, cache=FALSE, out.width="0.47\\textwidth">>=
-<<strip-bw>>
+<<load-rpart, warning=FALSE, message=FALSE>>=
+library(rpart, quietly=TRUE)
 @ %
-\caption{A stripplot and a dotplot, side by side for comparison.}
+
+\begin{figure}
+<<treefig-12_13, echo=FALSE, fig.width=3.5, fig.height=4, out.width="0.55\\textwidth">>=
+fig9.13()
+@ %
+\caption{Decision tree for predicting whether a miner has
+    bronchitis.  Where the condition at a node is satisfied, the left
+    branch is taken. Thus, at the initial node, \txtt{cig$<$4.385}
+    takes the branch to the left.  In general, unless a random number
+    seed is specified, the tree may be different for each different run of the
+    calculations.
+}\label{fig:tree}
 \end{figure}
 
-\begin{figure}[ht]
-<<fig9_14e, fig.width=6, fig.height=3.15, out.width="0.8\\textwidth">>=
+\begin{figure}
+<<rf-x-bronchit, echo=FALSE, fig.width=2, fig.height=1.75, out.width="0.24\\textwidth">>=
 fig9.14()
 @ %
-\caption{Lattice style density plot comparing possum earconch
-    measurements, separately for males and females, between Victorian
-    and other populations. Observe that the scatter of data values is
-shown along the horizontal axis.}\label{fig:possumdens}
+\caption{Each tree is for a different bootstrap sample of
+  observations.  The final classification is determined by a random
+  vote over all trees.  Where there are $>$ 2 explanatory variables
+  (but not here) a different random sample of variables is typically
+  used for each different split. The final classification is
+  determined by a random vote over all trees.}\label{fig:brontrees}
 \end{figure}
 
-\begin{figure}[ht]
-<<fig9_15e, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
+\begin{figure}
+<<proximity-plot, echo=FALSE, w=3.5, h=3.65, out.width="0.47\\textwidth">>=
 fig9.15()
 @ %
-\caption{Here, labels have been added to the points. This can be
-  done by updating a graph that has the points, by use of a panel
-  function that both plots points and and adds labels, or by adding a
-  new layer to a graph that shows the points.}\label{fig:layer}
+\caption{The plot is designed to represent, in two dimensions, the random
+  forest result. It aims to reflect probabilities of group membership
+  given by the analysis.  It is not derived by a 'scaling' of the
+  feature space.
+}\label{fig:rfbronchit}
+\end{figure}
+%$
+
+<<aupoints>>=
+## ---- aupoints ----
+aupts <- cmdscale(audists)
+@ %
+
+\begin{figure}
+<<aupoints_12_16, echo=FALSE, fig.width=5.25, fig.height=4.5, rt=3, out.width="0.6\\textwidth">>=
+fig9.16()
+@ %
+\caption{Relative locations of Australian cities, derived from road
+  map distances, using metric scaling.\label{fig:audists}}
 \end{figure}
 
-\addtocounter{figure}{1}
-
-\begin{figure}[ht]
-<<fig9_17e, fig.width=5.5, fig.height=3.25, out.width="0.8\\textwidth", warning=FALSE>>=
-fig9.17()
+<<cfPhysical,  eval=TRUE, echo=FALSE>>=
+## ---- cfPhysical ----
+align2D <- function(lat=aulatlong$latitude,
+                    long=aulatlong$longitude,
+                    x1=aupts[,1], x2 = aupts[,2],
+                    wts=NULL){
+    ## Get best fit in space of (latitude, longitude)
+    if(is.null(wts))wts <- rep(1,length(x1))
+    fitlat <- predict(lm(lat ~ x1+x2, weights=wts))
+    fitlong <- predict(lm(long ~ x1+x2, weights=wts))
+    list(fitlat = fitlat, fitlong=fitlong, lat=lat, long=long)
+}
 @ %
-\caption{Annual rainfall, from 1901 to 2012, for the Murray-Darling
-  basin region of Australia.  The curve is fitted using the default
-  loess smoother. The pointwise standard error bands assume that
-  errors about the curve are independent; this is unlikely to be
-  strictly true. To suppress these bands, specify
-  \texttt{se=FALSE}.\label{fig:ggrain}}
-\end{figure}
 
-\begin{figure}[ht]
-<<fig9_18e, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth", warning=FALSE>>=
-fig9.18()
+\begin{figure*}[h]
+<<au-both-12_17, echo=FALSE, fig.width=5.25, fig.height=4.5, top=2, out.width="0.47\\textwidth">>=
+fig9.17A()
+fig9.17B()
 @ %
-\caption{Height versus weight, by sex, for Australian athletes in the
-\texttt{ais} data set. Boxplots that show the distributions of heights,
-and two-dimensional density contours have been
-added.\label{fig:ggais}}
-
-\end{figure}
-
-\begin{suppfigure}
-<<supp9_4e, fig.width=5.5, fig.height=3.25, out.width="0.8\\textwidth", warning=FALSE>>=
-supp9.4()
-@ %
-\caption{Annual rainfall, from 1901 to 2012, for the Murray-Darling
-  basin region of Australia.  Curves that estimate the 20\%, 50\% and 80\%
-  quantiles have been fitted.\label{fig:ggrainpc}}
-\end{suppfigure}
-
-\begin{figure}[ht]
-<<fig9_19e, fig.width=4.5, fig.height=3.5, out.width="0.8\\textwidth">>=
-fig9.19()
-@ %
-\caption{Use \texttt{color} for distinguishing \texttt{sex}es,
-\texttt{shape}s for \texttt{sport}s.}\label{fig:colshape}
-\end{figure}
+      \caption{In Panel A, Figure \ref{fig:audists} has been rotated and
+        scaled, to give a best fit to a map of Australia.  Each city
+        moves as shown by the line that radiates out from it.  Panel B
+        is the equivalent plot for the Sammon scaling ordination.
+\label{fig:aufit}}
+\end{figure*}
 
 \end{document}
+
+

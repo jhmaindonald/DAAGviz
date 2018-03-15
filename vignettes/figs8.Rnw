@@ -1,0 +1,621 @@
+\documentclass[12pt, a4paper,  BCOR=8.25mm, DIV=15]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{newfloat}
+\usepackage{float}
+\DeclareFloatingEnvironment[name={Supplementary Figure}]{suppfigure}
+
+\newenvironment{itemizz}%
+  {\begin{itemize}%
+    \setlength{\itemsep}{2pt}%
+    \setlength{\parskip}{2pt}}%
+  {\end{itemize}}
+
+\newcommand{\txtt}[1]{{\texttt{#1}}}
+
+\begin{document}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Regression (Set 8)}
+
+<<setup, cache=FALSE, echo=FALSE, purl=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+opts_chunk$set(fig.path='figs/reg-', cache.path='cache/reg-',
+               fig.align='center', dev='pdf', fig.width=3.5,
+               fig.height=3.5, fig.show='hold', par=TRUE,
+               tidy=FALSE,  comment=NA)
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, crop=knitr::hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
+@ %
+
+
+\title{8: Regression}
+\author{John H Maindonald}
+\maketitle
+
+<<doFigs, cache=FALSE>>=
+doFigs <- FALSE
+@ %
+
+
+\vspace*{-1cm}
+
+<<fig8_1>>=
+fig8.1 <- function(){
+## ---- plt-roller ----
+plot(depression ~ weight, data=roller)
+}
+@ %
+
+<<fig8_2>>=
+fig8.2 <- function(){
+## ---- pltWline ----
+plot(depression ~ weight, data=roller)
+roller.lm <- lm(depression ~ weight, data=roller)
+# For a line through the origin, specify
+# depression ~ 0 + weight
+abline(roller.lm)
+}
+@ %
+
+<<fig8_3>>=
+fig8.3 <- function(){
+## ---- fVSmTime ----
+xyplot(timef~time, data=nihills, aspect=1,
+       type=c("p","r"))
+}
+@ %
+
+
+<<fig8_4>>=
+fig8.4 <- function(){
+## ---- mfdensity ----
+## Simplified code
+densityplot(~ time+timef, data=nihills,
+            ylab="Time (h)", auto.key=TRUE)
+}
+@ %
+
+<<fig8_5>>=
+fig8.5 <- function(){
+print("Run the separate functions fig8.5A() and fig8.5B()")
+}
+fig8.5A <- function(){
+## ---- rec-logmf ----
+xyplot(timef~time, data=nihills,
+       scales=list(log=10),
+       aspect=1, type=c("p","r"))
+}
+fig8.5B <- function(){
+## ---- skewtime-log ----
+densityplot(~ log(time)+log(timef), data=nihills,
+           ylab="Time (h)", auto.key=TRUE)
+}
+@  %
+
+<<fig8_6>>=
+fig8.6 <- function(){
+print("Run the separate functions fig8.6A() and fig8.6B()")
+}
+fig8.6A <- function(){
+## Panel A
+plot(resid(mftime.lm)~time, data=nihills)
+mtext(side=3, line=0.5, "A: Residuals, unlogged data")
+}
+fig8.6B <- function(){
+## Panel B
+plot(resid(mflogtime.lm) ~ log(time), data=nihills)
+mtext(side=3, line=0.5, "B: Residuals, logged data")
+}
+@ %
+
+<<fig8_7>>=
+fig8.7 <- function(){
+plot(mftime.lm, cex.caption=0.8)
+}
+@ %
+
+<<fig8_8>>=
+fig8.8 <- function(){
+plot(mflogtime.lm, cex.caption=0.8)
+}
+@ %
+
+<<fig8_9>>=
+fig8.9 <- function(){
+## ---- simscat ----
+gph <- plotSimScat(obj=mftime.lm, show="residuals",
+                   type=c("p","smooth"),
+                   layout=c(4,1))
+update(gph, xlab="Time (h) for males",
+      ylab="Residuals")
+}
+@ %
+
+<<suppfig8_1>>=
+suppfig8.1 <- function(){
+## ---- simdiag2 ----
+plotSimDiags(obj=mftime.lm, which=2, layout=c(4,1))
+}
+@ %
+
+<<suppfig8_2>>=
+suppfig8.2 <- function(){
+## ---- simdiag3 ----
+plotSimDiags(obj=mftime.lm, which=3, layout=c(4,1))
+}
+@ %
+
+<<suppfig8_3>>=
+suppfig8.3 <- function(){
+plotSimDiags(obj=mftime.lm, which=5, layout=c(4,1))
+}
+@
+
+<<suppfig8_4>>=
+suppfig8.4 <- function(){
+## ---- mftime-lm ----
+mftime.lm <- lm(timef ~ time, data=nihills)
+## ---- mftime-sims ----
+gph <- plotSimScat(mftime.lm, layout=c(4,1))
+update(gph, xlab="Male record times (h)",
+       ylab="Female record times (h)")
+}
+@ %
+
+<<fig8_10>>=
+fig8.10 <- function(){
+print("Run the separate functions fig8.10A() and fig8.10B()")
+}
+fig8.10A <- function(){
+## ---- tomato-aov ----
+## Analysis of variance: tomato data (from DAAG)
+tomato.aov <- aov(weight ~ trt, data=tomato)
+## ---- termplot-aov-wt ----
+## Panel A: Use weight as outcome variable
+tomato.aov <- aov(weight ~ trt, data=tomato)
+termplot(tomato.aov, xlab="Treatment",
+         ylab="Partial for treatment",
+         partial.resid=TRUE, se=TRUE, pch=16)
+mtext(side=3, line=0.5, "A: weight", adj=0)
+}
+fig8.10B <- function(){
+## ---- lev-tomato ----
+lev <- c("Water", "A", "B", "C")
+tomato[, "trt"] <- factor(rep(lev, rep(6,4)),
+                          levels=lev)
+## ---- termplot-aov-logwt ----
+## Panel B: Use log(weight) as outcome variable
+logtomato.aov <- aov(log(weight) ~ trt, data=tomato)
+termplot(logtomato.aov, xlab="Treatment",
+         ylab="Partial for treatment",
+         partial.resid=TRUE, se=TRUE, pch=16)
+mtext(side=3, line=0.5, "B: log(weight)", adj=0)
+}
+@ %
+
+<<fig8_11>>=
+fig8.11 <- function(){
+print("Run the separate functions fig8.16A() and fig8.16B()")
+}
+fig8.11A <- function(){
+## ---- scatter-ni ----
+## Unlogged data
+library(lattice)
+## Scatterplot matrix; unlogged data
+splom(~nihills)
+}
+fig8.11B <- function(){
+## ---- scatter-logni ----
+lognihills <- log(nihills)
+names(lognihills) <- paste0("l", names(nihills))
+## Scatterplot matrix; log scales
+splom(~ lognihills)
+}
+@ %
+
+<<fig8_12>>=
+fig8.12 <- function(){
+## ---- nireg-slope ----
+nihills$gradient <- with(nihills, climb/dist)
+lognihills <- log(nihills)
+lognam <- paste0("l", names(nihills))
+names(lognihills) <- lognam
+lognigrad.lm <- lm(ltime ~ ldist + lgradient,
+                   data=lognihills)
+round(coef(lognigrad.lm),3)
+## ---- tplot-ni ----
+## Plot the terms in the model
+termplot(lognigrad.lm, col.term="gray", partial=TRUE,
+         col.res="black", smooth=panel.smooth)
+}
+@ %
+
+<<fig8_13>>=
+fig8.13 <- function(){
+## ---- bsnVary ----
+set.seed(37)   # Use to reproduce graph shown
+DAAG::bsnVaryNvar(m=100, nvar=3:50, nvmax=3)
+}
+@ %
+
+<<fig8_14>>=
+fig8.14 <- function(){
+## ---- Elec-spm ----
+if(require('Ecdat', quietly=TRUE)){
+  data(Electricity)
+  if(requireNamespace('car'))
+  car::spm(Electricity, smooth=TRUE, reg.line=NA,
+           col=adjustcolor(rep("black",3), alpha.f=0.3)) else
+      plot(Electricity, col=adjustcolor(rep("black",3), alpha.f=0.3))
+} else print("Dataset Electricity is not available")
+}
+@ %
+
+<<fig8_15>>=
+fig8.15 <- function(){
+## ---- spm-cost-q ----
+varlabs <- c("log(cost)", "log(q)")
+if(requireNamespace('car'))
+car::spm(log(Electricity[,1:2]), var.labels=varlabs,
+    smooth=TRUE, reg.line=NA,
+    col=adjustcolor(rep("black",3), alpha.f=0.5)) else
+    plot(Electricity, col=adjustcolor(rep("black",3), alpha.f=0.3))
+}
+@ %
+
+<<fig8_16>>=
+fig8.16 <- function(){
+## ---- elec-me ----
+elec.lm <- lm(log(cost) ~ log(q)+pl+sl+pk+sk+pf+sf,
+              data=Electricity)
+## ---- elec-me-tplot ----
+termplot(elec.lm, partial=T, smooth=panel.smooth,
+         transform.x=TRUE)
+}
+@ %
+
+
+<<fig8_17>>=
+fig8.17 <- function(){
+print("Run the separate functions fig8.17A() and fig8.17B()")
+}
+fig8.17A <- function(){
+## ---- bronchitA ----
+## ---- bronchit-ylim ----
+ylim <- range(bronchit$poll)+c(0,2.5)
+## Panel A
+colr <- adjustcolor(c("red","blue"), alpha=0.5)
+plot(poll ~ cig,
+     xlab="# cigarettes per day", ylab="Pollution",
+     col=colr[r+1], pch=(3:2)[r+1], data=bronchit,
+     ylim=ylim)
+legend(x="topright",
+       legend=c("Non-sufferer","Sufferer"),
+       ncol=2, pch=c(3,2), col=c(2,4), cex=0.8)
+mtext(side=3, line=1.0,
+      expression("A: Untransformed "*italic(x)*"-scale"), adj=0)
+}
+fig8.17B <- function(){
+## ---- bronchitB ----
+## ---- bronchit-ylim ----
+ylim <- range(bronchit$poll)+c(0,2.5)
+## Panel B
+plot(poll ~ log(cig+1), col=c(2,4)[r+1], pch=(3:2)[r+1],
+     xlab="log(# cigarettes per day + 1)", ylab="", data=bronchit, ylim=ylim)
+xy1 <- with(subset(bronchit, r==0), cbind(x=log(cig+1), y=poll))
+xy2 <- with(subset(bronchit, r==1), cbind(x=log(cig+1), y=poll))
+if(requireNamespace('KernSmooth', quietly=TRUE)){
+est1 <- bkde2D(xy1, bandwidth=c(0.7, 3))
+est2 <- bkde2D(xy2, bandwidth=c(0.7, 3))
+lev <- pretty(c(est1$fhat, est2$fhat),4)
+contour(est1$x1, est1$x2, est1$fhat, levels=lev, add=TRUE, col=2)
+contour(est2$x1, est2$x2, est2$fhat, levels=lev, add=TRUE, col=4, lty=2)
+}
+legend(x="topright", legend=c("Non-sufferer","Sufferer"), ncol=2, lty=1:2,
+       col=c(2,4), cex=0.8)
+mtext(side=3, line=1.0, expression("B: Log transformed "*italic(x)*"-scale"),
+      adj=0)
+}
+@ %
+
+<<fig8_18>>=
+fig8.18 <- function(){
+## ---- cig2-glm ----
+cig2.glm <- glm(r ~ log(cig+1) + poll, family=binomial, data=bronchit)
+## ---- cig2-tplot ----
+termplot(cig2.glm)
+}
+@ %
+
+<<figset_11>>=
+figset11 <- function(){
+  if(!require(DAAG, quietly=TRUE))stop('DAAG must be installed')
+  if(!require(KernSmooth, quietly=TRUE))
+    print('KernSmooth is not installed. Fig 11.17B will not show contours')
+  if(!require(splines, quietly=TRUE))stop('splines must be installed')
+  }
+@ %
+
+<<do-figset11, warning=FALSE, message=FALSE>>=
+figset11()
+if(!exists("mftime.lm")) mftime.lm <- lm(timef ~ time, data=nihills)
+if(!exists("mflogtime.lm"))
+  mflogtime.lm <- lm(log(timef) ~ log(time), data=nihills)
+  check4bronchit <- exists('bronchit')
+  if(!check4bronchit)if(!require(DAAGviz))stop("Dataset 'bronchit' is not available")
+if(!('rfac' %in% names(bronchit)))bronchit <-
+within(bronchit,
+       rfac <- factor(r, labels=c("abs","pres")))
+@ %
+
+\begin{figure}[H]
+<<plt-roller-11_1, fig.width=2.75, fig.height=3.0, out.width="0.45\\textwidth">>=
+fig8.1()
+@ %
+  \caption{Plot of \txtt{depression} versus \txtt{weight}, using data
+from the data frame \txtt{roller} in the {\em DAAG}
+package.}\label{fig:rollerPlot}
+\end{figure}
+
+\begin{figure}[H]
+<<pltWline-11_2,fig.width=2.75, fig.height=3.0, out.width="0.45\\textwidth">>=
+fig8.2()
+@ %
+\caption{This repeats Figure \ref{fig:rollerPlot}, now adding a fitted
+  line.}\label{fig:rollerPlot-withline}
+\end{figure}
+
+\begin{figure}[H]
+<<fVSmTime-11_3, fig.width=2.75, fig.height=3, out.width="0.45\\textwidth">>=
+fig8.3()
+@ %
+  \caption{Data are for Northern Ireland hill races.
+    Record times are compared -- females versus males.  A least squares line
+    is added.}\label{fig:nimff}
+\end{figure}
+
+\begin{figure}[H]
+<<mfdensity-11_4>>=
+fig8.4()
+@ %
+  \caption{Density plot comparison of times between males
+    and females.  Note the long tail out to the right,
+  already obvious from the diagnostic plots.}\label{fig:skewtime}
+\end{figure}
+
+\begin{figure}[H]
+<<mVSfTime-11_5, fig.width=3.0, fig.height=3.0, out.width="0.47\\textwidth">>=
+fig8.5A()
+fig8.5B()
+@ %
+  \caption{In these graphs, female and male times are shown on log scales.
+    Panel A shows a density plot comparison. Panel B plots female versus
+    male times.
+  }\label{fig:skewtime-log}
+\end{figure}
+
+\begin{figure}[H]
+<<fig8_6e, echo=FALSE, fig.width=3, fig.height=3, out.width="0.47\\textwidth">>=
+fig8.6A()
+fig8.6B()
+@ %
+\caption{In Panel A, residuals from the line for the unlogged data
+  have been plotted against male times.  Panel B repeats the same
+  type of plot, now for the regression for the logged data.\label{fig:to-horiz}}
+\end{figure}
+
+
+\begin{figure}[H]
+<<diag-mf-11_7, fig.width=3, fig.height=3, out.width="0.23\\textwidth">>=
+fig8.7()
+@ %
+\caption{Diagnostic plots from the regession of \txtt{log(timef)} on
+  \txtt{log(time)}.}\label{fig:diag-mftime}
+\end{figure}
+
+\begin{figure}[H]
+<<diag-logmf-11_8, fig.width=3, fig.height=3, out.width="0.23\\textwidth">>=
+fig8.8()
+@ %
+\caption{Diagnostic plots from the regession of \txtt{log(timef)} on
+  \txtt{log(time)}.}\label{fig:diag-mftime-log}
+\end{figure}
+
+\begin{figure}[H]
+<<simscat-11_9, fig.width=7, fig.height=3, out.width="0.97\\textwidth">>=
+fig8.9()
+@ %
+\caption{The plots are four simulations of residuals.  The coefficients
+  used, and the standard deviation, are from the fitted least squares
+  line.\label{fig:4sim-mftimeres1}}
+\end{figure}
+
+\begin{suppfigure}[H]
+<<which2-s11_1e, fig.width=7, fig.height=3, out.width="0.97\\textwidth">>=
+suppfig8.1()
+@ %
+\caption{Normal probability plots for four sets of simulated
+  data.}\label{fig:mftimesimdiag2}
+\end{suppfigure}
+
+\begin{suppfigure}[H]
+<<which3-s11_2e, fig.width=7, fig.height=3, out.width="0.97\\textwidth">>=
+suppfig8.2()
+@ %
+\caption{These plots, here with simulated data, are designed to
+  check for change in variance as the fitted values
+  change.\label{fig:mftimecheck3}}
+\end{suppfigure}
+
+\begin{suppfigure}[H]
+<<simdiag3-11_3e, fig.width=7, fig.height=3, out.width="0.97\\textwidth">>=
+suppfig8.3()
+@ %
+\caption{Scale-location plots for four sets of simulated
+  data.}\label{fig:mftimesimdiag3}
+\end{suppfigure}
+
+\begin{suppfigure}[H]
+<<mftime-sims-s11_4, fig.width=7, fig.height=3, out.width="0.97\\textwidth">>=
+suppfig8.4()
+@ %
+\vspace*{-9pt}
+
+\caption{The plots are four simulations of points.  The coefficients
+  used, and the standard deviation, are from the fitted least squares
+  line. The gray points are the data values, which are of course the
+same in all 4 plots.}\label{fig:4sim-nimff}
+\end{suppfigure}
+
+\begin{figure}[H]
+<<tomato-11-10e, fig.width=2.75, fig.height=2.75, out.width="0.47\\textwidth">>=
+fig8.10A()
+fig8.10B()
+@ %
+ \caption{Termplot summary of the one-way analysis of variance result:
+(a) for the analysis that uses weights as the outcome variable, and
+(b) for the analysis that works with \txtt{log(weight)}}
+\label{fig:tomatoterm}
+\end{figure}
+
+
+\begin{figure}[H]
+<<splot2-ni-11-11e, fig.width=5.25, fig.height=5.25, out.width="0.48\\textwidth">>=
+fig8.11A()
+fig8.11B()
+@ %
+\caption{Scatterplot matrices for the Northern Ireland mountain racing
+  data. In the right panel, code has been added that shows the
+  correlations.
+\label{fig:nimra-reg}}
+\end{figure}
+
+<<nireg-slope>>=
+@ %
+
+\begin{figure}[H]
+<<tplot-ni-11_12, fig.width=3, fig.height=3,bot=0.5, left=1, out.width="0.48\\textwidth">>=
+fig8.12()
+@ %
+\caption{The vertical scales in both ``term plot'' panels show
+  $\log(\mbox{time})$, centered to a mean of zero. The partial residuals
+  in the left panel are for the effect of $\txtt{ldist}$, while those
+  in the right panel are for the effect of $\txtt{lgradient}$, i.e.,
+  \txtt{log(climb/dist)}. Smooth curves (dashes) have been passed
+  through the points.\label{fig:lnihills-lin}}
+\vspace*{-15pt}
+\end{figure}
+
+\begin{figure}[H]
+<<bsnVary-11_13, fig.width=4, fig.height=3.5, warning=FALSE, message=FALSE>>=
+if(!requireNamespace("quantreg", quietly=TRUE))
+    print("As quantreg is not available, trend curve will be omitted.")
+fig8.13()
+@ %
+\caption{$p$-values, versus number of variables available for selection,
+  when the ``best'' 3 variables were selected by exhaustive search.
+  The fitted line estimates the median $p$-value.\label{fig:exhaust}}
+\end{figure}
+
+<<check4Elec, warning=FALSE, message=FALSE>>=
+check4Elec <- exists("Electricity")
+if(!check4Elec){
+    if(!require(Ecdat, quietly=TRUE))stop("Dataset Electricity is not available.")
+}
+check4Elec <- TRUE
+data(Electricity)
+@ %
+
+\begin{figure}[H]
+\parbox[c]{0.7\textwidth}{
+<<Elec-spm-11_14, fig.width=8, fig.height=8, out.width="0.775\\textwidth">>=
+if(check4Elec)fig8.14()
+@ %
+}
+\hspace*{0.05\textwidth}
+\parbox[c]{0.18\linewidth}{
+\small
+\begin{list}{}{\leftmargin=2em \setlength{\itemsep}{5pt} \setlength{\parsep}{1pt}}
+\setlength{\labelwidth}{3em}
+\item[\texttt{cost:}]
+ total cost
+\item[\texttt{q:}]
+ total output
+\item[\texttt{pl:}]
+ wage rate
+\item[\texttt{sl:}]
+ cost share, labor
+\item[\texttt{pk:}]
+ capital price index
+\item[\texttt{sk:}]
+ cost share,
+ capital
+\item[\texttt{pf:}]
+ fuel price
+\item[\texttt{sf:}]
+ cost share, fuel
+\end{list}
+}
+\vspace*{-9pt}
+
+\caption{Scatterplot matrix, for the variables in the data set
+  \texttt{Electricity}, in the {\em Ecdat} package. Density
+  plots are shown in the diagonal.\label{fig:elec-spm}}
+\end{figure}
+
+\begin{figure}[H]
+<<spm-cost-q-11_15, fig.width=6.5, fig.height=6.5, out.width="0.45\\textwidth">>=
+if(check4Elec)fig8.15()
+@
+  \caption{Scatterplot matrix for the logarithms of the variables
+    \txtt{cost} and \txtt{q}. Density plots are shown in the
+    diagonal.\label{fig:elec-dens}}
+\end{figure}
+
+<<elec-me, warning=FALSE, message=FALSE>>=
+@ %
+
+\begin{figure}[H]
+<<elec-me-tplot-11_16, fig.width=3, fig.height=3, out.width="0.24\\textwidth">>=
+if(check4Elec)fig8.16()
+@ %
+\caption{Termplot summary for the model that has been fitted to the
+  \texttt{Electricity} dataset.\label{fig:elec-log-tplot}}
+\end{figure}
+
+<<load-SMIR-KernSmooth>>=
+@ %
+
+\begin{figure}[H]
+<<bronchitAB, fig.width=3.75, fig.height=3.75, out.width="0.47\\textwidth">>=
+opar <- par(mar=c(4,4,2.5,0.6))
+<<bronchit-ylim>>
+fig8.17A()
+fig8.17B()
+par(opar)
+@ %
+\caption{Panel A plots \txtt{poll} (pollution level) against
+  \txtt{cig} (number of cigarettes per day).  In panel B, the
+  $x$-scale shows the logarithm of the number of cigarettes per
+  day.\label{fig:cig-poll}}
+\end{figure}
+
+<<cig2-glm>>=
+@ %
+
+\begin{figure}[H]
+<<cig2-tplot-11_18, fig.width=3.25, fig.height=3.25, out.width="0.47\\textwidth">>=
+fig8.18()
+@ %
+\caption{The panels show the contributions that the respective terms
+  make to the fitted values (logit of probability of bronchitis), when
+  the other term is held constant.\label{fig:xy-cig}}
+\end{figure}
+
+\end{document}
+
+

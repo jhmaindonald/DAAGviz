@@ -25,12 +25,12 @@ opts_chunk$set(fig.path='figs/gph-', cache.path='cache/gph-',
 knit_hooks$set(par=function(before, options, envir){
 if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
               cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
-}, crop=hook_pdfcrop)
+}, crop=knitr::hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 @ %
 
-\title{9: Graphics}
+\title{7: Graphics}
 \author{John H Maindonald}
 \maketitle
 
@@ -40,8 +40,8 @@ oldopt <- options(digits=4)
 doFigs <- TRUE
 @ %
 
-<<fig9_1, eval=TRUE>>=
-fig9.1 <- function(){
+<<fig7_1, eval=TRUE>>=
+fig7.1 <- function(){
 ## ---- brain-body ----
 plot(Brainwt ~ Bodywt, xlim=c(0, 300),
      ylim=c(0,1500), data=primates,
@@ -55,8 +55,8 @@ with(primates,
 }
 @ %
 
-<<supp9_1, eval=TRUE>>=
-supp9.1 <- function(){
+<<supp7_1, eval=TRUE>>=
+supp7.1 <- function(){
 if(!require(RColorBrewer))stop("RColorBrewer must be installed")
 ## ---- col-plots ----
 opt <- options(width=75)
@@ -79,8 +79,8 @@ options(opt)
 }
 @ %
 
-<<fig9_2, eval=TRUE>>=
-fig9.2 <- function(){
+<<fig7_2, eval=TRUE>>=
+fig7.2 <- function(){
 ## ---- alpha-ex ----
 ## Sample from the 15992 rows
 dfsamp <- cps1[sample(nrow(cps1), 3000), ]
@@ -98,18 +98,18 @@ mtext(side=3, line=0.5, "C: Color density plot",
 }
 @ %
 
-<<fig9_3, eval=TRUE>>=
-fig9.3 <- function(){
+<<fig7_3, eval=TRUE>>=
+fig7.3 <- function(){
 ## ---- aspect ----
 plot((1:30)*0.92, sin((1:30)*0.92),
      xlab="", ylab="")
 }
 @ %
 
-<<supp9_2, eval=TRUE>>=
-supp9.2 <- function(){
+<<supp7_2, eval=TRUE>>=
+supp7.2 <- function(){
 ## ---- Animals-body-brain ----
-## Supplementary figure 9.2
+## Supplementary figure 7.2
 library(MASS)
 oldpar <- par(pch=16, pty="s", mfrow=c(2,2))
 with(Animals, {      # bracket several R statements
@@ -122,8 +122,8 @@ par(oldpar)          # Restore former settings
 }
 @ %
 
-<<fig9_4, eval=TRUE>>=
-fig9.4 <- function(){
+<<fig7_4, eval=TRUE>>=
+fig7.4 <- function(){
 ## ---- poss-hist ----
 ftotlen <- subset(possum, sex=="f")[, "totlngth"]
 ## Left panel: breaks at 72.5, 77.5,..
@@ -140,17 +140,17 @@ hist(ftotlen, breaks = 75 + (0:5)*5, freq=FALSE,
 }
 @ %
 
-<<supp9_3, eval=TRUE>>=
-supp9.3 <- function(){
+<<supp7_3, eval=TRUE>>=
+supp7.3 <- function(){
 ## ---- fposs-density ----
-## Supplementary figure 9.3
+## Supplementary figure 7.3
 with(subset(possum, sex=="f"),
      plot(density(totlngth), type="l"))
 }
 @ %
 
-<<fig9_5, eval=TRUE>>=
-fig9.5 <- function(){
+<<fig7_5, eval=TRUE>>=
+fig7.5 <- function(){
 ## ---- boxplot ----
 ## Code
 with(subset(possum, sex=="f"),
@@ -159,8 +159,8 @@ with(subset(possum, sex=="f"),
 }
 @ %
 
-<<fig9_6, eval=TRUE>>=
-fig9.6 <- function(){
+<<fig7_6, eval=TRUE>>=
+fig7.6 <- function(){
 ## ---- possum-qqn ----
 ftotlen <- subset(possum, sex == "f")[, "totlngth"]
 ylabel <- expression(bold("Data"))
@@ -177,23 +177,23 @@ for(i in 1:7) qqnorm(rnorm(43), xlab="",
 }
 @ %
 
-<<fig9_7, eval=TRUE>>=
-fig9.7 <- function(){
+<<fig7_7, eval=TRUE>>=
+fig7.7 <- function(){
 ## ---- plot-expr ----
 yl <- expression("Area = " * pi * r^~2)
 plot(1:5, pi*(1:5)^2, xlab="Radius (r)", ylab=yl)
 }
 @ %
 
-<<fig9_8, eval=TRUE>>=
-fig9.8 <- function(){
+<<fig7_8, eval=TRUE>>=
+fig7.8 <- function(){
 ## ---- cline-gph ----
 ## On the command line: Create and print object
 xyplot(Brainwt ~ Bodywt, data=primates)
 }
 
-<<fig9_9, eval=TRUE>>=
-fig9.9 <- function(){
+<<fig7_9, eval=TRUE>>=
+fig7.9 <- function(){
 ## ---- rowSwim ----
 xyplot(ht ~ wt | sport, groups=sex, data=ais,
        par.settings=simpleTheme(pch=c(4,1)),
@@ -203,8 +203,8 @@ xyplot(ht ~ wt | sport, groups=sex, data=ais,
 }
 @ %
 
-<<fig9_10, eval=TRUE>>=
-fig9.10 <- function(){
+<<fig7_10, eval=TRUE>>=
+fig7.10 <- function(){
 ## ---- grog-simple ----
 ## Simple version of plot
 grogplot <- xyplot(
@@ -222,8 +222,8 @@ print(finalplot)
 }
 @ %
 
-<<fig9_11, eval=TRUE>>=
-fig9.11 <- function(){
+<<fig7_11, eval=TRUE>>=
+fig7.11 <- function(){
 ## ---- strip-grob ----
 library(grid)
 plotnam <- "Stripplot of cuckoo data"
@@ -234,8 +234,8 @@ stripplot(species ~ length, xlab="", data=cuckoos,
 }
 @ %
 
-<<fig9_12, eval=TRUE>>=
-fig9.12 <- function(){
+<<fig7_12, eval=TRUE>>=
+fig7.12 <- function(){
 ## ---- jobs-basic ----
 ## 1. Create a basic version of the graphics object
 jobsB.xyplot <-
@@ -257,8 +257,8 @@ update(jobsB.xyplot, xlab="", between=list(x=0.5, y=0.5),
 }
 @ %
 
-<<fig9_13, eval=TRUE>>=
-fig9.13 <- function(){
+<<fig7_13, eval=TRUE>>=
+fig7.13 <- function(){
 ## ---- strip-bw ----
 stripplot(species ~ length, data=cuckoos,
           xlab="Cuckoo egg length (mm)")
@@ -267,8 +267,8 @@ bwplot(species ~ length, data=cuckoos,
 }
 @ %
 
-<<fig9_14, eval=TRUE>>=
-fig9.14 <- function(){
+<<fig7_14, eval=TRUE>>=
+fig7.14 <- function(){
 ## ---- lattice-density ----
 ## Code
 colset <- c("gray","black")
@@ -279,8 +279,8 @@ densityplot(~ earconch | sex, groups=Pop,
 }
 @ %
 
-<<fig9_15, eval=TRUE>>=
-fig9.15 <- function(){
+<<fig7_15, eval=TRUE>>=
+fig7.15 <- function(){
 ## ---- gph-from ----
 gph <- xyplot(Brainwt ~ Bodywt,  data=primates,
               xlim=c(0,300))
@@ -293,26 +293,26 @@ update(gph, panel=my.panel)
 }
 @ %
 
-<<fig9_16, eval=TRUE>>=
-fig9.16 <- function(){
-print(c("The Figure 9.16 screen display was obtained using the playwith GUI.",
+<<fig7_16, eval=TRUE>>=
+fig7.16 <- function(){
+print(c("The Figure 7.16 screen display was obtained using the playwith GUI.",
         "See text for details."), quote=FALSE)
 }
 @ %
 
-<<fig9_17, eval=TRUE>>=
-fig9.17 <- function(){
+<<fig7_17, eval=TRUE>>=
+fig7.17 <- function(){
 ## ---- qplot-smooth ----
 ## Default loess smooth, with SE bands added.
-ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2011,
+ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2015,
           geom=c("point","smooth"), se=TRUE,
           method="loess", span=0.5, xlab="",
           ylab="Av. rainfall, M-D basin")
 }
 @ %
 
-<<fig9_18, eval=TRUE>>=
-fig9.18 <- function(){
+<<fig7_18, eval=TRUE>>=
+fig7.18 <- function(){
 ## ---- overlay-dens-simple ----
 ## Overlay with boxplots and density contours
 ggplot2::quickplot(wt, ht, data=DAAG::ais,
@@ -321,19 +321,19 @@ ggplot2::quickplot(wt, ht, data=DAAG::ais,
 }
 @ %
 
-<<supp9_4, eval=TRUE>>=
-supp9.4 <- function(){
+<<supp7_4, eval=TRUE>>=
+supp7.4 <- function(){
 ## ---- twenty5080 ----
 ## Supplementary figure 4
-ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2012,
+ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2015,
           geom=c("point", "quantile"),
           formula = y ~ ns(x,5),
           quantiles=c(0.2,0.5,0.8) )
 }
 @ %
 
-<<fig9_19, eval=TRUE>>=
-fig9.19 <- function(){
+<<fig7_19, eval=TRUE>>=
+fig7.19 <- function(){
 ## ---- aisRS ----
 ## Extract from ais data for rowers and swimmers
 aisRS <- subset(DAAG::ais, sport %in% c("Row","Swim"))
@@ -364,23 +364,23 @@ figset9()
 
 
 \begin{figure}[ht]
-<<fig9_1e, fig.width=4, fig.height=4.25, top=2, rt=2, crop=TRUE, out.width="0.47\\textwidth">>=
-fig9.1()
+<<fig7_1e, fig.width=4, fig.height=4.25, top=2, rt=2, crop=TRUE, out.width="0.47\\textwidth">>=
+fig7.1()
 @ %
 \caption{Plot of brain weight against body weight, for selected
 primates.}\label{fig:primates}
 \end{figure}
 
 \begin{suppfigure}[ht]
-<<supp9_1e, fig.width=7.5, fig.height=7, cache=FALSE, crop=TRUE, out.width="0.75\\textwidth">>=
-supp9.1()
+<<supp7_1e, fig.width=7.5, fig.height=7, cache=FALSE, crop=TRUE, out.width="0.75\\textwidth">>=
+supp7.1()
 @ %
 \caption{Color palettes.}\label{fig:colpal}
 \end{suppfigure}
 
 \begin{figure}[ht]
-<<fig9_2e, dev='png', fig.width=2.5, fig.height=2.75, top=2, out.width="0.32\\textwidth">>=
-fig9.2()
+<<fig7_2e, dev='png', fig.width=2.5, fig.height=2.75, top=2, out.width="0.32\\textwidth">>=
+fig7.2()
 @ %
 \caption{In Panel A, points are plotted with the 100\% opacity, i.e.,
   no transparency. In Panel B, \txtt{alpha=0.4}, i.e., 40\% opacity.
@@ -390,12 +390,12 @@ fig9.2()
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_3e, fig.width=8, fig.height=2.4, top=1, out.width="0.9\\textwidth">>=
+<<fig7_3e, fig.width=8, fig.height=2.4, top=1, out.width="0.9\\textwidth">>=
 par(fig=c(0,0.265, 0,1))
-fig9.3()
+fig7.3()
 mtext(side=3, line=0.5, "A: 1:1 aspect ratio", adj=0)
 par(fig=c(0.265, 1, 0,1), new=TRUE)
-fig9.3()
+fig7.3()
 mtext(side=3, line=0.5, "B: 1:3.5 aspect ratio", adj=0)
 @ %
 \caption{Both figures show the same data, but with very different
@@ -403,23 +403,23 @@ mtext(side=3, line=0.5, "B: 1:3.5 aspect ratio", adj=0)
 \end{figure}
 
 \begin{suppfigure}[ht]
-<<supp9_2e, fig.width=5, fig.height=5, out.width="0.8\\textwidth">>=
-supp9.2()
+<<supp7_2e, fig.width=5, fig.height=5, out.width="0.8\\textwidth">>=
+supp7.2()
 @ %
 \caption{The figure shows a 2 by 2 layout of plots.}
 \end{suppfigure}
 
 \begin{figure}[ht]
-<<fig9_4e, eval=TRUE, fig.width=3.25, fig.height=3.25, left=1, rt=1, bot=2, top=2, out.width="0.47\\textwidth">>=
-fig9.4()
+<<fig7_4e, eval=TRUE, fig.width=3.25, fig.height=3.25, left=1, rt=1, bot=2, top=2, out.width="0.47\\textwidth">>=
+fig7.4()
 @ %
 \caption{The two panels show the same data, but with a different
 choice of breakpoints.\label{fig:densitybreaks}}
 \end{figure}
 
 \begin{suppfigure}
-<<supp9_3e, out.width="0.47\\textwidth">>=
-supp9.3()
+<<supp7_3e, out.width="0.47\\textwidth">>=
+supp7.3()
 @ %
 \caption{Density plot for lengths of female possums.}
 \end{suppfigure}
@@ -428,8 +428,8 @@ supp9.3()
 
 
 \begin{figure}[ht]
-<<fig9_5e, eval=TRUE, fig.width=3.5, fig.height=2.5, bot=1, out.width="0.42\\textwidth">>=
-fig9.5()
+<<fig7_5e, eval=TRUE, fig.width=3.5, fig.height=2.5, bot=1, out.width="0.42\\textwidth">>=
+fig7.5()
 @ %
 \vspace*{-18pt}
 
@@ -438,8 +438,8 @@ The bars (together making up a 'rug') show actual data values.\label{fig:boxrugs
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_6e, fig.width=4, fig.height=4, top=1, bot=1, rt=1, out.width="0.24\\textwidth">>=
-fig9.6()
+<<fig7_6e, fig.width=4, fig.height=4, top=1, bot=1, rt=1, out.width="0.24\\textwidth">>=
+fig7.6()
 @ %
 \vspace*{-12pt}
 
@@ -450,24 +450,24 @@ random samples of size 43.\label{fig:np-plots}}
 
 \begin{figure}[ht]
 \vspace*{-6pt}
-<<fig9_7e, eval=TRUE, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
-fig9.7()
+<<fig7_7e, eval=TRUE, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
+fig7.7()
 @ %
 \caption{A mathematical expression is included as part of the
   $y$-axis label.\label{fig:area}.}
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_8e, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
-fig9.8()
+<<fig7_8e, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
+fig7.8()
 @ %
 \caption{Use of lattice function \txtt{xyplot()} to give a graph.
   \label{fig:lat-gph}}
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_9e, fig.width=6, fig.height=3.5, out.width="0.8\\textwidth">>=
-fig9.9()
+<<fig7_9e, fig.width=6, fig.height=3.5, out.width="0.8\\textwidth">>=
+fig7.9()
 @ %
 \caption{Height (\texttt{ht}) versus Weight (\texttt{wt}), for
         rowers (\texttt{Row}) and swimmers (\texttt{Swim}).
@@ -476,8 +476,8 @@ fig9.9()
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_10e, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth">>=
-fig9.10()
+<<fig7_10e, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth">>=
+fig7.10()
 @ %
 \caption{Australian and New Zealand apparent per person annual
   consumption (in liters) of the pure alcohol content of liquor products, for
@@ -485,31 +485,31 @@ fig9.10()
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_11e, fig.width=3.5, fig.height=2.5, out.width="0.47\\textwidth", cache=FALSE>>=
-fig9.11()
+<<fig7_11e, fig.width=3.5, fig.height=2.5, out.width="0.47\\textwidth", cache=FALSE>>=
+fig7.11()
 @ %
 \caption{The argument \txtt{legend} has been used to add text,
   supplied as a 'grob'.\label{fig:textGrob}}
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_12e, fig.width=8.5, fig.height=4, out.width="0.97\\textwidth">>=
-fig9.12()
+<<fig7_12e, fig.width=8.5, fig.height=4, out.width="0.97\\textwidth">>=
+fig7.12()
 @ %
 \caption{Jobs growth in Canadian provinces, between January 1995
   and December 1996.}\label{fig:jobsplot}
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_13e-strip-bw, fig.width=3.5, fig.height=2.5, cache=FALSE, out.width="0.47\\textwidth">>=
+<<fig7_13e-strip-bw, fig.width=3.5, fig.height=2.5, cache=FALSE, out.width="0.47\\textwidth">>=
 <<strip-bw>>
 @ %
 \caption{A stripplot and a dotplot, side by side for comparison.}
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_14e, fig.width=6, fig.height=3.15, out.width="0.8\\textwidth">>=
-fig9.14()
+<<fig7_14e, fig.width=6, fig.height=3.15, out.width="0.8\\textwidth">>=
+fig7.14()
 @ %
 \caption{Lattice style density plot comparing possum earconch
     measurements, separately for males and females, between Victorian
@@ -518,8 +518,8 @@ shown along the horizontal axis.}\label{fig:possumdens}
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_15e, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
-fig9.15()
+<<fig7_15e, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
+fig7.15()
 @ %
 \caption{Here, labels have been added to the points. This can be
   done by updating a graph that has the points, by use of a panel
@@ -530,8 +530,8 @@ fig9.15()
 \addtocounter{figure}{1}
 
 \begin{figure}[ht]
-<<fig9_17e, fig.width=5.5, fig.height=3.25, out.width="0.8\\textwidth", warning=FALSE>>=
-fig9.17()
+<<fig7_17e, fig.width=5.5, fig.height=3.25, out.width="0.8\\textwidth", warning=FALSE>>=
+fig7.17()
 @ %
 \caption{Annual rainfall, from 1901 to 2012, for the Murray-Darling
   basin region of Australia.  The curve is fitted using the default
@@ -542,8 +542,8 @@ fig9.17()
 \end{figure}
 
 \begin{figure}[ht]
-<<fig9_18e, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth", warning=FALSE>>=
-fig9.18()
+<<fig7_18e, fig.width=6, fig.height=3.25, out.width="0.8\\textwidth", warning=FALSE>>=
+fig7.18()
 @ %
 \caption{Height versus weight, by sex, for Australian athletes in the
 \texttt{ais} data set. Boxplots that show the distributions of heights,
@@ -553,8 +553,8 @@ added.\label{fig:ggais}}
 \end{figure}
 
 \begin{suppfigure}
-<<supp9_4e, fig.width=5.5, fig.height=3.25, out.width="0.8\\textwidth", warning=FALSE>>=
-supp9.4()
+<<supp7_4e, fig.width=5.5, fig.height=3.25, out.width="0.8\\textwidth", warning=FALSE>>=
+supp7.4()
 @ %
 \caption{Annual rainfall, from 1901 to 2012, for the Murray-Darling
   basin region of Australia.  Curves that estimate the 20\%, 50\% and 80\%
@@ -562,11 +562,74 @@ supp9.4()
 \end{suppfigure}
 
 \begin{figure}[ht]
-<<fig9_19e, fig.width=4.5, fig.height=3.5, out.width="0.8\\textwidth">>=
-fig9.19()
+<<fig7_19e, fig.width=4.5, fig.height=3.5, out.width="0.8\\textwidth">>=
+fig7.19()
 @ %
 \caption{Use \texttt{color} for distinguishing \texttt{sex}es,
 \texttt{shape}s for \texttt{sport}s.}\label{fig:colshape}
 \end{figure}
+
+
+<<setup2, cache=FALSE, echo=FALSE>>=
+library(knitr)
+options(replace.assign=FALSE,width=72)
+
+knit_hooks$set(par=function(before, options, envir){
+if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
+              cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+}, rgl=function (before, options, envir) 
+{
+    if (before || rgl.cur() == 0) 
+        return()
+    if (!requireNamespace("knitr")) 
+        stop("hook_rgl requires the 'knitr' package.")
+    name <- knitr::fig_path("", options)
+    par3d(windowRect = 100 + options$dpi * c(0, 0, options$fig.width, 
+        options$fig.height))
+    Sys.sleep(0.05)
+    dir <- knitr::opts_knit$get("base_dir")
+    if (is.character(dir)) {
+        if (!file_test("-d", dir)) 
+            dir.create(dir, recursive = TRUE)
+        owd <- setwd(dir)
+        on.exit(setwd(owd))
+    }
+    save_rgl(name, options$dev)
+    if (!isTRUE(options$rgl.keepopen)) 
+        rgl.close()
+    options$fig.num = 1L
+    knitr::hook_plot_custom(before, options, envir)
+}, crop=knitr::hook_pdfcrop)
+pdf.options(pointsize=12)
+oldopt <- options(digits=4)
+@ %
+
+<<supp7_5, echo=TRUE, eval=TRUE>>=
+supp7.5 <- function(){
+if(!require(googleVis))stop("Package 'googleVis' must be available.")
+if(!exists("WorldBank"))stop("Requires dataset 'Worldbank' to be available.")
+M <- gvisMotionChart(WorldBank, idvar="country",
+          timevar="year",
+          xvar="life.expectancy",
+          yvar="fertility.rate",
+          colorvar="region", sizevar="population",
+          options=list(width=700, height=600))
+## Now display the motion chart
+plot(M)
+}
+@ %
+
+<<fig7_21e, echo=TRUE, eval=doFigs>>=
+fig7.21()
+@ %
+
+\begin{figure}
+<<fig7_21e, echo=FALSE, fig.width=3.25, fig.height=3.25, eval=FALSE, out.width="0.65\\textwidth", warning=FALSE, message=FALSE>>=
+@ %
+\caption{Snapshot of 3-D dynamic display.}\label{fig:rgl-ex}
+\end{figure}
+
+\end{document}
+
 
 \end{document}

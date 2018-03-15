@@ -1,5 +1,7 @@
 \documentclass[12pt, a4paper,  BCOR=8.25mm, DIV=15]{scrartcl}
 \usepackage[utf8]{inputenc}
+\usepackage{newfloat}
+\DeclareFloatingEnvironment[name={Supplementary Figure}]{suppfigure}
 
 \newenvironment{itemizz}%
   {\begin{itemize}%
@@ -11,95 +13,242 @@
 
 \begin{document}
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Dynamic Interaction with Graphs (Set 10)}
+%\VignetteIndexEntry{Map Overlays  and Spatial Modeling (Set 10)}
 
-<<setup, cache=FALSE, echo=FALSE>>=
+<<setup, cache=FALSE, echo=FALSE, purl=FALSE>>=
 library(knitr)
-options(replace.assign=FALSE,width=72)
-opts_chunk$set(fig.path='figs/data-', cache.path='cache/data-',
+options(replace.assign=FALSE, width=72)
+opts_chunk$set(fig.path='figs/map-', cache.path='cache/map-',
                fig.align='center', dev='pdf', fig.width=3.5,
                fig.height=3.5, fig.show='hold', par=TRUE,
                tidy=FALSE,  comment=NA)
 knit_hooks$set(par=function(before, options, envir){
 if (before && options$fig.show!='none') par(mar=c(4,4,1.6,.1),
               cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
-}, rgl=function (before, options, envir) 
-{
-    if (before || rgl.cur() == 0) 
-        return()
-    if (!requireNamespace("knitr")) 
-        stop("hook_rgl requires the 'knitr' package.")
-    name <- knitr::fig_path("", options)
-    par3d(windowRect = 100 + options$dpi * c(0, 0, options$fig.width, 
-        options$fig.height))
-    Sys.sleep(0.05)
-    dir <- knitr::opts_knit$get("base_dir")
-    if (is.character(dir)) {
-        if (!file_test("-d", dir)) 
-            dir.create(dir, recursive = TRUE)
-        owd <- setwd(dir)
-        on.exit(setwd(owd))
-    }
-    save_rgl(name, options$dev)
-    if (!isTRUE(options$rgl.keepopen)) 
-        rgl.close()
-    options$fig.num = 1L
-    knitr::hook_plot_custom(before, options, envir)
 }, crop=knitr::hook_pdfcrop)
 pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 @ %
 
-\title{10: Dynamic Interaction with Graphs}
+\title{13: Map Overlays  and Spatial Modeling}
 \author{John H Maindonald}
 \maketitle
 
-<<set-doFigs, cache=FALSE, eval=TRUE>>=
-doFigs <- FALSE
+\vspace*{-0.5cm}
+<<doFigs>>=
+doFigs <- TRUE
+@ %
+\vspace*{-0.5cm}
+
+Start by attaching required packages:
+
+<<figset_13>>=
+figset13 <- function(){
+  if(!requireNamespace('DAAG', quietly = TRUE))stop('DAAG must be installed')
+  if(!require('latticeExtra', quietly = TRUE))stop('latticeExtra must be installed')
+  if(!requireNamespace('oz', quietly = TRUE))stop('oz must be installed')
+  if(!requireNamespace('rgdal', quietly=TRUE))stop('rgdal must be installed')
+  if(!require('sp', quietly = TRUE))stop('sp must be installed')
+  }
 @ %
 
-<<fig10_1, echo=TRUE, eval=TRUE>>=
+<<getlibs, warning=FALSE, message=FALSE>>=
+figset13()
+@ %
+
+<<fig10_1>>=
 fig10.1 <- function(){
-## ---- rgl-demo ----
-## The Rcmdr and rgl packages must be installed
-if(!requireNamespace('rgl', quietly=TRUE))stop("Package 'rgl' must be available.")
-if(!requireNamespace('car', quietly=TRUE))stop("Package 'car' must be available.")
-if(!require(DAAG, quietly=TRUE))stop("Package 'DAAG' must be available.")
-rgl::open3d()            # Precedes the call to par3d()
-rgl::par3d(cex=0.75)     # Optional
-                         # Other params: see help(par3d)
-with(nihills, car::scatter3d(x=log(dist), y=log(climb),
-                        z=log(time),
-                        grid=FALSE,
-                        surface=FALSE,
-                        point.col="black",
-                        axis.scales=FALSE))
+## ---- oz-sites ----
+oz::oz(sections=c(3:5, 11:16), col="gray")
+chh <- par()$cxy[2]
+with(DAAG::possumsites, {
+  points(Longitude,
+         Latitude+c(0,0,0,.2,-.2, 0,0)*chh,
+         col="blue")
+  text(Latitude ~ Longitude,
+       labels=rownames(DAAG::possumsites),
+       col="red", pos=c(2,4,2,1,3,2,2), xpd=TRUE)
+  # pos = 1:below, 2:left, 3:above, 4:right
+  # xpd=TRUE allows plotting outside figure region
+})
 }
-@ %
-
-<<supp10_1, echo=TRUE, eval=TRUE>>=
-supp10.1 <- function(){
-if(!require(googleVis))stop("Package 'googleVis' must be available.")
-if(!exists("WorldBank"))stop("Requires dataset 'Worldbank' to be available.")
-M <- gvisMotionChart(WorldBank, idvar="country",
-          timevar="year",
-          xvar="life.expectancy",
-          yvar="fertility.rate",
-          colorvar="region", sizevar="population",
-          options=list(width=700, height=600))
-## Now display the motion chart
-plot(M)
-}
-@ %
-
-<<fig10_1e, echo=TRUE, eval=doFigs>>=
-fig10.1()
 @ %
 
 \begin{figure}
-<<fig10_1e, echo=FALSE, fig.width=3.25, fig.height=3.25, eval=FALSE, out.width="0.65\\textwidth", warning=FALSE, message=FALSE>>=
+<<oz-sites-13_1, fig.width=4, fig.height=6.5, rt=3, warning=FALSE, message=FALSE, out.width="0.6\\textwidth">>=
+opar <- par(mar=c(4,4,1.6,3.1))
+fig10.1()
+par(opar)
 @ %
-\caption{Snapshot of 3-D dynamic display.}\label{fig:rgl-ex}
+
+\caption{Sites at which possums were collected.\label{fig:possumsites}}
+\end{figure}
+
+<<load-dismo>>=
+@ %
+
+<<supp13_1>>=
+supp13.1 <- function(){
+if(!require(dismo))stop('dismo must be installed')
+## ---- google-possums ----
+## Extend longitude & latitude ranges slightly
+lonlat <- with(DAAG::possumsites,
+               c(range(Longitude)+c(-3,3),
+                 range(Latitude)+c(-2,2))
+)
+## Obtain map, as a ``RasterLayer'' object
+googmap <- gmap(extent(lonlat))
+plot(googmap, inter=TRUE)
+## From latitude/longitude to Mercator projection
+xy <- Mercator(with(DAAG::possumsites,
+                    cbind(Longitude, Latitude)))
+## Points show location of sites on the map
+points(xy)
+## Add labels that give the names
+text(xy, labels=row.names(DAAG::possumsites))
+}
+@ %
+
+
+\begin{suppfigure}
+<<google-possums-13_1, fig.width=5, fig.height=7.5, out.width="0.47\\textwidth", warning=FALSE, message=FALSE>>=
+supp13.1()
+@ %
+\end{suppfigure}
+
+<<supp13_2, fig.width=6.5, fig.height=6.5>>=
+supp13.2 <- function(){
+    if(!require(plotKML))stop("plotKML must be installed.")
+## ---- plotKML ----
+plotKML(quakes['Energy'], points_names="")
+}
+@ %
+
+<<quakes-dataX, eval=FALSE>>=
+## Input data from internet
+from <-
+  paste(c("http://wfs-beta.geonet.org.nz/",
+          "geoserver/geonet/ows?service=WFS",
+          "&version=1.0.0",
+          "&request=GetFeature",
+          "&typeName=geonet:quake",
+          "&outputFormat=csv",
+          "&cql_filter=origintime%3E='2009-08-01'",
+          "+AND+magnitude>4.5"),
+        collapse="")
+quakes <- read.csv(from)
+z <- strsplit(as.character(quakes$origintime),
+              split="T")
+quakes$Date <- sapply(z, function(x)as.Date(x[1]))
+quakes$Time <- sapply(z, function(x)x[2])
+quakes$Energy <- 10^quakes$magnitude/1000000
+  # Will make circles area proportional to Energy
+@ %
+
+<<ready-dataX, eval=FALSE>>=
+## Prepare data for plotting
+coordinates(quakes) <- ~ longitude+latitude
+proj4string(quakes) <-
+  CRS("+proj=longlat +datum=WGS84")
+@ %
+
+\begin{suppfigure}
+<<quakes-13_2, eval=FALSE, warning=FALSE, message=FALSE>>=
+<<quakes-dataX>>
+<<ready-dataX>>
+supp13.2()
+@ %
+\end{suppfigure}
+
+<<fig10_2>>=
+## ---- logofile ----
+logofile <- system.file("pictures/Rlogo.jpg",
+                        package = "rgdal")[1]
+rlogo <- rgdal::readGDAL(logofile, silent=TRUE)
+fig10.2 <- function(){
+## ---- rlogo-image ----
+image(rlogo, red="band1",
+      green="band2",
+      blue="band3")
+}
+@ %
+
+\begin{figure}
+<<rlogo-image-13_2, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
+fig10.2()
+@ %
+\caption{The function \txtt{image()} has been used to display the R
+  logo image that had been input as a GDAL grid map.\label{fig:rlogo}}
+\end{figure}
+
+<<fig10_3>>=
+fig10.3 <- function(){
+## ---- spplot-col3 ----
+## Code
+col3 <- c("red","green","blue")
+spplot(rlogo, zcol=1:3, names.attr=col3,
+       col.regions=grey(0:100/100), as.table=TRUE,
+       layout=c(3,1), main=paste("3-layer (RGB)",
+       "raster image - example"))
+}
+@ %
+
+\begin{figure}
+<<spplot-col3-13_3, fig.width=6, fig.height=2, echo=FALSE>>=
+fig10.3()
+@ %
+\caption{Red, green and blue layers from the R logo image.\label{fig:rlogo3}}
+\end{figure}
+
+<<sp27-supp13_3>>=
+supp13.3 <- function(){
+## ---- sp27 ----
+sp27 <- system.file("pictures/SP27GTIF.TIF",
+                    package = "rgdal")[1]
+## ---- sp27-read ----
+SP27GTIF <- rgdal::readGDAL(sp27, output.dim=c(100,100),
+                     silent=TRUE)
+class(SP27GTIF)
+## ---- sp27-spplot ----
+spplot(SP27GTIF)
+}
+@ %
+
+\begin{suppfigure}
+<<sp27-13_3, out.width="0.6\\textwidth">>=
+supp13.3()
+@ %
+\end{suppfigure}
+
+<<load-latticeExtra>>=
+@ %
+
+<<fig10_4>>=
+fig10.4 <- function(){
+## ---- meuse-bubble ----
+data(meuse); data(meuse.riv)
+coordinates(meuse) <- ~ x + y
+gph <- bubble(meuse, "zinc", pch=1,
+              key.entries =  100 * 2^(0:4),
+              main = "Zinc(ppm)",
+              scales=list(axes=TRUE, tck=0.4))
+add <-
+  latticeExtra::layer(panel.lines(meuse.riv[,1],
+                                  meuse.riv[,2],
+                      col="gray"))
+gph+add
+}
+@ %
+
+\begin{figure}
+<<meuse-bubble-13_4, fig.width=3.75, fig.height=4, out.width="0.47\\textwidth">>=
+fig10.4()
+@ %
+ \caption{Bubble plot for \txtt{zinc},
+with area of bubbles proportional to concentration.
+River Meuse boundaries are in gray.\label{fig:ZnRiv}}
 \end{figure}
 
 \end{document}
+
+
