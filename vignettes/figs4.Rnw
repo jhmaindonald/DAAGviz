@@ -11,7 +11,7 @@
 
 \begin{document}
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Data (Set 6)}
+%\VignetteIndexEntry{Data (Set 4)}
 
 <<setup, cache=FALSE, echo=FALSE>>=
 library(knitr)

@@ -63,121 +63,79 @@
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Graphics (Set 9)}
+%\VignetteIndexEntry{Further methods (Set 9)}
 
 
 
-\title{9: Graphics}
+\title{9: Further Methods}
 \author{John H Maindonald}
 \maketitle
-
-\vspace*{-1cm}
+\vspace{-0.5cm}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{doFigs} \hlkwb{<-} \hlnum{TRUE}
+\hlstd{doFigs} \hlkwb{<-} \hlnum{FALSE}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
+\vspace{-0.5cm}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.1} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- brain-body ----}
-\hlkwd{plot}\hlstd{(Brainwt} \hlopt{~} \hlstd{Bodywt,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{300}\hlstd{),}
-     \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{1500}\hlstd{),} \hlkwc{data}\hlstd{=primates,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Body weight (kg)"}\hlstd{,}
-     \hlkwc{ylab}\hlstd{=}\hlstr{"Brain weight (g)"}\hlstd{)}
-\hlcom{# Specify xlim to allow room for the labels}
-\hlkwd{with}\hlstd{(primates,}
-     \hlkwd{text}\hlstd{(Brainwt} \hlopt{~} \hlstd{Bodywt,}
-          \hlkwc{labels}\hlstd{=}\hlkwd{rownames}\hlstd{(primates),} \hlkwc{pos}\hlstd{=}\hlnum{4}\hlstd{))}
-\hlcom{# pos: pos=1 (below), 2 (left), 3 (above)}
+\hlcom{## ---- smooth-ohms ----}
+\hlcom{## Plot points}
+\hlkwd{plot}\hlstd{(ohms} \hlopt{~} \hlstd{juice,} \hlkwc{data}\hlstd{=fruitohms)}
+\hlcom{## Add smooth curve, using default}
+\hlcom{## smoothing window}
+\hlkwd{with}\hlstd{(fruitohms,}
+     \hlkwd{lines}\hlstd{(}\hlkwd{lowess}\hlstd{(ohms} \hlopt{~} \hlstd{juice),} \hlkwc{col}\hlstd{=}\hlstr{"gray"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{))}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 
+\begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{supp9.1} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(RColorBrewer))}\hlkwd{stop}\hlstd{(}\hlstr{"RColorBrewer must be installed"}\hlstd{)}
-\hlcom{## ---- col-plots ----}
-\hlstd{opt} \hlkwb{<-} \hlkwd{options}\hlstd{(}\hlkwc{width}\hlstd{=}\hlnum{75}\hlstd{)}
-\hlstd{colpal} \hlkwb{<-} \hlkwd{rev}\hlstd{(}\hlkwd{list}\hlstd{(}
-    \hlstr{"Default palette"} \hlstd{=} \hlkwd{palette}\hlstd{()[}\hlnum{1}\hlopt{:}\hlnum{8}\hlstd{],}  \hlkwc{cm.colors} \hlstd{=} \hlkwd{cm.colors}\hlstd{(}\hlnum{12}\hlstd{),}
-    \hlkwc{terrain.colors} \hlstd{=} \hlkwd{terrain.colors}\hlstd{(}\hlnum{12}\hlstd{),} \hlkwc{heat.colors} \hlstd{=} \hlkwd{heat.colors}\hlstd{(}\hlnum{12}\hlstd{),}
-    \hlkwc{blueRamp} \hlstd{=} \hlkwd{colorRampPalette}\hlstd{(}\hlkwd{c}\hlstd{(blues9,} \hlstr{"white"}\hlstd{))(}\hlnum{12}\hlstd{),}
-    \hlstr{"Brewer-Set1"} \hlstd{=} \hlkwd{brewer.pal}\hlstd{(}\hlnum{8}\hlstd{,} \hlstr{"Set1"}\hlstd{),}
-    \hlstr{"Brewer-Dark2"} \hlstd{=} \hlkwd{brewer.pal}\hlstd{(}\hlnum{8}\hlstd{,} \hlstr{"Dark2"}\hlstd{)))}
-\hlstd{palnam} \hlkwb{<-} \hlkwd{names}\hlstd{(colpal)}
-\hlkwd{plot}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{,} \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.5}\hlstd{,}\hlnum{12.5}\hlstd{),} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlkwd{length}\hlstd{(palnam)}\hlopt{+}\hlnum{0.5}\hlstd{),} \hlkwc{type}\hlstd{=}\hlstr{"n"}\hlstd{,}
-     \hlkwc{axes}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hlstd{(palnam))\{}
-    \hlstd{len} \hlkwb{<-} \hlkwd{length}\hlstd{(colpal[[i]])}
-    \hlkwd{points}\hlstd{(}\hlnum{1}\hlopt{:}\hlstd{len,} \hlkwd{rep}\hlstd{(i,len),} \hlkwc{pch}\hlstd{=}\hlnum{15}\hlstd{,} \hlkwc{col}\hlstd{=colpal[[i]],} \hlkwc{cex}\hlstd{=}\hlnum{5.5}\hlstd{)}
-    \hlkwd{legend}\hlstd{(}\hlnum{1}\hlstd{, i}\hlopt{+}\hlnum{0.025}\hlstd{, palnam[i],} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{box.col}\hlstd{=}\hlstr{"white"}\hlstd{,} \hlkwc{bg}\hlstd{=}\hlstr{"white"}\hlstd{,}
-           \hlkwc{x.intersp}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{y.intersp}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{yjust}\hlstd{=}\hlnum{0}\hlstd{)}
+\hlstd{fig9.2A} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+    \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{"eyeAmpM.gam"}\hlstd{))}
+\hlstd{eyeAmpM.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(amp} \hlopt{~} \hlkwd{s}\hlstd{(x,y),} \hlkwc{data}\hlstd{=}\hlkwd{subset}\hlstd{(eyeAmp, Sex}\hlopt{==}\hlstr{"m"}\hlstd{))}
+        \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{"eyeAmpF.gam"}\hlstd{))}
+\hlstd{eyeAmpF.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(amp} \hlopt{~} \hlkwd{s}\hlstd{(x,y),} \hlkwc{data}\hlstd{=}\hlkwd{subset}\hlstd{(eyeAmp, Sex}\hlopt{==}\hlstr{"f"}\hlstd{))}
+\hlstd{lims} \hlkwb{<-} \hlkwd{range}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwd{predict}\hlstd{(eyeAmpF.gam),} \hlkwd{predict}\hlstd{(eyeAmpM.gam)))}
+\hlstd{mgcv}\hlopt{::}\hlkwd{vis.gam}\hlstd{(eyeAmpM.gam,} \hlkwc{plot.type}\hlstd{=}\hlstr{'contour'}\hlstd{,} \hlkwc{color}\hlstd{=}\hlstr{"cm"}\hlstd{,} \hlkwc{zlim}\hlstd{=lims,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{)}
 \hlstd{\}}
-\hlkwd{options}\hlstd{(opt)}
+\hlstd{fig9.2B} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+    \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{"eyeAmpM.gam"}\hlstd{))}
+    \hlstd{eyeAmpM.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(amp} \hlopt{~} \hlkwd{s}\hlstd{(x,y),} \hlkwc{data}\hlstd{=}\hlkwd{subset}\hlstd{(eyeAmp, Sex}\hlopt{==}\hlstr{"m"}\hlstd{))}
+    \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{"eyeAmpF.gam"}\hlstd{))}
+    \hlstd{eyeAmpF.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(amp} \hlopt{~} \hlkwd{s}\hlstd{(x,y),} \hlkwc{data}\hlstd{=}\hlkwd{subset}\hlstd{(eyeAmp, Sex}\hlopt{==}\hlstr{"f"}\hlstd{))}
+\hlstd{lims} \hlkwb{<-} \hlkwd{range}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwd{predict}\hlstd{(eyeAmpF.gam),} \hlkwd{predict}\hlstd{(eyeAmpM.gam)))}
+\hlstd{mgcv}\hlopt{::}\hlkwd{vis.gam}\hlstd{(eyeAmpF.gam,} \hlkwc{plot.type}\hlstd{=}\hlstr{'contour'}\hlstd{,} \hlkwc{color}\hlstd{=}\hlstr{"cm"}\hlstd{,} \hlkwc{zlim}\hlstd{=lims,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{)}
 \hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
 \hlstd{fig9.2} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- alpha-ex ----}
-\hlcom{## Sample from the 15992 rows}
-\hlstd{dfsamp} \hlkwb{<-} \hlstd{cps1[}\hlkwd{sample}\hlstd{(}\hlkwd{nrow}\hlstd{(cps1),} \hlnum{3000}\hlstd{), ]}
-\hlkwd{plot}\hlstd{(re78} \hlopt{~} \hlstd{re75,} \hlkwc{data}\hlstd{=dfsamp,} \hlkwc{pch}\hlstd{=}\hlnum{20}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{0.5}\hlstd{,}
-     \hlkwc{col}\hlstd{=}\hlstr{"black"}\hlstd{)}
-\hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlstr{"A: 100% opacity"}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{)}
-\hlkwd{plot}\hlstd{(re78} \hlopt{~} \hlstd{re75,} \hlkwc{data}\hlstd{=dfsamp,} \hlkwc{pch}\hlstd{=}\hlnum{20}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{0.5}\hlstd{,}
-     \hlkwc{col}\hlstd{=}\hlkwd{adjustcolor}\hlstd{(}\hlstr{"black"}\hlstd{,} \hlkwc{alpha}\hlstd{=}\hlnum{0.4}\hlstd{))}
-\hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlstr{"B: 40% opacity"}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{)}
-\hlstd{blueRamp} \hlkwb{<-} \hlkwd{colorRampPalette}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"white"}\hlstd{, blues9))}
-\hlkwd{with}\hlstd{(dfsamp,} \hlkwd{smoothScatter}\hlstd{(re75}\hlopt{~}\hlstd{re74,}
-                           \hlkwc{colramp}\hlstd{=blueRamp))}
-\hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlstr{"C: Color density plot"}\hlstd{,}
-      \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{)}
+\hlkwd{print}\hlstd{(}\hlstr{"Run the separate figures fig9.2A() and fig9.2B()"}\hlstd{)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
+\end{figure}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.3} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- aspect ----}
-\hlkwd{plot}\hlstd{((}\hlnum{1}\hlopt{:}\hlnum{30}\hlstd{)}\hlopt{*}\hlnum{0.92}\hlstd{,} \hlkwd{sin}\hlstd{((}\hlnum{1}\hlopt{:}\hlnum{30}\hlstd{)}\hlopt{*}\hlnum{0.92}\hlstd{),}
-     \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{""}\hlstd{)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{supp9.2} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- Animals-body-brain ----}
-\hlcom{## Supplementary figure 9.2}
-\hlkwd{library}\hlstd{(MASS)}
-\hlstd{oldpar} \hlkwb{<-} \hlkwd{par}\hlstd{(}\hlkwc{pch}\hlstd{=}\hlnum{16}\hlstd{,} \hlkwc{pty}\hlstd{=}\hlstr{"s"}\hlstd{,} \hlkwc{mfrow}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{2}\hlstd{,}\hlnum{2}\hlstd{))}
-\hlkwd{with}\hlstd{(Animals, \{}      \hlcom{# bracket several R statements}
-  \hlkwd{plot}\hlstd{(body, brain)}
-  \hlkwd{plot}\hlstd{(}\hlkwd{sqrt}\hlstd{(body),} \hlkwd{sqrt}\hlstd{(brain))}
-  \hlkwd{plot}\hlstd{(body}\hlopt{^}\hlnum{0.1}\hlstd{, brain}\hlopt{^}\hlnum{0.1}\hlstd{)}
-  \hlkwd{plot}\hlstd{(}\hlkwd{log}\hlstd{(body),} \hlkwd{log}\hlstd{(brain))}
-\hlstd{\})}                   \hlcom{# close both sets of brackets}
-\hlkwd{par}\hlstd{(oldpar)}          \hlcom{# Restore former settings}
+\hlcom{## ---- ant111b ----}
+\hlcom{# ant111b is in DAAG}
+\hlstd{Site} \hlkwb{<-} \hlkwd{with}\hlstd{(ant111b,} \hlkwd{reorder}\hlstd{(site, harvwt,}
+                              \hlkwc{FUN}\hlstd{=mean))}
+\hlkwd{stripplot}\hlstd{(Site} \hlopt{~} \hlstd{harvwt,} \hlkwc{data}\hlstd{=ant111b,}
+          \hlkwc{scales}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{tck}\hlstd{=}\hlnum{0.5}\hlstd{),}
+          \hlkwc{xlab}\hlstd{=}\hlstr{"Harvest weight of corn"}\hlstd{)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -187,19 +145,9 @@
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.4} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- poss-hist ----}
-\hlstd{ftotlen} \hlkwb{<-} \hlkwd{subset}\hlstd{(possum, sex}\hlopt{==}\hlstr{"f"}\hlstd{)[,} \hlstr{"totlngth"}\hlstd{]}
-\hlcom{## Left panel: breaks at 72.5, 77.5,..}
-\hlkwd{hist}\hlstd{(ftotlen,} \hlkwc{breaks} \hlstd{=} \hlnum{72.5} \hlopt{+} \hlstd{(}\hlnum{0}\hlopt{:}\hlnum{5}\hlstd{)}\hlopt{*}\hlnum{5}\hlstd{,} \hlkwc{freq}\hlstd{=}\hlnum{FALSE}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Total length"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.11}\hlstd{),}
-     \hlkwc{main} \hlstd{=}\hlstr{"A: Breaks at 72.5, 77.5,..."}\hlstd{)}
-\hlcom{## Now superimpose a density curve, as in Fig. 7.3}
-\hlkwd{lines}\hlstd{(}\hlkwd{density}\hlstd{(ftotlen))}
-\hlcom{##}
-\hlcom{## Panel B: breaks at 75, 80, ...}
-\hlkwd{hist}\hlstd{(ftotlen,} \hlkwc{breaks} \hlstd{=} \hlnum{75} \hlopt{+} \hlstd{(}\hlnum{0}\hlopt{:}\hlnum{5}\hlstd{)}\hlopt{*}\hlnum{5}\hlstd{,} \hlkwc{freq}\hlstd{=}\hlnum{FALSE}\hlstd{,}
-     \hlkwc{xlab}\hlstd{=}\hlstr{"Total length"}\hlstd{,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.11}\hlstd{),}
-     \hlkwc{main}\hlstd{=}\hlstr{"B: Breaks at 75, 80, ..."}\hlstd{)}
+\hlcom{## ---- Erie1 ----}
+\hlkwd{plot}\hlstd{(Erie,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Level (m)"}\hlstd{)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -208,25 +156,25 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{supp9.3} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- fposs-density ----}
-\hlcom{## Supplementary figure 9.3}
-\hlkwd{with}\hlstd{(}\hlkwd{subset}\hlstd{(possum, sex}\hlopt{==}\hlstr{"f"}\hlstd{),}
-     \hlkwd{plot}\hlstd{(}\hlkwd{density}\hlstd{(totlngth),} \hlkwc{type}\hlstd{=}\hlstr{"l"}\hlstd{))}
+\hlstd{fig9.5A} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlcom{## ---- lagErie ----}
+\hlcom{## Panel A}
+\hlkwd{lag.plot}\hlstd{(Erie,} \hlkwc{lags}\hlstd{=}\hlnum{3}\hlstd{,}
+         \hlkwc{do.lines}\hlstd{=}\hlnum{FALSE}\hlstd{,}
+         \hlkwc{layout}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{3}\hlstd{),}
+         \hlkwc{main}\hlstd{=}\hlstr{"  "}\hlstd{)}
+\hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{,}
+      \hlstr{"A: Lag plots, at lags of 1, 2 and 3"}\hlstd{)}
 \hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
+\hlstd{fig9.5B} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlcom{## ---- acfErie ----}
+\hlcom{## Panel B}
+\hlkwd{acf}\hlstd{(Erie,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{)}
+\hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{1.25}\hlstd{,}
+      \hlstr{"B: Autocorrelation function"}\hlstd{)}
+\hlstd{\}}
 \hlstd{fig9.5} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- boxplot ----}
-\hlcom{## Code}
-\hlkwd{with}\hlstd{(}\hlkwd{subset}\hlstd{(possum, sex}\hlopt{==}\hlstr{"f"}\hlstd{),}
-     \hlstd{\{}\hlkwd{boxplot}\hlstd{(totlngth,} \hlkwc{horizontal}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-      \hlkwd{rug}\hlstd{(totlngth)\} )}
+\hlstr{"Run the separate functions fig9.5A() and fig9.5B()."}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -236,19 +184,16 @@
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.6} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- possum-qqn ----}
-\hlstd{ftotlen} \hlkwb{<-} \hlkwd{subset}\hlstd{(possum, sex} \hlopt{==} \hlstr{"f"}\hlstd{)[,} \hlstr{"totlngth"}\hlstd{]}
-\hlstd{ylabel} \hlkwb{<-} \hlkwd{expression}\hlstd{(}\hlkwd{bold}\hlstd{(}\hlstr{"Data"}\hlstd{))}
-\hlstd{xy} \hlkwb{<-} \hlkwd{qqnorm}\hlstd{(ftotlen,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=ylabel)}
-\hlstd{usr} \hlkwb{<-} \hlkwd{par}\hlstd{()}\hlopt{$}\hlstd{usr}
-\hlstd{fillcol} \hlkwb{<-} \hlkwd{adjustcolor}\hlstd{(}\hlstr{"gray60"}\hlstd{,} \hlkwc{alpha}\hlstd{=}\hlnum{0.2}\hlstd{)}
-\hlkwd{rect}\hlstd{(usr[}\hlnum{1}\hlstd{], usr[}\hlnum{3}\hlstd{],}
-     \hlstd{usr[}\hlnum{2}\hlstd{], usr[}\hlnum{4}\hlstd{],} \hlkwc{col}\hlstd{=fillcol)}
-\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{7}\hlstd{)} \hlkwd{qqnorm}\hlstd{(}\hlkwd{rnorm}\hlstd{(}\hlnum{43}\hlstd{),} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,}
-                     \hlkwc{ylab}\hlstd{=}\hlstr{"Simulated"}\hlstd{,}
-                     \hlkwc{main}\hlstd{=}\hlstr{"Q-Q: Simulated"}\hlstd{)}
-\hlcom{# rnorm() generates random samples from a normal}
-\hlcom{# distribution with, by default, mean 0 and SD=1.}
+\hlcom{## ---- gamErie ----}
+\hlstd{df} \hlkwb{<-}  \hlkwd{data.frame}\hlstd{(}
+  \hlkwc{height}\hlstd{=}\hlkwd{as.vector}\hlstd{(Erie),}
+  \hlkwc{year}\hlstd{=}\hlkwd{time}\hlstd{(Erie))}
+\hlstd{obj} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(height} \hlopt{~} \hlkwd{s}\hlstd{(year),} \hlkwc{data}\hlstd{=df)}
+\hlkwd{plot}\hlstd{(obj,}
+     \hlkwc{shift}\hlstd{=}\hlkwd{mean}\hlstd{(df}\hlopt{$}\hlstd{height),}
+     \hlkwc{residuals}\hlstd{=}\hlnum{TRUE}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{1}\hlstd{,}
+     \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Height of lake"}\hlstd{)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -258,9 +203,18 @@
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.7} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- plot-expr ----}
-\hlstd{yl} \hlkwb{<-} \hlkwd{expression}\hlstd{(}\hlstr{"Area = "} \hlopt{*} \hlstd{pi} \hlopt{*} \hlstd{r}\hlopt{^~}\hlnum{2}\hlstd{)}
-\hlkwd{plot}\hlstd{(}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{, pi}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{)}\hlopt{^}\hlnum{2}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{"Radius (r)"}\hlstd{,} \hlkwc{ylab}\hlstd{=yl)}
+\hlcom{## ---- arima-sim ----}
+\hlkwa{for} \hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{6}\hlstd{)\{}
+\hlstd{ysim} \hlkwb{<-} \hlkwd{arima.sim}\hlstd{(}\hlkwd{list}\hlstd{(}\hlkwc{ar}\hlstd{=}\hlnum{0.85}\hlstd{),}
+                  \hlkwc{n}\hlstd{=}\hlnum{200}\hlstd{)}
+\hlstd{df} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(}\hlkwc{x}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{200}\hlstd{,}
+                 \hlkwc{y}\hlstd{=ysim)}
+\hlstd{df.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(y} \hlopt{~} \hlkwd{s}\hlstd{(x),}
+              \hlkwc{data}\hlstd{=df)}
+\hlkwd{plot}\hlstd{(df.gam,}
+     \hlkwc{ylab}\hlstd{=}\hlkwd{paste}\hlstd{(}\hlstr{"Sim"}\hlstd{, i),}
+     \hlkwc{residuals}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{\}}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -270,23 +224,26 @@
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.8} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- cline-gph ----}
-\hlcom{## On the command line: Create and print object}
-\hlkwd{xyplot}\hlstd{(Brainwt} \hlopt{~} \hlstd{Bodywt,} \hlkwc{data}\hlstd{=primates)}
+\hlcom{## ---- Erie-fcast ----}
+\hlstd{erie.ar} \hlkwb{<-} \hlkwd{ar}\hlstd{(Erie,} \hlkwc{order.max}\hlstd{=}\hlnum{1}\hlstd{)}
+\hlstd{fc} \hlkwb{<-} \hlstd{forecast}\hlopt{::}\hlkwd{forecast}\hlstd{(erie.ar,} \hlkwc{h}\hlstd{=}\hlnum{15}\hlstd{)}
+\hlkwd{plot}\hlstd{(fc,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Lake level (m)"}\hlstd{)}
+  \hlcom{# 15 time points ahead}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.9} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- rowSwim ----}
-\hlkwd{xyplot}\hlstd{(ht} \hlopt{~} \hlstd{wt} \hlopt{|} \hlstd{sport,} \hlkwc{groups}\hlstd{=sex,} \hlkwc{data}\hlstd{=ais,}
-       \hlkwc{par.settings}\hlstd{=}\hlkwd{simpleTheme}\hlstd{(}\hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{4}\hlstd{,}\hlnum{1}\hlstd{)),}
-       \hlkwc{scales}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{tck}\hlstd{=}\hlnum{0.5}\hlstd{),}
-       \hlkwc{auto.key}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{space}\hlstd{=}\hlstr{"right"}\hlstd{),}
-       \hlkwc{subset}\hlstd{=sport}\hlopt{%in%}\hlkwd{c}\hlstd{(}\hlstr{"Row"}\hlstd{,}\hlstr{"Swim"}\hlstd{))}
+\hlcom{## ---- mdb-gam ----}
+\hlstd{mdbRain.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(mdbRain} \hlopt{~} \hlkwd{s}\hlstd{(Year)} \hlopt{+} \hlkwd{s}\hlstd{(SOI),}
+                   \hlkwc{data}\hlstd{=bomregions)}
+\hlkwd{plot}\hlstd{(mdbRain.gam,} \hlkwc{residuals}\hlstd{=}\hlnum{TRUE}\hlstd{,} \hlkwc{se}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{1}\hlstd{,}
+     \hlkwc{cex}\hlstd{=}\hlnum{0.5}\hlstd{)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -296,20 +253,15 @@
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.10} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- grog-simple ----}
-\hlcom{## Simple version of plot}
-\hlstd{grogplot} \hlkwb{<-} \hlkwd{xyplot}\hlstd{(}
-              \hlstd{Beer}\hlopt{+}\hlstd{Spirit}\hlopt{+}\hlstd{Wine} \hlopt{~} \hlstd{Year} \hlopt{|} \hlstd{Country,}
-              \hlkwc{data}\hlstd{=grog,} \hlkwc{outer}\hlstd{=}\hlnum{FALSE}\hlstd{,}
-              \hlkwc{auto.key}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{space}\hlstd{=}\hlstr{"right"}\hlstd{))}
-\hlcom{## ---- grog-update ----}
-\hlcom{## Update trellis object, then print}
-\hlstd{ylab} \hlkwb{<-} \hlstr{"Amount consumed (per person)"}
-\hlstd{parset} \hlkwb{<-} \hlkwd{simpleTheme}\hlstd{(}\hlkwc{pch}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{3}\hlstd{,}\hlnum{4}\hlstd{))}
-\hlstd{finalplot} \hlkwb{<-} \hlkwd{update}\hlstd{(grogplot,} \hlkwc{ylim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{5.5}\hlstd{),}
-                     \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{ylab}\hlstd{=ylab,}
-                     \hlkwc{par.settings}\hlstd{=parset)}
-\hlkwd{print}\hlstd{(finalplot)}
+\hlcom{## ---- ar1sims ----}
+\hlstd{opar} \hlkwb{<-} \hlkwd{par}\hlstd{(}\hlkwc{mar}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{2.1}\hlstd{,} \hlnum{3.1}\hlstd{,} \hlnum{0.25}\hlstd{,} \hlnum{1.1}\hlstd{),} \hlkwc{mgp}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{2.25}\hlstd{,}\hlnum{0.5}\hlstd{,}\hlnum{0}\hlstd{))}
+\hlstd{mdbRain.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(mdbRain} \hlopt{~} \hlkwd{s}\hlstd{(Year)} \hlopt{+} \hlkwd{s}\hlstd{(SOI),}
+                         \hlkwc{data}\hlstd{=bomregions)}
+\hlstd{n} \hlkwb{<-}  \hlkwd{dim}\hlstd{(bomregions)[}\hlnum{1}\hlstd{]}
+\hlkwd{acf}\hlstd{(}\hlkwd{resid}\hlstd{(mdbRain.gam),} \hlkwc{ylab}\hlstd{=}\hlstr{"MDB series"}\hlstd{)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{5}\hlstd{)}\hlkwd{acf}\hlstd{(}\hlkwd{rnorm}\hlstd{(n),} \hlkwc{ylab}\hlstd{=}\hlkwd{paste}\hlstd{(}\hlstr{"Sim"}\hlstd{,i),}
+                 \hlkwc{col}\hlstd{=}\hlstr{"gray40"}\hlstd{)}
+\hlkwd{par}\hlstd{(opar)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -318,14 +270,57 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlkwd{library}\hlstd{(DAAGviz,} \hlkwc{quietly} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'gamclass'}\hlstd{,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{print}\hlstd{(}\hlstr{'gamclass must be installed'}\hlstd{)}
+\hlstd{fromDate} \hlkwb{<-} \hlkwd{as.Date}\hlstd{(}\hlstr{"2006-01-01"}\hlstd{)}
+\hlstd{dfDay06} \hlkwb{<-} \hlstd{gamclass}\hlopt{::}\hlkwd{eventCounts}\hlstd{(}\hlkwc{data}\hlstd{=gamclass}\hlopt{::}\hlstd{airAccs,} \hlkwc{dateCol}\hlstd{=}\hlstr{"Date"}\hlstd{,}
+                       \hlkwc{from}\hlstd{= fromDate,} \hlkwc{by}\hlstd{=}\hlstr{'1 day'}\hlstd{,} \hlkwc{prefix}\hlstd{=}\hlstr{"num"}\hlstd{)}
+\hlstd{dfDay06}\hlopt{$}\hlstd{day} \hlkwb{<-} \hlkwd{julian}\hlstd{(dfDay06}\hlopt{$}\hlstd{Date,} \hlkwc{origin}\hlstd{=fromDate)}
+\hlstd{dfWeek06} \hlkwb{<-} \hlstd{gamclass}\hlopt{::}\hlkwd{eventCounts}\hlstd{(}\hlkwc{data}\hlstd{=gamclass}\hlopt{::}\hlstd{airAccs,} \hlkwc{dateCol}\hlstd{=}\hlstr{"Date"}\hlstd{,}
+                        \hlkwc{from}\hlstd{=fromDate,}
+                        \hlkwc{by}\hlstd{=}\hlstr{'1 week'}\hlstd{,} \hlkwc{prefix}\hlstd{=}\hlstr{"num"}\hlstd{)}
+\hlstd{dfWeek06}\hlopt{$}\hlstd{day} \hlkwb{<-} \hlkwd{julian}\hlstd{(dfWeek06}\hlopt{$}\hlstd{Date,} \hlkwc{origin}\hlstd{=fromDate)}
+\hlstd{year} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=fromDate,} \hlkwc{to}\hlstd{=}\hlkwd{max}\hlstd{(dfDay06}\hlopt{$}\hlstd{Date),} \hlkwc{by}\hlstd{=}\hlstr{"1 year"}\hlstd{)}
+\hlstd{atyear}\hlkwb{=}\hlkwd{julian}\hlstd{(year,} \hlkwc{origin}\hlstd{=fromDate)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{fig9.11A} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{'dfday06'}\hlstd{))\{}
+    \hlkwd{print}\hlstd{(}\hlkwd{paste}\hlstd{(}\hlstr{"Unable to plot graph."}\hlstd{,}
+                \hlstr{"Ensure package 'gamclass' is installed."}\hlstd{))}
+    \hlkwd{return}\hlstd{()}
+  \hlstd{\}}
+\hlstd{dfDay06.gam} \hlkwb{<-}
+  \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(}\hlkwc{formula} \hlstd{= num} \hlopt{~} \hlkwd{s}\hlstd{(day,} \hlkwc{k}\hlstd{=}\hlnum{200}\hlstd{),} \hlkwc{family} \hlstd{= quasipoisson,}
+      \hlkwc{data} \hlstd{= dfDay06)}
+\hlstd{av} \hlkwb{<-} \hlkwd{mean}\hlstd{(}\hlkwd{predict}\hlstd{(dfDay06.gam))}
+\hlkwd{plot}\hlstd{(dfDay06.gam,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{,} \hlkwc{shift}\hlstd{=av,} \hlkwc{trans}\hlstd{=exp,} \hlkwc{rug}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,}
+     \hlkwc{ylab}\hlstd{=}\hlstr{"Estimated rate per day"}\hlstd{)}
+\hlkwd{axis}\hlstd{(}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=atyear,} \hlkwc{labels}\hlstd{=}\hlkwd{format}\hlstd{(year,} \hlstr{"%Y"}\hlstd{))}
+\hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{0.75}\hlstd{,} \hlstr{"A: Events per day, vs date"}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{)}
+\hlstd{\}}
+\hlstd{fig9.11B} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{dfWeek06.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(num}\hlopt{~}\hlkwd{s}\hlstd{(day,} \hlkwc{k}\hlstd{=}\hlnum{200}\hlstd{),} \hlkwc{data}\hlstd{=dfWeek06,} \hlkwc{family}\hlstd{=quasipoisson)}
+\hlstd{av} \hlkwb{<-} \hlkwd{mean}\hlstd{(}\hlkwd{predict}\hlstd{(dfWeek06.gam))}
+\hlkwd{plot}\hlstd{(dfWeek06.gam,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{,} \hlkwc{shift}\hlstd{=av,} \hlkwc{trans}\hlstd{=exp,} \hlkwc{rug}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,}
+      \hlkwc{ylab}\hlstd{=}\hlstr{"Estimated rate per week"}\hlstd{)}
+\hlkwd{axis}\hlstd{(}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=atyear,} \hlkwc{labels}\hlstd{=}\hlkwd{format}\hlstd{(year,} \hlstr{"%Y"}\hlstd{))}
+\hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{0.75}\hlstd{,} \hlstr{"B: Events per week, vs date"}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{)}
+\hlstd{\}}
 \hlstd{fig9.11} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- strip-grob ----}
-\hlkwd{library}\hlstd{(grid)}
-\hlstd{plotnam} \hlkwb{<-} \hlstr{"Stripplot of cuckoo data"}
-\hlkwd{stripplot}\hlstd{(species} \hlopt{~} \hlstd{length,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{data}\hlstd{=cuckoos,}
-  \hlkwc{legend}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{top}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{fun}\hlstd{=textGrob,}
-                       \hlkwc{args}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{label}\hlstd{=plotnam,}
-                                 \hlkwc{x}\hlstd{=}\hlnum{0}\hlstd{))))}
+    \hlstr{"Run the separate functions fig9.10A() & fig9.10B()"}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -335,24 +330,14 @@
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.12} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- jobs-basic ----}
-\hlcom{## 1. Create a basic version of the graphics object}
-\hlstd{jobsB.xyplot} \hlkwb{<-}
-  \hlkwd{xyplot}\hlstd{(Ontario}\hlopt{+}\hlstd{Quebec}\hlopt{+}\hlstd{BC}\hlopt{+}\hlstd{Alberta}\hlopt{+}\hlstd{Prairies}\hlopt{+}\hlstd{Atlantic} \hlopt{~} \hlstd{Date,}
-         \hlkwc{data}\hlstd{=jobs,} \hlkwc{type}\hlstd{=}\hlstr{"b"}\hlstd{,} \hlkwc{layout}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{3}\hlstd{,}\hlnum{2}\hlstd{),} \hlkwc{outer}\hlstd{=}\hlnum{TRUE}\hlstd{,}
-         \hlkwc{ylab}\hlstd{=}\hlstr{"Number of jobs"}\hlstd{,}
-         \hlkwc{scales}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{y}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{relation}\hlstd{=}\hlstr{"sliced"}\hlstd{,} \hlkwc{log}\hlstd{=}\hlnum{TRUE}\hlstd{)))}
-\hlcom{## ---- jobs-enhance ----}
-\hlcom{## 2. Code for the enhancements to jobsB.xyplot}
-\hlstd{ylabpos} \hlkwb{<-} \hlkwd{exp}\hlstd{(}\hlkwd{pretty}\hlstd{(}\hlkwd{log}\hlstd{(}\hlkwd{unlist}\hlstd{(jobs[,}\hlopt{-}\hlnum{7}\hlstd{])),} \hlnum{100}\hlstd{))}
-\hlstd{ylabels} \hlkwb{<-} \hlkwd{paste0}\hlstd{(}\hlkwd{round}\hlstd{(ylabpos),}\hlstr{"\textbackslash{}n("}\hlstd{,} \hlkwd{log}\hlstd{(ylabpos),} \hlstr{")"}\hlstd{)}
-\hlcom{## Create a date object 'startofmonth'; use instead of 'Date'}
-\hlstd{atdates} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlnum{95}\hlstd{,} \hlkwc{by}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{5}\hlstd{)}
-\hlstd{datelabs} \hlkwb{<-} \hlkwd{format}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlkwc{from}\hlstd{=}\hlkwd{as.Date}\hlstd{(}\hlstr{"1Jan1995"}\hlstd{,} \hlkwc{format}\hlstd{=}\hlstr{"%d%b%Y"}\hlstd{),}
-                       \hlkwc{by}\hlstd{=}\hlstr{"6 month"}\hlstd{,} \hlkwc{length}\hlstd{=}\hlnum{5}\hlstd{),} \hlstr{"%b%y"}\hlstd{)}
-\hlkwd{update}\hlstd{(jobsB.xyplot,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,} \hlkwc{between}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{x}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlkwc{y}\hlstd{=}\hlnum{0.5}\hlstd{),}
-       \hlkwc{scales}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{x}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{at}\hlstd{=atdates,} \hlkwc{labels}\hlstd{=datelabs),}
-                   \hlkwc{y}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{at}\hlstd{=ylabpos,} \hlkwc{labels}\hlstd{=ylabels),} \hlkwc{tck}\hlstd{=}\hlnum{0.6}\hlstd{) )}
+\hlcom{## ---- fgl-scores2D ----}
+\hlstd{scores} \hlkwb{<-} \hlkwd{predict}\hlstd{(fgl.lda)}\hlopt{$}\hlstd{x}
+\hlkwd{xyplot}\hlstd{(scores[,}\hlnum{2}\hlstd{]} \hlopt{~} \hlstd{scores[,}\hlnum{1}\hlstd{],} \hlkwc{groups}\hlstd{=fgl}\hlopt{$}\hlstd{type,}
+       \hlkwc{xlab}\hlstd{=}\hlstr{"Discriminant 1"}\hlstd{,}
+       \hlkwc{ylab}\hlstd{=}\hlstr{"Discriminant 2"}\hlstd{,}
+       \hlkwc{aspect}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{scales}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{tck}\hlstd{=}\hlnum{0.4}\hlstd{),}
+       \hlkwc{auto.key}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{space}\hlstd{=}\hlstr{"right"}\hlstd{),}
+       \hlkwc{par.settings}\hlstd{=}\hlkwd{simpleTheme}\hlstd{(}\hlkwc{alpha}\hlstd{=}\hlnum{0.6}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{6}\hlstd{))}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -361,12 +346,16 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
+\hlcom{## ---- bronchit-first3 ----}
+\hlcom{## ---- bronchit-rp ----}
+\hlkwd{set.seed}\hlstd{(}\hlnum{47}\hlstd{)}   \hlcom{# Reproduce tree shown}
 \hlstd{fig9.13} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- strip-bw ----}
-\hlkwd{stripplot}\hlstd{(species} \hlopt{~} \hlstd{length,} \hlkwc{data}\hlstd{=cuckoos,}
-          \hlkwc{xlab}\hlstd{=}\hlstr{"Cuckoo egg length (mm)"}\hlstd{)}
-\hlkwd{bwplot}\hlstd{(species} \hlopt{~} \hlstd{length,} \hlkwc{data}\hlstd{=cuckoos,}
-       \hlkwc{xlab}\hlstd{=}\hlstr{"Cuckoo egg length (mm)"}\hlstd{)}
+\hlcom{## ---- treefig ----}
+\hlstd{opar} \hlkwb{<-} \hlkwd{par}\hlstd{(}\hlkwc{mar}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1.1}\hlstd{,}\hlnum{4}\hlstd{))}
+\hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{'b.rpart'}\hlstd{))b.rpart} \hlkwb{<-} \hlkwd{rpart}\hlstd{(rfac} \hlopt{~} \hlstd{cig}\hlopt{+}\hlstd{poll,} \hlkwc{data}\hlstd{=bronchit)}
+\hlkwd{plot}\hlstd{(b.rpart)}
+\hlkwd{text}\hlstd{(b.rpart,} \hlkwc{xpd}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{par}\hlstd{(opar)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -376,13 +365,19 @@
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.14} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- lattice-density ----}
-\hlcom{## Code}
-\hlstd{colset} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"gray"}\hlstd{,}\hlstr{"black"}\hlstd{)}
-\hlkwd{densityplot}\hlstd{(}\hlopt{~} \hlstd{earconch} \hlopt{|} \hlstd{sex,} \hlkwc{groups}\hlstd{=Pop,}
-            \hlkwc{data}\hlstd{=possum,}
-            \hlkwc{par.settings}\hlstd{=}\hlkwd{simpleTheme}\hlstd{(}\hlkwc{col}\hlstd{=colset),}
-            \hlkwc{auto.key}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{space}\hlstd{=}\hlstr{"right"}\hlstd{))}
+\hlcom{## ---- rf-x-bronchit ----}
+\hlstd{opar} \hlkwb{<-} \hlkwd{par}\hlstd{(}\hlkwc{mar}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{2.1}\hlstd{,}\hlnum{4}\hlstd{))}
+\hlkwd{set.seed}\hlstd{(}\hlnum{31}\hlstd{)}   \hlcom{# Reproduce the trees shown}
+\hlstd{num} \hlkwb{<-} \hlnum{1}\hlopt{:}\hlkwd{nrow}\hlstd{(bronchit)}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{12}\hlstd{)\{}
+  \hlstd{useobs} \hlkwb{<-} \hlkwd{sample}\hlstd{(num,} \hlkwc{replace}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+  \hlstd{dset} \hlkwb{<-} \hlstd{bronchit[useobs, ]}
+  \hlstd{b.rpart} \hlkwb{<-} \hlkwd{rpart}\hlstd{(rfac} \hlopt{~} \hlstd{cig}\hlopt{+}\hlstd{poll,} \hlkwc{data}\hlstd{=dset,}
+                   \hlkwc{control}\hlstd{=}\hlkwd{rpart.control}\hlstd{(}\hlkwc{maxdepth}\hlstd{=}\hlnum{2}\hlstd{))}
+  \hlkwd{plot}\hlstd{(b.rpart,} \hlkwc{uniform}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+  \hlkwd{text}\hlstd{(b.rpart,} \hlkwc{xpd}\hlstd{=}\hlnum{TRUE}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{1.2}\hlstd{)}
+\hlstd{\}}
+\hlkwd{par}\hlstd{(opar)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -392,15 +387,19 @@
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.15} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- gph-from ----}
-\hlstd{gph} \hlkwb{<-} \hlkwd{xyplot}\hlstd{(Brainwt} \hlopt{~} \hlstd{Bodywt,}  \hlkwc{data}\hlstd{=primates,}
-              \hlkwc{xlim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{300}\hlstd{))}
-\hlcom{## ---- my-panel ----}
-\hlstd{my.panel} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,}\hlkwc{y}\hlstd{)\{}
-  \hlkwd{panel.xyplot}\hlstd{(x,y)}
-  \hlkwd{panel.text}\hlstd{(x,y,} \hlkwc{labels}\hlstd{=}\hlkwd{rownames}\hlstd{(primates),} \hlkwc{pos}\hlstd{=}\hlnum{4}\hlstd{)}
-\hlstd{\}}
-\hlkwd{update}\hlstd{(gph,} \hlkwc{panel}\hlstd{=my.panel)}
+\hlcom{## ---- proximity-plot ----}
+\hlstd{parset} \hlkwb{<-} \hlkwd{simpleTheme}\hlstd{(}\hlkwc{pch}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{)}
+\hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'randomForest'}\hlstd{))}
+  \hlkwd{return}\hlstd{(}\hlstr{'Fig 9.15 requires randomForest package'}\hlstd{)}
+\hlstd{bronchit.rf} \hlkwb{<-} \hlstd{randomForest}\hlopt{::}\hlkwd{randomForest}\hlstd{(rfac} \hlopt{~} \hlstd{cig}\hlopt{+}\hlstd{poll,}
+                            \hlkwc{proximity}\hlstd{=}\hlnum{TRUE}\hlstd{,}
+                            \hlkwc{data}\hlstd{=bronchit)}
+\hlstd{points} \hlkwb{<-} \hlkwd{cmdscale}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{bronchit.rf}\hlopt{$}\hlstd{proximity)}
+\hlkwd{xyplot}\hlstd{(points[,}\hlnum{2}\hlstd{]} \hlopt{~} \hlstd{points[,}\hlnum{1}\hlstd{],}
+       \hlkwc{groups}\hlstd{=bronchit}\hlopt{$}\hlstd{rfac,}
+       \hlkwc{xlab}\hlstd{=}\hlstr{"Axis 1"}\hlstd{,} \hlkwc{ylab}\hlstd{=}\hlstr{"Axis 2"}\hlstd{,}
+       \hlkwc{par.settings}\hlstd{=parset,} \hlkwc{aspect}\hlstd{=}\hlnum{1}\hlstd{,}
+       \hlkwc{auto.key}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{columns}\hlstd{=}\hlnum{2}\hlstd{))}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -410,87 +409,39 @@
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.16} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlkwd{print}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"The Figure 9.16 screen display was obtained using the playwith GUI."}\hlstd{,}
-        \hlstr{"See text for details."}\hlstd{),} \hlkwc{quote}\hlstd{=}\hlnum{FALSE}\hlstd{)}
+\hlstd{opar} \hlkwb{<-} \hlkwd{par}\hlstd{(}\hlkwc{mar}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{2}\hlstd{,}\hlnum{3}\hlstd{,}\hlnum{2}\hlstd{,}\hlnum{5}\hlstd{))}
+\hlkwd{plot}\hlstd{(aupts,} \hlkwc{axes}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{ann}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{fg}\hlstd{=}\hlstr{"gray"}\hlstd{,}
+     \hlkwc{frame.plot}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlstd{city} \hlkwb{<-} \hlkwd{rownames}\hlstd{(aupts)}
+\hlstd{pos} \hlkwb{<-} \hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,}\hlkwd{length}\hlstd{(city))}
+\hlstd{pos[city}\hlopt{==}\hlstr{"Melbourne"}\hlstd{]}\hlkwb{<-} \hlnum{3}
+\hlstd{pos[city}\hlopt{==}\hlstr{"Canberra"}\hlstd{]} \hlkwb{<-} \hlnum{4}
+\hlstd{pos[city}\hlopt{==}\hlstr{"Sydney"}\hlstd{]} \hlkwb{<-} \hlnum{4}
+\hlkwd{par}\hlstd{(}\hlkwc{xpd}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlkwd{text}\hlstd{(aupts,} \hlkwc{labels}\hlstd{=city,} \hlkwc{pos}\hlstd{=pos)}
+\hlkwd{par}\hlstd{(opar)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{fig9.17} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- qplot-smooth ----}
-\hlcom{## Default loess smooth, with SE bands added.}
-\hlstd{ggplot2}\hlopt{::}\hlkwd{quickplot}\hlstd{(Year, mdbRain,} \hlkwc{data}\hlstd{=DAAG}\hlopt{::}\hlstd{bomregions2015,}
-          \hlkwc{geom}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"point"}\hlstd{,}\hlstr{"smooth"}\hlstd{),} \hlkwc{se}\hlstd{=}\hlnum{TRUE}\hlstd{,}
-          \hlkwc{method}\hlstd{=}\hlstr{"loess"}\hlstd{,} \hlkwc{span}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,}
-          \hlkwc{ylab}\hlstd{=}\hlstr{"Av. rainfall, M-D basin"}\hlstd{)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{fig9.18} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- overlay-dens-simple ----}
-\hlcom{## Overlay with boxplots and density contours}
-\hlstd{ggplot2}\hlopt{::}\hlkwd{quickplot}\hlstd{(wt, ht,} \hlkwc{data}\hlstd{=DAAG}\hlopt{::}\hlstd{ais,}
-          \hlkwc{geom}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"boxplot"}\hlstd{,} \hlstr{"point"}\hlstd{,} \hlstr{"density2d"}\hlstd{),}
-          \hlkwc{facets} \hlstd{= .} \hlopt{~} \hlstd{sex)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{supp9.4} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- twenty5080 ----}
-\hlcom{## Supplementary figure 4}
-\hlstd{ggplot2}\hlopt{::}\hlkwd{quickplot}\hlstd{(Year, mdbRain,} \hlkwc{data}\hlstd{=DAAG}\hlopt{::}\hlstd{bomregions2015,}
-          \hlkwc{geom}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"point"}\hlstd{,} \hlstr{"quantile"}\hlstd{),}
-          \hlkwc{formula} \hlstd{= y} \hlopt{~} \hlkwd{ns}\hlstd{(x,}\hlnum{5}\hlstd{),}
-          \hlkwc{quantiles}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.2}\hlstd{,}\hlnum{0.5}\hlstd{,}\hlnum{0.8}\hlstd{) )}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{fig9.19} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- aisRS ----}
-\hlcom{## Extract from ais data for rowers and swimmers}
-\hlstd{aisRS} \hlkwb{<-} \hlkwd{subset}\hlstd{(DAAG}\hlopt{::}\hlstd{ais, sport} \hlopt{%in%} \hlkwd{c}\hlstd{(}\hlstr{"Row"}\hlstd{,}\hlstr{"Swim"}\hlstd{))}
-\hlstd{aisRS}\hlopt{$}\hlstd{sport} \hlkwb{<-} \hlkwd{droplevels}\hlstd{(aisRS}\hlopt{$}\hlstd{sport)}
-\hlstd{ggplot2}\hlopt{::}\hlkwd{ggplot}\hlstd{(aisRS)} \hlopt{+}
-  \hlstd{ggplot2}\hlopt{::}\hlkwd{geom_point}\hlstd{(}\hlkwd{aes}\hlstd{(wt, ht,}
-             \hlkwc{color}\hlstd{=sex,}
-             \hlkwc{shape}\hlstd{=sport),}
-             \hlkwc{size}\hlstd{=}\hlnum{2}\hlstd{)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
+\newpage
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{figset9} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(DAAG,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'DAAG must be installed'}\hlstd{)}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(MASS,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'MASS must be installed'}\hlstd{)}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(latticeExtra,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'latticeExtra must be installed'}\hlstd{)}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(ggplot2,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'ggplot2 must be installed'}\hlstd{)}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(splines,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'splines must be installed'}\hlstd{)}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(quantreg,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'quantreg must be installed'}\hlstd{)}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(RColorBrewer,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'RColorBrewer must be installed'}\hlstd{)}
-  \hlstd{\}}
+    \hlkwd{library}\hlstd{(MASS)}
+    \hlkwd{library}\hlstd{(lattice)}
+    \hlkwd{library}\hlstd{(DAAGviz)}
+    \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(}\hlstr{'DAAG'}\hlstd{,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'DAAG must be installed'}\hlstd{)}
+    \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'mgcv'}\hlstd{,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'mgcv must be installed'}\hlstd{)}
+    \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'oz'}\hlstd{,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'oz must be installed'}\hlstd{)}
+  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'ggplot2'}\hlstd{,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}
+    \hlkwd{stop}\hlstd{(}\hlstr{'ggplot2 must be installed'}\hlstd{)}
+\hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -502,469 +453,193 @@
 \end{alltt}
 
 
-{\ttfamily\noindent\itshape\color{messagecolor}{\\Attaching package: 'MASS'}}
+{\ttfamily\noindent\itshape\color{messagecolor}{\\Attaching package: 'DAAG'}}
 
-{\ttfamily\noindent\itshape\color{messagecolor}{The following object is masked from 'package:DAAG':
+{\ttfamily\noindent\itshape\color{messagecolor}{The following object is masked from 'package:MASS':
 
-\ \ \ \ hills}}
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\\Attaching package: 'ggplot2'}}
-
-{\ttfamily\noindent\itshape\color{messagecolor}{The following object is masked from 'package:latticeExtra':
-
-\ \ \ \ layer}}
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\\Attaching package: 'SparseM'}}
-
-{\ttfamily\noindent\itshape\color{messagecolor}{The following object is masked from 'package:base':
-
-\ \ \ \ backsolve}}\end{kframe}
-\end{knitrout}
-
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.1}\hlstd{()}
+\ \ \ \ hills}}\begin{alltt}
+  \hlcom{## ---- bronchit-rfac ----}
+\hlcom{## Now make the outcome variable a factor}
+\hlstd{bronchit} \hlkwb{<-}
+  \hlkwd{within}\hlstd{(bronchit,}
+         \hlstd{rfac} \hlkwb{<-} \hlkwd{factor}\hlstd{(r,} \hlkwc{labels}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"abs"}\hlstd{,}\hlstr{"pres"}\hlstd{)))}
 \end{alltt}
 \end{kframe}
-
-{\centering \includegraphics[width=0.47\textwidth]{figs/gph-fig9_1e-1} 
-
-}
-
-
-
 \end{knitrout}
-\caption{Plot of brain weight against body weight, for selected
-primates.}\label{fig:primates}
+
+
+\begin{figure}
+
+  \caption{Resistance in ohms is plotted against apparent juice
+    content.  A smooth curve (in gray) has been added, using the
+    \txtt{lowess} smoother.  The width of the smoothing window was the
+    default fraction $f = \frac{2}{3}$ of the range of values of the
+    $x$-variable.}\label{fig:fruitohms}
 \end{figure}
 
-\begin{suppfigure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{supp9.1}\hlstd{()}
-\end{alltt}
-\end{kframe}
+\begin{figure}
 
-{\centering \includegraphics[width=0.75\textwidth]{figs/gph-supp9_1e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Color palettes.}\label{fig:colpal}
-\end{suppfigure}
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.2}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.32\textwidth]{figs/gph-fig9_2e-1} 
-\includegraphics[width=0.32\textwidth]{figs/gph-fig9_2e-2} 
-\includegraphics[width=0.32\textwidth]{figs/gph-fig9_2e-3} 
-
-}
-
-
-
-\end{knitrout}
-\caption{In Panel A, points are plotted with the 100\% opacity, i.e.,
-  no transparency. In Panel B, \txtt{alpha=0.4}, i.e., 40\% opacity.
-  Panel C uses the function \txtt{smoothScatter()} to show a smoothed
-  color density representation of the data.
-  \label{fig:alpha}.}
+\caption{Estimated contours of left eye responses to visual stimulae,
+projected onto the plane.\label{fig:visAmp}}
 \end{figure}
 
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{par}\hlstd{(}\hlkwc{fig}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0.265}\hlstd{,} \hlnum{0}\hlstd{,}\hlnum{1}\hlstd{))}
-\hlkwd{fig9.3}\hlstd{()}
-\hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlstr{"A: 1:1 aspect ratio"}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{)}
-\hlkwd{par}\hlstd{(}\hlkwc{fig}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{0.265}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{new}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\hlkwd{fig9.3}\hlstd{()}
-\hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{0.5}\hlstd{,} \hlstr{"B: 1:3.5 aspect ratio"}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{)}
-\end{alltt}
-\end{kframe}
+\begin{figure}
 
-{\centering \includegraphics[width=0.9\textwidth]{figs/gph-fig9_3e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Both figures show the same data, but with very different
-  aspect ratios.\label{fig:aspect}}
+\caption{Yields from 4 packages of land on each of eight sites on the
+  Caribbean island of Antigua. Data are a summarized version of a
+  subset of data given in Andrews and Herzberg 1985,
+  pp.\~339-353.\label{fig:caribbean}}
 \end{figure}
 
-\begin{suppfigure}[ht]
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{supp9.2}\hlstd{()}
+\hlcom{## ---- getErie ----}
+\hlstd{Erie} \hlkwb{<-} \hlstd{greatLakes[,}\hlstr{"Erie"}\hlstd{]}
 \end{alltt}
 \end{kframe}
-
-{\centering \includegraphics[width=0.8\textwidth]{figs/gph-supp9_2e-1} 
-
-}
-
-
-
 \end{knitrout}
-\caption{The figure shows a 2 by 2 layout of plots.}
-\end{suppfigure}
 
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.4}\hlstd{()}
-\end{alltt}
-\end{kframe}
+\begin{figure}
 
-{\centering \includegraphics[width=0.47\textwidth]{figs/gph-fig9_4e-1} 
-\includegraphics[width=0.47\textwidth]{figs/gph-fig9_4e-2} 
-
-}
-
-
-
-\end{knitrout}
-\caption{The two panels show the same data, but with a different
-choice of breakpoints.\label{fig:densitybreaks}}
+\caption{Level of Lake Erie, in meters.
+}\label{fig:erie}
 \end{figure}
 
-\begin{suppfigure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{supp9.3}\hlstd{()}
-\end{alltt}
-\end{kframe}
+\begin{figure}
 
-{\centering \includegraphics[width=0.47\textwidth]{figs/gph-supp9_3e-1} 
-
-}
+\vspace*{-3pt}
 
 
-
-\end{knitrout}
-\caption{Density plot for lengths of female possums.}
-\end{suppfigure}
-
-\clearpage
-
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.5}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.42\textwidth]{figs/gph-fig9_5e-1} 
-
-}
-
-
-
-\end{knitrout}
-\vspace*{-18pt}
-
-\caption{Distribution of lengths of female possums.
-The bars (together making up a 'rug') show actual data values.\label{fig:boxrugs}}
+\caption{Panel A plots Lake Erie levels vs levels at lags 1, 2 and 3
+  respectively. Panel B shows a consistent pattern of decreasing
+  autocorrelation at successive lags.
+}\label{erie-lagplot}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}
+
+\caption{GAM smoothing term, fitted to the Lake Erie Data.
+    Most of the autocorrelation structure has been
+    removed, leaving residuals that are very nearly independent.
+  }\label{lh-smoothplot}
+\end{figure}
+
+\begin{figure}
+
+\caption{The plots are from repeated simulations of an AR1 process with a
+  lag 1 correlation of 0.85.  Smooth curves, assuming independent
+  errors, have been fitted.}\label{fig:ar1fits}
+\end{figure}
+
+\begin{figure}
+
+\caption{Predictions, 15 years into the future, of lake levels
+  (m). The shaded areas give 80\% and 95\% confidence bounds.
+}\label{Erie-fcastplot}
+\end{figure}
+
+\begin{figure}
+
+  \caption{Estimated contributions of the model terms to
+    \txtt{mdbRain}, in a GAM model that is the sum of smooth terms in
+    \txtt{Year} and \txtt{Rain}. The dashed curves show pointwise
+    2-SE limits, for the fitted curve.  Note the downturn
+in the trend of \txtt{mdbRain} after about 1985,}\label{fig:mdbRainSM}
+\end{figure}
+
+\begin{figure}
+
+\caption{The top left panel shows the autocorrelation plot of the
+  residuals from the GAM model \txtt{mdbRain.gam}.  The five remaining
+  panels show autocorrelation plots for a series of independent random
+  normal numbers.}\label{fig:ar1sims}
+\end{figure}
+
+\begin{figure*}[h]
+
+\caption{Estimated number of events (aircraft crashes) per time
+  interval versus time.  In Panel A, the outcome variable was events
+  per day, while in Panel B it was events per
+  week.\label{fig:planeCrash}}
+\end{figure*}
+
+\begin{figure}
+
+\caption{Visual representation of a classification rule, derived using
+  {\em linear discriminant analysis}, for the forensic glass data.  A
+  five-dimensional pattern of separation between the categories has
+  been collapsed down to two dimensions.  Some categories may therefore
+be better distinguished than is evident from this figure.
+}
+\label{fig:fgl}
+\end{figure}
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{fig9.6}\hlstd{()}
+\hlkwd{library}\hlstd{(rpart,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{)}
 \end{alltt}
 \end{kframe}
-
-{\centering \includegraphics[width=0.24\textwidth]{figs/gph-fig9_6e-1} 
-\includegraphics[width=0.24\textwidth]{figs/gph-fig9_6e-2} 
-\includegraphics[width=0.24\textwidth]{figs/gph-fig9_6e-3} 
-\includegraphics[width=0.24\textwidth]{figs/gph-fig9_6e-4} 
-\includegraphics[width=0.24\textwidth]{figs/gph-fig9_6e-5} 
-\includegraphics[width=0.24\textwidth]{figs/gph-fig9_6e-6} 
-\includegraphics[width=0.24\textwidth]{figs/gph-fig9_6e-7} 
-\includegraphics[width=0.24\textwidth]{figs/gph-fig9_6e-8} 
-
-}
-
-
-
 \end{knitrout}
-\vspace*{-12pt}
 
-      \caption{Normal probability plots. The top left panel shows the 43 lengths
-of female possums. Other panels are for independent normal
-random samples of size 43.\label{fig:np-plots}}
+\begin{figure}
+
+\caption{Decision tree for predicting whether a miner has
+    bronchitis.  Where the condition at a node is satisfied, the left
+    branch is taken. Thus, at the initial node, \txtt{cig$<$4.385}
+    takes the branch to the left.  In general, unless a random number
+    seed is specified, the tree may be different for each different run of the
+    calculations.
+}\label{fig:tree}
 \end{figure}
 
-\begin{figure}[ht]
-\vspace*{-6pt}
+\begin{figure}
+
+\caption{Each tree is for a different bootstrap sample of
+  observations.  The final classification is determined by a random
+  vote over all trees.  Where there are $>$ 2 explanatory variables
+  (but not here) a different random sample of variables is typically
+  used for each different split. The final classification is
+  determined by a random vote over all trees.}\label{fig:brontrees}
+\end{figure}
+
+\begin{figure}
+
+\caption{The plot is designed to represent, in two dimensions, the random
+  forest result. It aims to reflect probabilities of group membership
+  given by the analysis.  It is not derived by a 'scaling' of the
+  feature space.
+}\label{fig:rfbronchit}
+\end{figure}
+%$
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{fig9.7}\hlstd{()}
+\hlcom{## ---- aupoints ----}
+\hlstd{aupts} \hlkwb{<-} \hlkwd{cmdscale}\hlstd{(audists)}
 \end{alltt}
 \end{kframe}
-
-{\centering \includegraphics[width=0.47\textwidth]{figs/gph-fig9_7e-1} 
-
-}
-
-
-
 \end{knitrout}
-\caption{A mathematical expression is included as part of the
-  $y$-axis label.\label{fig:area}.}
+
+\begin{figure}
+
+\caption{Relative locations of Australian cities, derived from road
+  map distances, using metric scaling.\label{fig:audists}}
 \end{figure}
 
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.8}\hlstd{()}
-\end{alltt}
-\end{kframe}
 
-{\centering \includegraphics[width=0.47\textwidth]{figs/gph-fig9_8e-1} 
 
-}
+\begin{figure*}[h]
 
-
-
-\end{knitrout}
-\caption{Use of lattice function \txtt{xyplot()} to give a graph.
-  \label{fig:lat-gph}}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.9}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.8\textwidth]{figs/gph-fig9_9e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Height (\texttt{ht}) versus Weight (\texttt{wt}), for
-        rowers (\texttt{Row}) and swimmers (\texttt{Swim}).
-        Different plotting symbols are used to distinguish males from
-        females.}\label{fig:lattice-ais}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.10}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.8\textwidth]{figs/gph-fig9_10e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Australian and New Zealand apparent per person annual
-  consumption (in liters) of the pure alcohol content of liquor products, for
-  1998 to 2006.\label{fig:allgrog}}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.11}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.47\textwidth]{figs/gph-fig9_11e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{The argument \txtt{legend} has been used to add text,
-  supplied as a 'grob'.\label{fig:textGrob}}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.12}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.97\textwidth]{figs/gph-fig9_12e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Jobs growth in Canadian provinces, between January 1995
-  and December 1996.}\label{fig:jobsplot}
-\end{figure}
-
-\begin{figure}[ht]
-
-\caption{A stripplot and a dotplot, side by side for comparison.}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.14}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.8\textwidth]{figs/gph-fig9_14e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Lattice style density plot comparing possum earconch
-    measurements, separately for males and females, between Victorian
-    and other populations. Observe that the scatter of data values is
-shown along the horizontal axis.}\label{fig:possumdens}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.15}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.47\textwidth]{figs/gph-fig9_15e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Here, labels have been added to the points. This can be
-  done by updating a graph that has the points, by use of a panel
-  function that both plots points and and adds labels, or by adding a
-  new layer to a graph that shows the points.}\label{fig:layer}
-\end{figure}
-
-\addtocounter{figure}{1}
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.17}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.8\textwidth]{figs/gph-fig9_17e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Annual rainfall, from 1901 to 2012, for the Murray-Darling
-  basin region of Australia.  The curve is fitted using the default
-  loess smoother. The pointwise standard error bands assume that
-  errors about the curve are independent; this is unlikely to be
-  strictly true. To suppress these bands, specify
-  \texttt{se=FALSE}.\label{fig:ggrain}}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.18}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.8\textwidth]{figs/gph-fig9_18e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Height versus weight, by sex, for Australian athletes in the
-\texttt{ais} data set. Boxplots that show the distributions of heights,
-and two-dimensional density contours have been
-added.\label{fig:ggais}}
-
-\end{figure}
-
-\begin{suppfigure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{supp9.4}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.8\textwidth]{figs/gph-supp9_4e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Annual rainfall, from 1901 to 2012, for the Murray-Darling
-  basin region of Australia.  Curves that estimate the 20\%, 50\% and 80\%
-  quantiles have been fitted.\label{fig:ggrainpc}}
-\end{suppfigure}
-
-\begin{figure}[ht]
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig9.19}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.8\textwidth]{figs/gph-fig9_19e-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Use \texttt{color} for distinguishing \texttt{sex}es,
-\texttt{shape}s for \texttt{sport}s.}\label{fig:colshape}
-\end{figure}
+      \caption{In Panel A, Figure \ref{fig:audists} has been rotated and
+        scaled, to give a best fit to a map of Australia.  Each city
+        moves as shown by the line that radiates out from it.  Panel B
+        is the equivalent plot for the Sammon scaling ordination.
+\label{fig:aufit}}
+\end{figure*}
 
 \end{document}
+
+

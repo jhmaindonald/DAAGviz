@@ -30,13 +30,13 @@ pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 @ %
 
-\title{14: Brief Notes on Text Mining}
+\title{11: Brief Notes on Text Mining}
 \author{John H Maindonald}
 \maketitle
 \vspace*{-0.5cm}
 
 <<doFigs, cache=FALSE>>=
-doFigs <- TRUE
+doFigs <- FALSE
 @ %
 \vspace*{-0.5cm}
 
@@ -45,7 +45,7 @@ Load the {\em DAAGviz} package:
 library(DAAGviz, quietly=TRUE)
 @ %
 
-Set up a path to the directory where texts (.pdf and .txt)
+Set up a path to the directory where text (.txt) files
 are stored:
 <<make-paths>>=
 ## Create paths to the files
@@ -127,7 +127,7 @@ fig11.1 <- function(){
 @ %
 
 \begin{figure}
-<<wc-14_1x, fig.width=5.75, fig.height=5.75, cache=FALSE, out.width="0.32\\textwidth", top=5>>=
+<<wc-14_1x, fig.width=5.75, fig.height=5.75, cache=FALSE, out.width="0.32\\textwidth", top=5, eval=doFigs>>=
 fig11.1A()
 fig11.1B()
 fig11.1C()

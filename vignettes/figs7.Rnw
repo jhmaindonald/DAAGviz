@@ -13,7 +13,7 @@
 
 \begin{document}
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Graphics (Set 9)}
+%\VignetteIndexEntry{Graphics (Set 7)}
 
 <<setup, cache=FALSE, echo=FALSE, purl=FALSE>>=
 library(knitr)
@@ -37,10 +37,10 @@ oldopt <- options(digits=4)
 \vspace*{-1cm}
 
 <<doFigs>>=
-doFigs <- TRUE
+doFigs <- FALSE
 @ %
 
-<<fig7_1, eval=TRUE>>=
+<<fig7_1>>=
 fig7.1 <- function(){
 ## ---- brain-body ----
 plot(Brainwt ~ Bodywt, xlim=c(0, 300),
@@ -55,7 +55,7 @@ with(primates,
 }
 @ %
 
-<<supp7_1, eval=TRUE>>=
+<<supp7_1>>=
 supp7.1 <- function(){
 if(!require(RColorBrewer))stop("RColorBrewer must be installed")
 ## ---- col-plots ----
@@ -79,7 +79,7 @@ options(opt)
 }
 @ %
 
-<<fig7_2, eval=TRUE>>=
+<<fig7_2>>=
 fig7.2 <- function(){
 ## ---- alpha-ex ----
 ## Sample from the 15992 rows
@@ -98,7 +98,7 @@ mtext(side=3, line=0.5, "C: Color density plot",
 }
 @ %
 
-<<fig7_3, eval=TRUE>>=
+<<fig7_3>>=
 fig7.3 <- function(){
 ## ---- aspect ----
 plot((1:30)*0.92, sin((1:30)*0.92),
@@ -106,7 +106,7 @@ plot((1:30)*0.92, sin((1:30)*0.92),
 }
 @ %
 
-<<supp7_2, eval=TRUE>>=
+<<supp7_2>>=
 supp7.2 <- function(){
 ## ---- Animals-body-brain ----
 ## Supplementary figure 7.2
@@ -122,7 +122,7 @@ par(oldpar)          # Restore former settings
 }
 @ %
 
-<<fig7_4, eval=TRUE>>=
+<<fig7_4>>=
 fig7.4 <- function(){
 ## ---- poss-hist ----
 ftotlen <- subset(possum, sex=="f")[, "totlngth"]
@@ -140,7 +140,7 @@ hist(ftotlen, breaks = 75 + (0:5)*5, freq=FALSE,
 }
 @ %
 
-<<supp7_3, eval=TRUE>>=
+<<supp7_3>>=
 supp7.3 <- function(){
 ## ---- fposs-density ----
 ## Supplementary figure 7.3
@@ -149,7 +149,7 @@ with(subset(possum, sex=="f"),
 }
 @ %
 
-<<fig7_5, eval=TRUE>>=
+<<fig7_5>>=
 fig7.5 <- function(){
 ## ---- boxplot ----
 ## Code
@@ -159,7 +159,7 @@ with(subset(possum, sex=="f"),
 }
 @ %
 
-<<fig7_6, eval=TRUE>>=
+<<fig7_6>>=
 fig7.6 <- function(){
 ## ---- possum-qqn ----
 ftotlen <- subset(possum, sex == "f")[, "totlngth"]
@@ -177,7 +177,7 @@ for(i in 1:7) qqnorm(rnorm(43), xlab="",
 }
 @ %
 
-<<fig7_7, eval=TRUE>>=
+<<fig7_7>>=
 fig7.7 <- function(){
 ## ---- plot-expr ----
 yl <- expression("Area = " * pi * r^~2)
@@ -185,14 +185,14 @@ plot(1:5, pi*(1:5)^2, xlab="Radius (r)", ylab=yl)
 }
 @ %
 
-<<fig7_8, eval=TRUE>>=
+<<fig7_8>>=
 fig7.8 <- function(){
 ## ---- cline-gph ----
 ## On the command line: Create and print object
 xyplot(Brainwt ~ Bodywt, data=primates)
 }
 
-<<fig7_9, eval=TRUE>>=
+<<fig7_9>>=
 fig7.9 <- function(){
 ## ---- rowSwim ----
 xyplot(ht ~ wt | sport, groups=sex, data=ais,
@@ -203,7 +203,7 @@ xyplot(ht ~ wt | sport, groups=sex, data=ais,
 }
 @ %
 
-<<fig7_10, eval=TRUE>>=
+<<fig7_10>>=
 fig7.10 <- function(){
 ## ---- grog-simple ----
 ## Simple version of plot
@@ -222,7 +222,7 @@ print(finalplot)
 }
 @ %
 
-<<fig7_11, eval=TRUE>>=
+<<fig7_11>>=
 fig7.11 <- function(){
 ## ---- strip-grob ----
 library(grid)
@@ -234,7 +234,7 @@ stripplot(species ~ length, xlab="", data=cuckoos,
 }
 @ %
 
-<<fig7_12, eval=TRUE>>=
+<<fig7_12>>=
 fig7.12 <- function(){
 ## ---- jobs-basic ----
 ## 1. Create a basic version of the graphics object
@@ -257,7 +257,7 @@ update(jobsB.xyplot, xlab="", between=list(x=0.5, y=0.5),
 }
 @ %
 
-<<fig7_13, eval=TRUE>>=
+<<fig7_13>>=
 fig7.13 <- function(){
 ## ---- strip-bw ----
 stripplot(species ~ length, data=cuckoos,
@@ -267,7 +267,7 @@ bwplot(species ~ length, data=cuckoos,
 }
 @ %
 
-<<fig7_14, eval=TRUE>>=
+<<fig7_14>>=
 fig7.14 <- function(){
 ## ---- lattice-density ----
 ## Code
@@ -279,7 +279,7 @@ densityplot(~ earconch | sex, groups=Pop,
 }
 @ %
 
-<<fig7_15, eval=TRUE>>=
+<<fig7_15>>=
 fig7.15 <- function(){
 ## ---- gph-from ----
 gph <- xyplot(Brainwt ~ Bodywt,  data=primates,
@@ -293,25 +293,24 @@ update(gph, panel=my.panel)
 }
 @ %
 
-<<fig7_16, eval=TRUE>>=
+<<fig7_16>>=
 fig7.16 <- function(){
 print(c("The Figure 7.16 screen display was obtained using the playwith GUI.",
         "See text for details."), quote=FALSE)
 }
 @ %
 
-<<fig7_17, eval=TRUE>>=
+<<fig7_17>>=
 fig7.17 <- function(){
 ## ---- qplot-smooth ----
 ## Default loess smooth, with SE bands added.
-ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2015,
-          geom=c("point","smooth"), se=TRUE,
-          method="loess", span=0.5, xlab="",
-          ylab="Av. rainfall, M-D basin")
+quickplot(Year, mdbRain, data=bomregions2015,
+          geom=c("point","smooth"), xlab="",
+          ylab="Av. rainfall , M-D basin")
 }
 @ %
 
-<<fig7_18, eval=TRUE>>=
+<<fig7_18>>=
 fig7.18 <- function(){
 ## ---- overlay-dens-simple ----
 ## Overlay with boxplots and density contours
@@ -321,18 +320,17 @@ ggplot2::quickplot(wt, ht, data=DAAG::ais,
 }
 @ %
 
-<<supp7_4, eval=TRUE>>=
+<<supp7_4>>=
 supp7.4 <- function(){
 ## ---- twenty5080 ----
 ## Supplementary figure 4
-ggplot2::quickplot(Year, mdbRain, data=DAAG::bomregions2015,
-          geom=c("point", "quantile"),
-          formula = y ~ ns(x,5),
-          quantiles=c(0.2,0.5,0.8) )
+quickplot(Year, mdbRain, data=bomregions2015) +
+  geom_quantile(formula = y ~ ns(x,5),
+                quantiles=c(0.2,0.5,0.8) )
 }
 @ %
 
-<<fig7_19, eval=TRUE>>=
+<<fig7_19>>=
 fig7.19 <- function(){
 ## ---- aisRS ----
 ## Extract from ais data for rowers and swimmers
@@ -346,8 +344,8 @@ ggplot2::ggplot(aisRS) +
 }
 @ %
 
-<<figset_9>>=
-figset9 <- function(){
+<<figset_7>>=
+figset7 <- function(){
   if(!require(DAAG, quietly=TRUE))stop('DAAG must be installed')
   if(!require(MASS, quietly=TRUE))stop('MASS must be installed')
   if(!require(latticeExtra, quietly=TRUE))stop('latticeExtra must be installed')
@@ -358,8 +356,8 @@ figset9 <- function(){
   }
 @ %
 
-<<do-figset5>>=
-figset9()
+<<do-figset7>>=
+figset7()
 @ %
 
 
@@ -398,19 +396,12 @@ par(fig=c(0.265, 1, 0,1), new=TRUE)
 fig7.3()
 mtext(side=3, line=0.5, "B: 1:3.5 aspect ratio", adj=0)
 @ %
-\caption{Both figures show the same data, but with very different
+\caption{Both figures show the same data, but with widely different
   aspect ratios.\label{fig:aspect}}
 \end{figure}
 
-\begin{suppfigure}[ht]
-<<supp7_2e, fig.width=5, fig.height=5, out.width="0.8\\textwidth">>=
-supp7.2()
-@ %
-\caption{The figure shows a 2 by 2 layout of plots.}
-\end{suppfigure}
-
 \begin{figure}[ht]
-<<fig7_4e, eval=TRUE, fig.width=3.25, fig.height=3.25, left=1, rt=1, bot=2, top=2, out.width="0.47\\textwidth">>=
+<<fig7_4e, eval=doFigs, fig.width=3.25, fig.height=3.25, left=1, rt=1, bot=2, top=2, out.width="0.47\\textwidth", eval=doFigs>>=
 fig7.4()
 @ %
 \caption{The two panels show the same data, but with a different
@@ -428,7 +419,7 @@ supp7.3()
 
 
 \begin{figure}[ht]
-<<fig7_5e, eval=TRUE, fig.width=3.5, fig.height=2.5, bot=1, out.width="0.42\\textwidth">>=
+<<fig7_5e, eval=doFigs, fig.width=3.5, fig.height=2.5, bot=1, out.width="0.42\\textwidth">>=
 fig7.5()
 @ %
 \vspace*{-18pt}
@@ -450,7 +441,7 @@ random samples of size 43.\label{fig:np-plots}}
 
 \begin{figure}[ht]
 \vspace*{-6pt}
-<<fig7_7e, eval=TRUE, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
+<<fig7_7e, eval=doFigs, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth">>=
 fig7.7()
 @ %
 \caption{A mathematical expression is included as part of the
@@ -604,7 +595,26 @@ pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 @ %
 
-<<supp7_5, echo=TRUE, eval=TRUE>>=
+<<fig7_20, echo=TRUE, eval=doFigs>>=
+fig7.20 <- function(){
+## ---- rgl-demo ----
+## The Rcmdr and rgl packages must be installed
+if(!requireNamespace('rgl', quietly=TRUE))stop("Package 'rgl' must be available.")
+if(!requireNamespace('car', quietly=TRUE))stop("Package 'car' must be available.")
+if(!require(DAAG, quietly=TRUE))stop("Package 'DAAG' must be available.")
+rgl::open3d()            # Precedes the call to par3d()
+rgl::par3d(cex=0.75)     # Optional
+                         # Other params: see help(par3d)
+with(nihills, car::scatter3d(x=log(dist), y=log(climb),
+                        z=log(time),
+                        grid=FALSE,
+                        surface=FALSE,
+                        point.col="black",
+                        axis.scales=FALSE))
+}
+@ %
+
+<<supp7_5, echo=TRUE, eval=doFigs>>=
 supp7.5 <- function(){
 if(!require(googleVis))stop("Package 'googleVis' must be available.")
 if(!exists("WorldBank"))stop("Requires dataset 'Worldbank' to be available.")
@@ -619,17 +629,14 @@ plot(M)
 }
 @ %
 
-<<fig7_21e, echo=TRUE, eval=doFigs>>=
-fig7.21()
+<<fig7_20e, echo=TRUE, eval=doFigs>>=
+fig7.20()
 @ %
 
 \begin{figure}
-<<fig7_21e, echo=FALSE, fig.width=3.25, fig.height=3.25, eval=FALSE, out.width="0.65\\textwidth", warning=FALSE, message=FALSE>>=
+<<fig7_20e, echo=FALSE, fig.width=3.25, fig.height=3.25, eval=FALSE, out.width="0.65\\textwidth", warning=FALSE, message=FALSE>>=
 @ %
 \caption{Snapshot of 3-D dynamic display.}\label{fig:rgl-ex}
 \end{figure}
-
-\end{document}
-
 
 \end{document}

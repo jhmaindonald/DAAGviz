@@ -1,8 +1,8 @@
 Package: DAAGviz
 Type: Package
 Title: Functions, data and vignettes for R tutorials
-Version: 1.0.5
-Date: 2018-March-07
+Version: 1.0.6
+Date: 2018-March-15
 Author: John Maindonald
 Maintainer: John Maindonald <john.maindonald@anu.edu.au>
 LazyData: true

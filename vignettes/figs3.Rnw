@@ -13,7 +13,7 @@
 
 \begin{document}
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Examples (Set 5)}
+%\VignetteIndexEntry{Examples (Set 3)}
 
 <<setup, cache=FALSE, echo=FALSE, purl=FALSE>>=
 library(knitr)
@@ -30,30 +30,30 @@ pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 @ %
 
-\title{5: Examples }
+\title{3: Examples}
 \author{John H Maindonald}
 \maketitle
 
-<<fig5_1, eval=TRUE>>=
-fig5.1A <- function(){
+<<fig3_1, eval=TRUE>>=
+fig3.1A <- function(){
 ## ---- brain-bodyA ----
 library(MASS)
 plot(brain ~ body, data=mammals)
 mtext(side=3, line=0.5, adj=0, "A: Unlogged data")
 }
-fig5.1B <- function(){
+fig3.1B <- function(){
 ## ---- brain-bodyB ----
 plot(brain ~ body, data=mammals, log="xy")
 mtext(side=3, line=0.5, adj=0,
       "B: Log scales (both axes)")
 }
-fig5.1 <- function(){
-"Run the separate functions fig5.1A() and fig5.1B()."
+fig3.1 <- function(){
+"Run the separate functions fig3.1A() and fig3.1B()."
 }
 @ %
 
-<<fig5_2, eval=TRUE>>=
-fig5.2 <- function(){
+<<fig3_2, eval=TRUE>>=
+fig3.2 <- function(){
 ## ---- plot-trees ----
 ## Code used for the plot
 plot(trees, cex.labels=1.5)
@@ -61,8 +61,8 @@ plot(trees, cex.labels=1.5)
 }
 @ %
 
-<<fig5_3, eval=TRUE>>=
-fig5.3 <- function(){
+<<fig3_3, eval=TRUE>>=
+fig3.3 <- function(){
 ## ---- trackVSroad ----
 ## Code
 library(lattice)
@@ -75,8 +75,8 @@ xyplot(Time ~ Distance, scales=list(tck=0.5),
 }
 @ %
 
-<<fig5_4, eval=TRUE>>=
-fig5.4A <- function(){
+<<fig3_4, eval=TRUE>>=
+fig3.4A <- function(){
 ## ---- wrTimesA ----
 ## Code for Left panel
 parset <- list(layout.widths=list(left.padding=2.5,
@@ -87,7 +87,7 @@ xyplot(log(Time) ~ log(Distance),
        par.settings=parset,
        auto.key=list(columns=2), aspect=1)
 }
-fig5.4B <- function(){
+fig3.4B <- function(){
 ## ---- wrTimesB ----
 ## Right panel
 xyplot(Time ~ Distance, groups=roadORtrack,
@@ -95,13 +95,13 @@ xyplot(Time ~ Distance, groups=roadORtrack,
        scales=list(log=10, tck=0.5),
        auto.key=list(columns=2), aspect=1)
 }
-fig5.4 <- function(){
-"Run the separate functions fig5.4A() and fig5.4B()."
+fig3.4 <- function(){
+"Run the separate functions fig3.4A() and fig3.4B()."
 }
 @ %
 
-<<suppfig5_1, eval=TRUE>>=
-suppfig5.1 <- function(){
+<<suppfig3_1, eval=TRUE>>=
+suppfig3.1 <- function(){
 ## ---- timevsDist ----
 plot(log(Time) ~ log(Distance),
      data = DAAG::worldRecords)
@@ -109,8 +109,8 @@ abline(worldrec.lm)
 }
 @ %
 
-<<fig5_5, eval=TRUE>>=
-fig5.5 <- function(){
+<<fig3_5, eval=TRUE>>=
+fig3.5 <- function(){
 ## ---- diag12 ----
 plot(worldrec.lm, which=c(1,5), sub.caption=rep("",2))
 }
@@ -128,35 +128,35 @@ showcorr <- function(x,y,...){
 }
 @ %
 
-<<fig5_6, eval=TRUE>>=
-fig5.6A <- function(){
+<<fig3_6, eval=TRUE>>=
+fig3.6A <- function(){
 ## ---- nihills-spmA ----
 ## Scatterplot matrix; unlogged data
 library(lattice)
 splom(~DAAG::nihills,  lower.panel=showcorr, xlab="")
 }
-fig5.6B <- function(){
+fig3.6B <- function(){
 ## ---- nihills-spmB ----
 lognihills <- log(DAAG::nihills)
 names(lognihills) <- paste0("l", names(DAAG::nihills))
 ## Scatterplot matrix; log scales
 splom(~ lognihills, lower.panel=showcorr, xlab="")
 }
-fig5.6 <- function(){
-  print("Run the separate functions fig5.6A() and fig5.6B()")
+fig3.6 <- function(){
+  print("Run the separate functions fig3.6A() and fig3.6B()")
 }
 @ %
 
-<<fig5_7, eval=TRUE>>=
-fig5.7 <- function(){
+<<fig3_7, eval=TRUE>>=
+fig3.7 <- function(){
 ## Requires ggplot2
 tomato <- within(DAAG::tomato, trt <- relevel(trt, ref="water only"))
 ggplot2::quickplot(weight, trt, data=DAAG::tomato, xlab="Weight (g)", ylab="")
 }
 @ %
 
-<<fig5_8, eval=TRUE>>=
-fig5.8 <- function(){
+<<fig3_8, eval=TRUE>>=
+fig3.8 <- function(){
 opar <- par(xpd=TRUE, mar=c(3.1,3.1,0.6,3.6), mgp=c(2.25, 0.5, 0))
 with(DAAG::rice, interaction.plot(x.factor=fert,
                             trace.factor=variety,
@@ -166,8 +166,8 @@ par(opar)
 }
 @ %
 
-<<fig5_9, eval=TRUE>>=
-fig5.9 <- function(){
+<<fig3_9, eval=TRUE>>=
+fig3.9 <- function(){
 ## ---- MDBrainfall ----
 ## Code
 plot(mdbRain ~ Year, data=DAAG::bomregions2012)
@@ -197,10 +197,10 @@ if(!exists("worldrec.lm")){
 
 
 \begin{figure}
-<<fig5_1e, fig.width=4, fig.height=4.5, echo=FALSE, top=2, rt=2, crop=TRUE, out.width="0.47\\textwidth">>=
+<<fig3_1e, fig.width=4, fig.height=4.5, echo=FALSE, top=2, rt=2, crop=TRUE, out.width="0.47\\textwidth">>=
 opar <- par(pty="s")
-fig5.1A()
-fig5.1B()
+fig3.1A()
+fig3.1B()
 par(opar)
 @ %
 \caption{Brain weight (g) versus Body weight (kg), for 62 species of mammal.
@@ -226,8 +226,8 @@ corresponding above diagonal panel.
 \vspace*{6pt}
 \end{minipage}
 \begin{minipage}[c]{0.46\textwidth}
-<<fig5_2e, left=2, fig.width=4.5, fig.height=4.5, out.width="0.97\\textwidth">>=
-fig5.2()
+<<fig3_2e, left=2, fig.width=4.5, fig.height=4.5, out.width="0.97\\textwidth">>=
+fig3.2()
 @ %
 \end{minipage}
 \caption{Scatterplot matrix for the \txtt{trees} data, obtained
@@ -237,17 +237,17 @@ fig5.2()
 \end{figure}
 
 \begin{figure}
-<<fig5_3e, out.width="0.6\\textwidth">>=
-fig5.3()
+<<fig3_3e, out.width="0.6\\textwidth">>=
+fig3.3()
 @ %
 \caption{World record times versus distance, for field and road
   events.\label{fig:wrnolog}}
 \end{figure}
 
 \begin{figure}
-<<fig5_4e, out.width="0.47\\textwidth">>=
-fig5.4A()
-fig5.4B()
+<<fig3_4e, out.width="0.47\\textwidth">>=
+fig3.4A()
+fig3.4B()
 @ %
 \caption{World record times versus distance, for field and road
   events, using logarithmic scales.  The left panel uses labels on
@@ -257,15 +257,15 @@ fig5.4B()
 \end{figure}
 
 \begin{suppfigure}
-<<suppfig5_1e, out.width="0.47\\textwidth">>=
-suppfig5.1()
+<<suppfig3_1e, out.width="0.47\\textwidth">>=
+suppfig3.1()
 @ %
 \caption{log(time) versus log(distance), with a fitted line.}
 \end{suppfigure}
 
 \begin{figure}
-<<fig5_5e, fig.width=3.25, fig.height=3.25, top=2, rt=1.6, out.width="0.47\\textwidth">>=
-fig5.5()
+<<fig3_5e, fig.width=3.25, fig.height=3.25, top=2, rt=1.6, out.width="0.47\\textwidth">>=
+fig3.5()
 @ %
       \caption{First and last of the default diagnostic plots, from the
         linear model for log(record time) versus log(distance), for
@@ -275,9 +275,9 @@ fig5.5()
 
 \begin{figure}
 \vspace*{-6pt}
-<<fig5_6e, fig.width=5.25, fig.height=5.25, out.width="0.47\\textwidth">>=
-fig5.6A()
-fig5.6B()
+<<fig3_6e, fig.width=5.25, fig.height=5.25, out.width="0.47\\textwidth">>=
+fig3.6A()
+fig3.6B()
 @ %
 \caption{Scatterplot matrices for the Northern Ireland mountain racing
   data. The left panel is for the unlogged data, while the right panel is
@@ -287,16 +287,16 @@ in the lower panel.\label{fig:nimra}}
 
 \begin{figure}
 \vspace*{-6pt}
-<<fig5_7e, echo=FALSE, fig.width=5, fig.height=2, out.width="0.98\\textwidth">>=
-fig5.7()
+<<fig3_7e, echo=FALSE, fig.width=5, fig.height=2, out.width="0.98\\textwidth">>=
+fig3.7()
 @ %
 \caption{Weights (g) of tomato plants grown under four different
   treatments.\label{fig:Tomato}}
 \end{figure}
 
 \begin{figure}
-<<fig5_8e, echo=FALSE, fig.width=3.75, fig.height=3.25, rt=2, out.width="0.55\\textwidth">>=
-fig5.8()
+<<fig3_8e, echo=FALSE, fig.width=3.75, fig.height=3.25, rt=2, out.width="0.55\\textwidth">>=
+fig3.8()
 @ %
     \caption{Interaction plot for the terms \txtt{fert} and
       \txtt{variety}, with \txtt{ShootDryMass} as the dependent
@@ -307,8 +307,8 @@ fig5.8()
 
 
 \begin{figure}
-<<fig5_9e, fig.width=5.5, fig.height=3.25, out.width="0.65\\textwidth">>=
-fig5.9()
+<<fig3_9e, fig.width=5.5, fig.height=3.25, out.width="0.65\\textwidth">>=
+fig3.9()
 @ %
 \caption{Annual rainfall in the Australian Murray-Darling Basin.
 by year.  The \txtt{lowess()} function is used to

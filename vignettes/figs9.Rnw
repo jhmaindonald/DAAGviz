@@ -30,13 +30,13 @@ pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 @ %
 
-\title{10: Further Methods}
+\title{9: Further Methods}
 \author{John H Maindonald}
 \maketitle
 \vspace{-0.5cm}
 
 <<doFigs, cache=FALSE>>=
-doFigs <- TRUE
+doFigs <- FALSE
 @ %
 \vspace{-0.5cm}
 
@@ -283,7 +283,7 @@ fig9.15 <- function(){
 ## ---- proximity-plot ----
 parset <- simpleTheme(pch=1:2)
 if(!requireNamespace('randomForest'))
-  return('Fig 12.15 requires randomForest package')
+  return('Fig 9.15 requires randomForest package')
 bronchit.rf <- randomForest::randomForest(rfac ~ cig+poll,
                             proximity=TRUE,
                             data=bronchit)
@@ -352,8 +352,8 @@ fig9.17 <- function(){
 
 \newpage
 
-<<figset_12>>=
-figset12 <- function(){
+<<figset_9>>=
+figset9 <- function(){
     library(MASS)
     library(lattice)
     library(DAAGviz)
@@ -365,8 +365,8 @@ figset12 <- function(){
 }
 @ %
 
-<<do-figset12>>=
-figset12()
+<<do-figset9>>=
+figset9()
   ## ---- bronchit-rfac ----
 ## Now make the outcome variable a factor
 bronchit <-
@@ -376,7 +376,7 @@ bronchit <-
 
 
 \begin{figure}
-<<smooth-ohms-12_1, echo=FALSE, fig.width=4.5, fig.height=3.5, out.width="0.65\\textwidth">>=
+<<smooth-ohms-9_1, echo=FALSE, fig.width=4.5, fig.height=3.5, out.width="0.65\\textwidth", eval=doFigs>>=
 fig9.1()
 @ %
   \caption{Resistance in ohms is plotted against apparent juice
@@ -387,7 +387,7 @@ fig9.1()
 \end{figure}
 
 \begin{figure}
-<<plotVIS-12_2, echo=FALSE, fig.width=8.5, fig.height=3.5, out.width="0.97\\textwidth">>=
+<<plotVIS-9_2, echo=FALSE, fig.width=8.5, fig.height=3.5, out.width="0.97\\textwidth", eval=doFigs>>=
 opar <- par(mfrow=c(1,2))
 fig9.2A()
 mtext(side=3, line=0.5, adj=0, "A: Response amplitudes, Males")
@@ -400,7 +400,7 @@ projected onto the plane.\label{fig:visAmp}}
 \end{figure}
 
 \begin{figure}
-<<ant111b-12_3, echo=FALSE, fig.width=4.5, fig.height=3.5, out.width="0.65\\textwidth">>=
+<<ant111b-9_3, echo=FALSE, fig.width=4.5, fig.height=3.5, out.width="0.65\\textwidth", eval=doFigs>>=
 fig9.3()
 @ %
 \caption{Yields from 4 packages of land on each of eight sites on the
@@ -415,7 +415,7 @@ Erie <- greatLakes[,"Erie"]
 @ %
 
 \begin{figure}
-<<Erie1-12_4, echo=FALSE, fig.width=5.5, fig.height=2.5, out.width="0.8\\textwidth">>=
+<<Erie1-9_4, echo=FALSE, fig.width=5.5, fig.height=2.5, out.width="0.8\\textwidth", eval=doFigs>>=
 fig9.4()
 @ %
 \caption{Level of Lake Erie, in meters.
@@ -423,12 +423,12 @@ fig9.4()
 \end{figure}
 
 \begin{figure}
-<<lagErie-12_5, echo=FALSE, fig.width=6, fig.height=2.75, out.width="0.98\\textwidth">>=
+<<lagErie-9_5, echo=FALSE, fig.width=6, fig.height=2.75, out.width="0.98\\textwidth", eval=doFigs>>=
 fig9.5A()
 @ %
 \vspace*{-3pt}
 
-<<acfErie, echo=FALSE, fig.width=5.4, fig.height=2.5, out.width="0.7\\textwidth">>=
+<<acfErie, echo=FALSE, fig.width=5.4, fig.height=2.5, out.width="0.7\\textwidth", eval=doFigs>>=
 opar <- par(mar=c(4,4,2.5,0.6), oma=c(0,0,2.5,0))
 fig9.5B()
 par(opar)
@@ -440,7 +440,7 @@ par(opar)
 \end{figure}
 
 \begin{figure}
-<<gamErie-12_6, echo=FALSE, fig.width=6.5, fig.height=3.25, out.width="0.75\\textwidth">>=
+<<gamErie-9_6, echo=FALSE, fig.width=6.5, fig.height=3.25, out.width="0.75\\textwidth", eval=doFigs>>=
 fig9.6()
 @ %
 \caption{GAM smoothing term, fitted to the Lake Erie Data.
@@ -450,7 +450,7 @@ fig9.6()
 \end{figure}
 
 \begin{figure}
-<<arima-sim-12_7, fig.width=3.15, fig.height=3.35, echo=FALSE, out.width="0.32\\textwidth">>=
+<<arima-sim-9_7, fig.width=3.15, fig.height=3.35, echo=FALSE, out.width="0.32\\textwidth", eval=doFigs>>=
 fig9.7()
 @ %
 \caption{The plots are from repeated simulations of an AR1 process with a
@@ -459,7 +459,7 @@ fig9.7()
 \end{figure}
 
 \begin{figure}
-<<Erie-fcast-12_8, echo=FALSE, fig.width=5.5, fig.height=2.5, out.width="0.8\\textwidth", warning=FALSE, message=FALSE>>=
+<<Erie-fcast-9_8, echo=FALSE, fig.width=5.5, fig.height=2.5, out.width="0.8\\textwidth", warning=FALSE, message=FALSE, eval=doFigs>>=
 fig9.8()
 @ %
 \caption{Predictions, 15 years into the future, of lake levels
@@ -468,7 +468,7 @@ fig9.8()
 \end{figure}
 
 \begin{figure}
-<<mdb-gam-12_9, echo=FALSE, warning=FALSE, fig.width=4.5, fig.height=3.0, out.width="0.47\\textwidth">>=
+<<mdb-gam-9_9, echo=FALSE, warning=FALSE, fig.width=4.5, fig.height=3.0, out.width="0.47\\textwidth", eval=doFigs>>=
 fig9.9()
 @ %
   \caption{Estimated contributions of the model terms to
@@ -479,7 +479,7 @@ in the trend of \txtt{mdbRain} after about 1985,}\label{fig:mdbRainSM}
 \end{figure}
 
 \begin{figure}
-<<ar1sims-12_10, echo=FALSE, warning=FALSE, fig.width=3, left=1, fig.height=2.0, out.width="0.32\\textwidth">>=
+<<ar1sims-9_10, echo=FALSE, warning=FALSE, fig.width=3, left=1, fig.height=2.0, out.width="0.32\\textwidth", eval=doFigs>>=
 fig9.10()
 @ %
 \caption{The top left panel shows the autocorrelation plot of the
@@ -489,7 +489,7 @@ fig9.10()
 \end{figure}
 
 \begin{figure*}[h]
-<<au-both-12_11, echo=FALSE, fig.width=4.25, fig.height=3.75, top=2, out.width="0.47\\textwidth">>=
+<<au-both-9_11, echo=FALSE, fig.width=4.25, fig.height=3.75, top=2, out.width="0.47\\textwidth", eval=doFigs>>=
 fig9.11A()
 fig9.11B()
 @ %
@@ -500,7 +500,7 @@ fig9.11B()
 \end{figure*}
 
 \begin{figure}
-<<fgl-scores2D-12_12, echo=FALSE, fig.width=5, fig.height=3.75, out.width="0.65\\textwidth">>=
+<<fgl-scores2D-9_12, echo=FALSE, fig.width=5, fig.height=3.75, out.width="0.65\\textwidth", eval=doFigs>>=
 ## ---- fgl-lda ----
 fgl.lda <- lda(type ~ ., data=fgl)
 fig9.12()
@@ -519,7 +519,7 @@ library(rpart, quietly=TRUE)
 @ %
 
 \begin{figure}
-<<treefig-12_13, echo=FALSE, fig.width=3.5, fig.height=4, out.width="0.55\\textwidth">>=
+<<treefig-9_13, echo=FALSE, fig.width=3.5, fig.height=4, out.width="0.55\\textwidth", eval=doFigs>>=
 fig9.13()
 @ %
 \caption{Decision tree for predicting whether a miner has
@@ -532,7 +532,7 @@ fig9.13()
 \end{figure}
 
 \begin{figure}
-<<rf-x-bronchit, echo=FALSE, fig.width=2, fig.height=1.75, out.width="0.24\\textwidth">>=
+<<rf-x-bronchit, echo=FALSE, fig.width=2, fig.height=1.75, out.width="0.24\\textwidth", eval=doFigs>>=
 fig9.14()
 @ %
 \caption{Each tree is for a different bootstrap sample of
@@ -544,7 +544,7 @@ fig9.14()
 \end{figure}
 
 \begin{figure}
-<<proximity-plot, echo=FALSE, w=3.5, h=3.65, out.width="0.47\\textwidth">>=
+<<proximity-plot, echo=FALSE, w=3.5, h=3.65, out.width="0.47\\textwidth", eval=doFigs>>=
 fig9.15()
 @ %
 \caption{The plot is designed to represent, in two dimensions, the random
@@ -555,13 +555,13 @@ fig9.15()
 \end{figure}
 %$
 
-<<aupoints>>=
+<<aupoints, eval=doFigs>>=
 ## ---- aupoints ----
 aupts <- cmdscale(audists)
 @ %
 
 \begin{figure}
-<<aupoints_12_16, echo=FALSE, fig.width=5.25, fig.height=4.5, rt=3, out.width="0.6\\textwidth">>=
+<<aupoints_9_16, echo=FALSE, fig.width=5.25, fig.height=4.5, rt=3, out.width="0.6\\textwidth", eval=doFigs>>=
 fig9.16()
 @ %
 \caption{Relative locations of Australian cities, derived from road
@@ -583,7 +583,7 @@ align2D <- function(lat=aulatlong$latitude,
 @ %
 
 \begin{figure*}[h]
-<<au-both-12_17, echo=FALSE, fig.width=5.25, fig.height=4.5, top=2, out.width="0.47\\textwidth">>=
+<<au-both-9_17, echo=FALSE, fig.width=5.25, fig.height=4.5, top=2, out.width="0.47\\textwidth", eval=doFigs>>=
 fig9.17A()
 fig9.17B()
 @ %

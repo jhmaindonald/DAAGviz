@@ -40,7 +40,6 @@ oldopt <- options(digits=4)
 doFigs <- FALSE
 @ %
 
-
 \vspace*{-1cm}
 
 <<fig8_1>>=
@@ -331,8 +330,8 @@ termplot(cig2.glm)
 }
 @ %
 
-<<figset_11>>=
-figset11 <- function(){
+<<figset_8, eval=doFigs>>=
+figset8 <- function(){
   if(!require(DAAG, quietly=TRUE))stop('DAAG must be installed')
   if(!require(KernSmooth, quietly=TRUE))
     print('KernSmooth is not installed. Fig 11.17B will not show contours')
@@ -340,8 +339,8 @@ figset11 <- function(){
   }
 @ %
 
-<<do-figset11, warning=FALSE, message=FALSE>>=
-figset11()
+<<do-figset8, warning=FALSE, message=FALSE, eval=doFigs>>=
+figset8()
 if(!exists("mftime.lm")) mftime.lm <- lm(timef ~ time, data=nihills)
 if(!exists("mflogtime.lm"))
   mflogtime.lm <- lm(log(timef) ~ log(time), data=nihills)
@@ -353,7 +352,7 @@ within(bronchit,
 @ %
 
 \begin{figure}[H]
-<<plt-roller-11_1, fig.width=2.75, fig.height=3.0, out.width="0.45\\textwidth">>=
+<<plt-roller-8_1, fig.width=2.75, fig.height=3.0, out.width="0.45\\textwidth", eval=doFigs>>=
 fig8.1()
 @ %
   \caption{Plot of \txtt{depression} versus \txtt{weight}, using data
@@ -362,7 +361,7 @@ package.}\label{fig:rollerPlot}
 \end{figure}
 
 \begin{figure}[H]
-<<pltWline-11_2,fig.width=2.75, fig.height=3.0, out.width="0.45\\textwidth">>=
+<<pltWline-11_2,fig.width=2.75, fig.height=3.0, out.width="0.45\\textwidth", eval=doFigs>>=
 fig8.2()
 @ %
 \caption{This repeats Figure \ref{fig:rollerPlot}, now adding a fitted
@@ -370,7 +369,7 @@ fig8.2()
 \end{figure}
 
 \begin{figure}[H]
-<<fVSmTime-11_3, fig.width=2.75, fig.height=3, out.width="0.45\\textwidth">>=
+<<fVSmTime-8_3, fig.width=2.75, fig.height=3, out.width="0.45\\textwidth", eval=doFigs>>=
 fig8.3()
 @ %
   \caption{Data are for Northern Ireland hill races.
@@ -379,7 +378,7 @@ fig8.3()
 \end{figure}
 
 \begin{figure}[H]
-<<mfdensity-11_4>>=
+<<mfdensity-8_4, eval=doFigs>>=
 fig8.4()
 @ %
   \caption{Density plot comparison of times between males
@@ -388,7 +387,7 @@ fig8.4()
 \end{figure}
 
 \begin{figure}[H]
-<<mVSfTime-11_5, fig.width=3.0, fig.height=3.0, out.width="0.47\\textwidth">>=
+<<mVSfTime-8_5, fig.width=3.0, fig.height=3.0, out.width="0.47\\textwidth", eval=doFigs>>=
 fig8.5A()
 fig8.5B()
 @ %
@@ -399,7 +398,7 @@ fig8.5B()
 \end{figure}
 
 \begin{figure}[H]
-<<fig8_6e, echo=FALSE, fig.width=3, fig.height=3, out.width="0.47\\textwidth">>=
+<<fig8_6e, echo=FALSE, fig.width=3, fig.height=3, out.width="0.47\\textwidth", eval=doFigs>>=
 fig8.6A()
 fig8.6B()
 @ %
@@ -410,7 +409,7 @@ fig8.6B()
 
 
 \begin{figure}[H]
-<<diag-mf-11_7, fig.width=3, fig.height=3, out.width="0.23\\textwidth">>=
+<<diag-mf-8_7, fig.width=3, fig.height=3, out.width="0.23\\textwidth", eval=doFigs>>=
 fig8.7()
 @ %
 \caption{Diagnostic plots from the regession of \txtt{log(timef)} on
@@ -418,7 +417,7 @@ fig8.7()
 \end{figure}
 
 \begin{figure}[H]
-<<diag-logmf-11_8, fig.width=3, fig.height=3, out.width="0.23\\textwidth">>=
+<<diag-logmf-8_8, fig.width=3, fig.height=3, out.width="0.23\\textwidth", eval=doFigs>>=
 fig8.8()
 @ %
 \caption{Diagnostic plots from the regession of \txtt{log(timef)} on
@@ -426,7 +425,7 @@ fig8.8()
 \end{figure}
 
 \begin{figure}[H]
-<<simscat-11_9, fig.width=7, fig.height=3, out.width="0.97\\textwidth">>=
+<<simscat-8_9, fig.width=7, fig.height=3, out.width="0.97\\textwidth", eval=doFigs>>=
 fig8.9()
 @ %
 \caption{The plots are four simulations of residuals.  The coefficients
@@ -435,7 +434,7 @@ fig8.9()
 \end{figure}
 
 \begin{suppfigure}[H]
-<<which2-s11_1e, fig.width=7, fig.height=3, out.width="0.97\\textwidth">>=
+<<which2-s8_1e, fig.width=7, fig.height=3, out.width="0.97\\textwidth", eval=doFigs>>=
 suppfig8.1()
 @ %
 \caption{Normal probability plots for four sets of simulated
@@ -443,7 +442,7 @@ suppfig8.1()
 \end{suppfigure}
 
 \begin{suppfigure}[H]
-<<which3-s11_2e, fig.width=7, fig.height=3, out.width="0.97\\textwidth">>=
+<<which3-s8_2e, fig.width=7, fig.height=3, out.width="0.97\\textwidth", eval=doFigs>>=
 suppfig8.2()
 @ %
 \caption{These plots, here with simulated data, are designed to
@@ -452,7 +451,7 @@ suppfig8.2()
 \end{suppfigure}
 
 \begin{suppfigure}[H]
-<<simdiag3-11_3e, fig.width=7, fig.height=3, out.width="0.97\\textwidth">>=
+<<simdiag3-8_3e, fig.width=7, fig.height=3, out.width="0.97\\textwidth", eval=doFigs>>=
 suppfig8.3()
 @ %
 \caption{Scale-location plots for four sets of simulated
@@ -460,7 +459,7 @@ suppfig8.3()
 \end{suppfigure}
 
 \begin{suppfigure}[H]
-<<mftime-sims-s11_4, fig.width=7, fig.height=3, out.width="0.97\\textwidth">>=
+<<mftime-sims-s8_4, fig.width=7, fig.height=3, out.width="0.97\\textwidth", eval=doFigs>>=
 suppfig8.4()
 @ %
 \vspace*{-9pt}
@@ -472,7 +471,7 @@ same in all 4 plots.}\label{fig:4sim-nimff}
 \end{suppfigure}
 
 \begin{figure}[H]
-<<tomato-11-10e, fig.width=2.75, fig.height=2.75, out.width="0.47\\textwidth">>=
+<<tomato-8-10e, fig.width=2.75, fig.height=2.75, out.width="0.47\\textwidth", eval=doFigs>>=
 fig8.10A()
 fig8.10B()
 @ %
@@ -484,7 +483,7 @@ fig8.10B()
 
 
 \begin{figure}[H]
-<<splot2-ni-11-11e, fig.width=5.25, fig.height=5.25, out.width="0.48\\textwidth">>=
+<<splot2-ni-8-11e, fig.width=5.25, fig.height=5.25, out.width="0.48\\textwidth", eval=doFigs>>=
 fig8.11A()
 fig8.11B()
 @ %
@@ -494,11 +493,11 @@ fig8.11B()
 \label{fig:nimra-reg}}
 \end{figure}
 
-<<nireg-slope>>=
+<<nireg-slope, eval=doFigs>>=
 @ %
 
 \begin{figure}[H]
-<<tplot-ni-11_12, fig.width=3, fig.height=3,bot=0.5, left=1, out.width="0.48\\textwidth">>=
+<<tplot-ni-8_12, fig.width=3, fig.height=3,bot=0.5, left=1, out.width="0.48\\textwidth", eval=doFigs>>=
 fig8.12()
 @ %
 \caption{The vertical scales in both ``term plot'' panels show
@@ -511,7 +510,7 @@ fig8.12()
 \end{figure}
 
 \begin{figure}[H]
-<<bsnVary-11_13, fig.width=4, fig.height=3.5, warning=FALSE, message=FALSE>>=
+<<bsnVary-8_13, fig.width=4, fig.height=3.5, warning=FALSE, message=FALSE, eval=doFigs>>=
 if(!requireNamespace("quantreg", quietly=TRUE))
     print("As quantreg is not available, trend curve will be omitted.")
 fig8.13()
@@ -521,7 +520,7 @@ fig8.13()
   The fitted line estimates the median $p$-value.\label{fig:exhaust}}
 \end{figure}
 
-<<check4Elec, warning=FALSE, message=FALSE>>=
+<<check4Elec, warning=FALSE, message=FALSE, eval=doFigs>>=
 check4Elec <- exists("Electricity")
 if(!check4Elec){
     if(!require(Ecdat, quietly=TRUE))stop("Dataset Electricity is not available.")
@@ -532,7 +531,7 @@ data(Electricity)
 
 \begin{figure}[H]
 \parbox[c]{0.7\textwidth}{
-<<Elec-spm-11_14, fig.width=8, fig.height=8, out.width="0.775\\textwidth">>=
+<<Elec-spm-8_14, fig.width=8, fig.height=8, out.width="0.775\\textwidth", eval=doFigs>>=
 if(check4Elec)fig8.14()
 @ %
 }
@@ -568,7 +567,7 @@ if(check4Elec)fig8.14()
 \end{figure}
 
 \begin{figure}[H]
-<<spm-cost-q-11_15, fig.width=6.5, fig.height=6.5, out.width="0.45\\textwidth">>=
+<<spm-cost-q-8_15, fig.width=6.5, fig.height=6.5, out.width="0.45\\textwidth", eval=doFigs>>=
 if(check4Elec)fig8.15()
 @
   \caption{Scatterplot matrix for the logarithms of the variables
@@ -576,22 +575,22 @@ if(check4Elec)fig8.15()
     diagonal.\label{fig:elec-dens}}
 \end{figure}
 
-<<elec-me, warning=FALSE, message=FALSE>>=
+<<elec-me, warning=FALSE, message=FALSE, eval=doFigs>>=
 @ %
 
 \begin{figure}[H]
-<<elec-me-tplot-11_16, fig.width=3, fig.height=3, out.width="0.24\\textwidth">>=
+<<elec-me-tplot-8_16, fig.width=3, fig.height=3, out.width="0.24\\textwidth", eval=doFigs, eval=doFigs>>=
 if(check4Elec)fig8.16()
 @ %
 \caption{Termplot summary for the model that has been fitted to the
   \texttt{Electricity} dataset.\label{fig:elec-log-tplot}}
 \end{figure}
 
-<<load-SMIR-KernSmooth>>=
+<<load-SMIR-KernSmooth, eval=doFigs>>=
 @ %
 
 \begin{figure}[H]
-<<bronchitAB, fig.width=3.75, fig.height=3.75, out.width="0.47\\textwidth">>=
+<<bronchitAB, fig.width=3.75, fig.height=3.75, out.width="0.47\\textwidth", eval=doFigs>>=
 opar <- par(mar=c(4,4,2.5,0.6))
 <<bronchit-ylim>>
 fig8.17A()
@@ -604,11 +603,11 @@ par(opar)
   day.\label{fig:cig-poll}}
 \end{figure}
 
-<<cig2-glm>>=
+<<cig2-glm, eval=doFigs>>=
 @ %
 
 \begin{figure}[H]
-<<cig2-tplot-11_18, fig.width=3.25, fig.height=3.25, out.width="0.47\\textwidth">>=
+<<cig2-tplot-8_18, fig.width=3.25, fig.height=3.25, out.width="0.47\\textwidth", eval=doFigs>>=
 fig8.18()
 @ %
 \caption{The panels show the contributions that the respective terms
