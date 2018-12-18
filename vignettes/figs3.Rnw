@@ -18,7 +18,7 @@
 <<setup, cache=FALSE, echo=FALSE, purl=FALSE>>=
 library(knitr)
 options(replace.assign=FALSE,width=72)
-opts_chunk$set(fig.path='figs/glm-', cache.path='cache/glm-',
+opts_chunk$set(fig.path='figure/exs-', cache.path='cache/exs-',
                fig.align='center', dev='pdf', fig.width=3.5,
                fig.height=3.5, fig.show='hold', par=TRUE,
                tidy=FALSE,  comment=NA)
@@ -180,15 +180,15 @@ with(DAAG::bomregions2012,
 }
 @ %
 
-<<figset_5>>=
-figset5 <- function(){
+<<figset_3>>=
+figset3 <- function(){
     if(!requireNamespace('DAAG'))stop('DAAG must be installed')
   if(!requireNamespace('ggplot2'))stop('ggplot2 must be installed')
   }
 @ %
 
-<<do-figset5>>=
-figset5()
+<<do-figset3>>=
+figset3()
 if(!exists("worldrec.lm")){
     worldrec.lm <- lm(log(Time) ~ log(Distance),
                       data=DAAG::worldRecords)

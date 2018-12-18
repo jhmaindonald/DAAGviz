@@ -81,54 +81,11 @@
 \end{knitrout}
 \vspace{-0.5cm}
 
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig9.1} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- smooth-ohms ----}
-\hlcom{## Plot points}
-\hlkwd{plot}\hlstd{(ohms} \hlopt{~} \hlstd{juice,} \hlkwc{data}\hlstd{=fruitohms)}
-\hlcom{## Add smooth curve, using default}
-\hlcom{## smoothing window}
-\hlkwd{with}\hlstd{(fruitohms,}
-     \hlkwd{lines}\hlstd{(}\hlkwd{lowess}\hlstd{(ohms} \hlopt{~} \hlstd{juice),} \hlkwc{col}\hlstd{=}\hlstr{"gray"}\hlstd{,} \hlkwc{lwd}\hlstd{=}\hlnum{2}\hlstd{))}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{fig9.2A} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-    \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{"eyeAmpM.gam"}\hlstd{))}
-\hlstd{eyeAmpM.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(amp} \hlopt{~} \hlkwd{s}\hlstd{(x,y),} \hlkwc{data}\hlstd{=}\hlkwd{subset}\hlstd{(eyeAmp, Sex}\hlopt{==}\hlstr{"m"}\hlstd{))}
-        \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{"eyeAmpF.gam"}\hlstd{))}
-\hlstd{eyeAmpF.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(amp} \hlopt{~} \hlkwd{s}\hlstd{(x,y),} \hlkwc{data}\hlstd{=}\hlkwd{subset}\hlstd{(eyeAmp, Sex}\hlopt{==}\hlstr{"f"}\hlstd{))}
-\hlstd{lims} \hlkwb{<-} \hlkwd{range}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwd{predict}\hlstd{(eyeAmpF.gam),} \hlkwd{predict}\hlstd{(eyeAmpM.gam)))}
-\hlstd{mgcv}\hlopt{::}\hlkwd{vis.gam}\hlstd{(eyeAmpM.gam,} \hlkwc{plot.type}\hlstd{=}\hlstr{'contour'}\hlstd{,} \hlkwc{color}\hlstd{=}\hlstr{"cm"}\hlstd{,} \hlkwc{zlim}\hlstd{=lims,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{)}
-\hlstd{\}}
-\hlstd{fig9.2B} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-    \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{"eyeAmpM.gam"}\hlstd{))}
-    \hlstd{eyeAmpM.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(amp} \hlopt{~} \hlkwd{s}\hlstd{(x,y),} \hlkwc{data}\hlstd{=}\hlkwd{subset}\hlstd{(eyeAmp, Sex}\hlopt{==}\hlstr{"m"}\hlstd{))}
-    \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{"eyeAmpF.gam"}\hlstd{))}
-    \hlstd{eyeAmpF.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(amp} \hlopt{~} \hlkwd{s}\hlstd{(x,y),} \hlkwc{data}\hlstd{=}\hlkwd{subset}\hlstd{(eyeAmp, Sex}\hlopt{==}\hlstr{"f"}\hlstd{))}
-\hlstd{lims} \hlkwb{<-} \hlkwd{range}\hlstd{(}\hlkwd{c}\hlstd{(}\hlkwd{predict}\hlstd{(eyeAmpF.gam),} \hlkwd{predict}\hlstd{(eyeAmpM.gam)))}
-\hlstd{mgcv}\hlopt{::}\hlkwd{vis.gam}\hlstd{(eyeAmpF.gam,} \hlkwc{plot.type}\hlstd{=}\hlstr{'contour'}\hlstd{,} \hlkwc{color}\hlstd{=}\hlstr{"cm"}\hlstd{,} \hlkwc{zlim}\hlstd{=lims,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{)}
-\hlstd{\}}
-\hlstd{fig9.2} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlkwd{print}\hlstd{(}\hlstr{"Run the separate figures fig9.2A() and fig9.2B()"}\hlstd{)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-\end{figure}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{fig9.3} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- ant111b ----}
 \hlcom{# ant111b is in DAAG}
 \hlstd{Site} \hlkwb{<-} \hlkwd{with}\hlstd{(ant111b,} \hlkwd{reorder}\hlstd{(site, harvwt,}
@@ -144,7 +101,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.4} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.2} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- Erie1 ----}
 \hlkwd{plot}\hlstd{(Erie,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,}
      \hlkwc{ylab}\hlstd{=}\hlstr{"Level (m)"}\hlstd{)}
@@ -156,7 +113,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.5A} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.3A} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- lagErie ----}
 \hlcom{## Panel A}
 \hlkwd{lag.plot}\hlstd{(Erie,} \hlkwc{lags}\hlstd{=}\hlnum{3}\hlstd{,}
@@ -166,15 +123,15 @@
 \hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{2}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{,}
       \hlstr{"A: Lag plots, at lags of 1, 2 and 3"}\hlstd{)}
 \hlstd{\}}
-\hlstd{fig9.5B} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.3B} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- acfErie ----}
 \hlcom{## Panel B}
 \hlkwd{acf}\hlstd{(Erie,} \hlkwc{main}\hlstd{=}\hlstr{""}\hlstd{)}
 \hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{1}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{,} \hlkwc{cex}\hlstd{=}\hlnum{1.25}\hlstd{,}
       \hlstr{"B: Autocorrelation function"}\hlstd{)}
 \hlstd{\}}
-\hlstd{fig9.5} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlstr{"Run the separate functions fig9.5A() and fig9.5B()."}
+\hlstd{fig9.3} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstr{"Run the separate functions fig9.3A() and fig9.3B()."}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -183,7 +140,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.6} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.4} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- gamErie ----}
 \hlstd{df} \hlkwb{<-}  \hlkwd{data.frame}\hlstd{(}
   \hlkwc{height}\hlstd{=}\hlkwd{as.vector}\hlstd{(Erie),}
@@ -202,7 +159,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.7} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.5} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- arima-sim ----}
 \hlkwa{for} \hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{6}\hlstd{)\{}
 \hlstd{ysim} \hlkwb{<-} \hlkwd{arima.sim}\hlstd{(}\hlkwd{list}\hlstd{(}\hlkwc{ar}\hlstd{=}\hlnum{0.85}\hlstd{),}
@@ -223,7 +180,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.8} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.6} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- Erie-fcast ----}
 \hlstd{erie.ar} \hlkwb{<-} \hlkwd{ar}\hlstd{(Erie,} \hlkwc{order.max}\hlstd{=}\hlnum{1}\hlstd{)}
 \hlstd{fc} \hlkwb{<-} \hlstd{forecast}\hlopt{::}\hlkwd{forecast}\hlstd{(erie.ar,} \hlkwc{h}\hlstd{=}\hlnum{15}\hlstd{)}
@@ -238,7 +195,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.9} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.7} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- mdb-gam ----}
 \hlstd{mdbRain.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(mdbRain} \hlopt{~} \hlkwd{s}\hlstd{(Year)} \hlopt{+} \hlkwd{s}\hlstd{(SOI),}
                    \hlkwc{data}\hlstd{=bomregions)}
@@ -252,7 +209,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.10} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.8} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- ar1sims ----}
 \hlstd{opar} \hlkwb{<-} \hlkwd{par}\hlstd{(}\hlkwc{mar}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{2.1}\hlstd{,} \hlnum{3.1}\hlstd{,} \hlnum{0.25}\hlstd{,} \hlnum{1.1}\hlstd{),} \hlkwc{mgp}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{2.25}\hlstd{,}\hlnum{0.5}\hlstd{,}\hlnum{0}\hlstd{))}
 \hlstd{mdbRain.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(mdbRain} \hlopt{~} \hlkwd{s}\hlstd{(Year)} \hlopt{+} \hlkwd{s}\hlstd{(SOI),}
@@ -296,7 +253,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.11A} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.9A} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
   \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{'dfday06'}\hlstd{))\{}
     \hlkwd{print}\hlstd{(}\hlkwd{paste}\hlstd{(}\hlstr{"Unable to plot graph."}\hlstd{,}
                 \hlstr{"Ensure package 'gamclass' is installed."}\hlstd{))}
@@ -311,7 +268,7 @@
 \hlkwd{axis}\hlstd{(}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=atyear,} \hlkwc{labels}\hlstd{=}\hlkwd{format}\hlstd{(year,} \hlstr{"%Y"}\hlstd{))}
 \hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{0.75}\hlstd{,} \hlstr{"A: Events per day, vs date"}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{)}
 \hlstd{\}}
-\hlstd{fig9.11B} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.9B} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlstd{dfWeek06.gam} \hlkwb{<-} \hlstd{mgcv}\hlopt{::}\hlkwd{gam}\hlstd{(num}\hlopt{~}\hlkwd{s}\hlstd{(day,} \hlkwc{k}\hlstd{=}\hlnum{200}\hlstd{),} \hlkwc{data}\hlstd{=dfWeek06,} \hlkwc{family}\hlstd{=quasipoisson)}
 \hlstd{av} \hlkwb{<-} \hlkwd{mean}\hlstd{(}\hlkwd{predict}\hlstd{(dfWeek06.gam))}
 \hlkwd{plot}\hlstd{(dfWeek06.gam,} \hlkwc{xaxt}\hlstd{=}\hlstr{"n"}\hlstd{,} \hlkwc{shift}\hlstd{=av,} \hlkwc{trans}\hlstd{=exp,} \hlkwc{rug}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{xlab}\hlstd{=}\hlstr{""}\hlstd{,}
@@ -319,7 +276,7 @@
 \hlkwd{axis}\hlstd{(}\hlnum{1}\hlstd{,} \hlkwc{at}\hlstd{=atyear,} \hlkwc{labels}\hlstd{=}\hlkwd{format}\hlstd{(year,} \hlstr{"%Y"}\hlstd{))}
 \hlkwd{mtext}\hlstd{(}\hlkwc{side}\hlstd{=}\hlnum{3}\hlstd{,} \hlkwc{line}\hlstd{=}\hlnum{0.75}\hlstd{,} \hlstr{"B: Events per week, vs date"}\hlstd{,} \hlkwc{adj}\hlstd{=}\hlnum{0}\hlstd{)}
 \hlstd{\}}
-\hlstd{fig9.11} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.9} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
     \hlstr{"Run the separate functions fig9.10A() & fig9.10B()"}
 \hlstd{\}}
 \end{alltt}
@@ -329,7 +286,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.12} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.10} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- fgl-scores2D ----}
 \hlstd{scores} \hlkwb{<-} \hlkwd{predict}\hlstd{(fgl.lda)}\hlopt{$}\hlstd{x}
 \hlkwd{xyplot}\hlstd{(scores[,}\hlnum{2}\hlstd{]} \hlopt{~} \hlstd{scores[,}\hlnum{1}\hlstd{],} \hlkwc{groups}\hlstd{=fgl}\hlopt{$}\hlstd{type,}
@@ -349,7 +306,7 @@
 \hlcom{## ---- bronchit-first3 ----}
 \hlcom{## ---- bronchit-rp ----}
 \hlkwd{set.seed}\hlstd{(}\hlnum{47}\hlstd{)}   \hlcom{# Reproduce tree shown}
-\hlstd{fig9.13} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.11} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- treefig ----}
 \hlstd{opar} \hlkwb{<-} \hlkwd{par}\hlstd{(}\hlkwc{mar}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{1.1}\hlstd{,}\hlnum{4}\hlstd{))}
 \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{exists}\hlstd{(}\hlstr{'b.rpart'}\hlstd{))b.rpart} \hlkwb{<-} \hlkwd{rpart}\hlstd{(rfac} \hlopt{~} \hlstd{cig}\hlopt{+}\hlstd{poll,} \hlkwc{data}\hlstd{=bronchit)}
@@ -364,7 +321,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.14} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.12} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- rf-x-bronchit ----}
 \hlstd{opar} \hlkwb{<-} \hlkwd{par}\hlstd{(}\hlkwc{mar}\hlstd{=}\hlkwd{rep}\hlstd{(}\hlnum{2.1}\hlstd{,}\hlnum{4}\hlstd{))}
 \hlkwd{set.seed}\hlstd{(}\hlnum{31}\hlstd{)}   \hlcom{# Reproduce the trees shown}
@@ -386,7 +343,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{fig9.15} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fig9.13} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
 \hlcom{## ---- proximity-plot ----}
 \hlstd{parset} \hlkwb{<-} \hlkwd{simpleTheme}\hlstd{(}\hlkwc{pch}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{2}\hlstd{)}
 \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'randomForest'}\hlstd{))}
@@ -466,22 +423,6 @@
 \end{alltt}
 \end{kframe}
 \end{knitrout}
-
-
-\begin{figure}
-
-  \caption{Resistance in ohms is plotted against apparent juice
-    content.  A smooth curve (in gray) has been added, using the
-    \txtt{lowess} smoother.  The width of the smoothing window was the
-    default fraction $f = \frac{2}{3}$ of the range of values of the
-    $x$-variable.}\label{fig:fruitohms}
-\end{figure}
-
-\begin{figure}
-
-\caption{Estimated contours of left eye responses to visual stimulae,
-projected onto the plane.\label{fig:visAmp}}
-\end{figure}
 
 \begin{figure}
 

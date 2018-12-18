@@ -16,7 +16,7 @@
 <<setup, cache=FALSE, echo=FALSE>>=
 library(knitr)
 options(replace.assign=FALSE,width=72)
-opts_chunk$set(fig.path='figs/data-', cache.path='cache/data-',
+opts_chunk$set(fig.path='figure/data-', cache.path='cache/data-',
                fig.align='center', dev='pdf', fig.width=3.5,
                fig.height=3.5, fig.show='hold', par=TRUE,
                tidy=FALSE,  comment=NA)

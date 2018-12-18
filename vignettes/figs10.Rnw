@@ -13,12 +13,12 @@
 
 \begin{document}
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Map Overlays  and Spatial Modeling (Set 10)}
+%\VignetteIndexEntry{Brief Notes on Text Mining (Set 10)}
 
 <<setup, cache=FALSE, echo=FALSE, purl=FALSE>>=
 library(knitr)
-options(replace.assign=FALSE, width=72)
-opts_chunk$set(fig.path='figs/map-', cache.path='cache/map-',
+options(replace.assign=FALSE, width=54)
+opts_chunk$set(fig.path='figure/tm-', cache.path='cache/tm-',
                fig.align='center', dev='pdf', fig.width=3.5,
                fig.height=3.5, fig.show='hold', par=TRUE,
                tidy=FALSE,  comment=NA)
@@ -30,25 +30,59 @@ pdf.options(pointsize=12)
 oldopt <- options(digits=4)
 @ %
 
-\title{10: Map Overlays  and Spatial Modeling}
+\title{10: Brief Notes on Text Mining}
 \author{John H Maindonald}
 \maketitle
-
 \vspace*{-0.5cm}
-<<doFigs>>=
-doFigs <- TRUE
+
+<<doFigs, cache=FALSE>>=
+doFigs <- FALSE
 @ %
 \vspace*{-0.5cm}
 
-Start by attaching required packages:
+Load the {\em DAAGviz} package:
+<<load-DAAGviz, warning=FALSE, message=FALSE>>=
+library(DAAGviz, quietly=TRUE)
+@ %
+
+Set up a path to the directory where text (.txt) files
+are stored:
+<<make-paths>>=
+## Create paths to the files
+txdir <- system.file(package='DAAGviz', "texts")
+print(dir(txdir, pattern=".txt$"))
+txfiles <- dir(txdir, pattern=".txt$", full.names=TRUE)
+@ %
+
+Choose a color palette:
+
+<<choose-pal>>=
+pal <- RColorBrewer::brewer.pal(6, "Dark2")
+@ %
+
+<<DirSource, eval=FALSE>>=
+dirSource <- tm::DirSource(directory=txdir,
+                       pattern=".txt$")
+@ %
+
+<<dirTOcorpus, eval=FALSE>>=
+txcorp <- tm::Corpus(dirSource)
+txcorp <- tm::tm_map(txcorp,
+                 tm::content_transformer(
+                     function(x) iconv(x, to="UTF-8",
+                                       sub = "byte")))
+
+<<make-tdm, eval=FALSE>>=
+ctl <- list(stopwords = c(tm::stopwords(), "[1]"),
+            removePunctuation = list(preserve_intra_word_dashes = FALSE),
+            removeNumbers = TRUE, stopwords=c(tm::stopwords(), "[1]"),
+            minDocFreq = 2)
+tx.tdm <- tm::TermDocumentMatrix(txcorp, control=ctl)
 
 <<figset_10>>=
 figset10 <- function(){
-  if(!requireNamespace('DAAG', quietly = TRUE))stop('DAAG must be installed')
-  if(!require('latticeExtra', quietly = TRUE))stop('latticeExtra must be installed')
-  if(!requireNamespace('oz', quietly = TRUE))stop('oz must be installed')
-  if(!requireNamespace('rgdal', quietly=TRUE))stop('rgdal must be installed')
-  if(!require('sp', quietly = TRUE))stop('sp must be installed')
+  if(!requireNamespace('tm', quietly = TRUE))stop('tm must be installed')
+  if(!requireNamespace('wordcloud', quietly=TRUE))stop('wordcloud must be installed')
   }
 @ %
 
@@ -56,162 +90,51 @@ figset10 <- function(){
 figset10()
 @ %
 
+
 <<fig10_1>>=
+doTDM <- if(exists("tx.tdm")) FALSE else TRUE
+doCorp <- if(doTDM & !exists("tx.corp")) TRUE else FALSE
+if(doCorp){
+<<DirSource>>
+<<dirTOcorpus>>
+}
+if(doTDM){
+<<make-tdm>>
+}
+fig10.1A <- function(){
+fnam1 <- as.matrix(tx.tdm)[,1]
+wordcloud::wordcloud(names(fnam1), fnam1, max.words=80, colors=pal[-1],
+          random.order=FALSE, scale=c(10.5,.5))
+}
+fig10.1B <- function(){
+fnam2 <- as.matrix(tx.tdm)[,2]
+wordcloud::wordcloud(names(fnam2), fnam2, max.words=80, colors=pal[-1],
+          random.order=FALSE, scale=c(5,.5))
+}
+fig10.1C <- function(){
+fnam3 <- as.matrix(tx.tdm)[,3]
+wordcloud::wordcloud(names(fnam3), fnam3, max.words=80, colors=pal[-1],
+          random.order=FALSE, scale=c(6.5,.5))
+}
+@ %
+
+<<fig10.1>>=
 fig10.1 <- function(){
-## ---- oz-sites ----
-oz::oz(sections=c(3:5, 11:16), col="gray")
-chh <- par()$cxy[2]
-with(DAAG::possumsites, {
-  points(Longitude,
-         Latitude+c(0,0,0,.2,-.2, 0,0)*chh,
-         col="blue")
-  text(Latitude ~ Longitude,
-       labels=rownames(DAAG::possumsites),
-       col="red", pos=c(2,4,2,1,3,2,2), xpd=TRUE)
-  # pos = 1:below, 2:left, 3:above, 4:right
-  # xpd=TRUE allows plotting outside figure region
-})
+    cat("\n",
+        "Run the separate functions fig10.1A(), fig10.1B() & fig10.1C()",
+        "\n")
 }
 @ %
 
 \begin{figure}
-<<oz-sites-10_1, fig.width=4, fig.height=6.5, rt=3, warning=FALSE, message=FALSE, out.width="0.6\\textwidth", eval=doFigs>>=
-opar <- par(mar=c(4,4,1.6,3.1))
-fig10.1()
-par(opar)
+<<wc-14_1x, fig.width=5.75, fig.height=5.75, cache=FALSE, out.width="0.32\\textwidth", top=5, eval=doFigs>>=
+fig10.1A()
+fig10.1B()
+fig10.1C()
 @ %
 
-\caption{Sites at which possums were collected.\label{fig:possumsites}}
-\end{figure}
-
-<<load-dismo>>=
-library(dismo)
-@ %
-
-<<supp10_1>>=
-supp10.1 <- function(){
-if(!require(dismo))stop('dismo must be installed')
-## ---- google-possums ----
-## Extend longitude & latitude ranges slightly
-lonlat <- with(DAAG::possumsites,
-               c(range(Longitude)+c(-3,3),
-                 range(Latitude)+c(-2,2))
-)
-## Obtain map, as a ``RasterLayer'' object
-googmap <- gmap(extent(lonlat))
-plot(googmap, inter=TRUE)
-## From latitude/longitude to Mercator projection
-xy <- Mercator(with(DAAG::possumsites,
-                    cbind(Longitude, Latitude)))
-## Points show location of sites on the map
-points(xy)
-## Add labels that give the names
-text(xy, labels=row.names(DAAG::possumsites))
-}
-@ %
-
-
-\begin{suppfigure}
-<<google-possums-10_1, fig.width=5, fig.height=7.5, out.width="0.47\\textwidth", warning=FALSE, message=FALSE, eval=doFigs>>=
-supp10.1()
-@ %
-\end{suppfigure}
-
-<<supp10_2, fig.width=6.5, fig.height=6.5>>=
-supp10.2 <- function(){
-    if(!require(plotKML))stop("plotKML must be installed.")
-## ---- plotKML ----
-plotKML(quakes['Energy'], points_names="")
-}
-@ %
-
-<<fig10_2>>=
-## ---- logofile ----
-logofile <- system.file("pictures/Rlogo.jpg",
-                        package = "rgdal")[1]
-rlogo <- rgdal::readGDAL(logofile, silent=TRUE)
-fig10.2 <- function(){
-## ---- rlogo-image ----
-image(rlogo, red="band1",
-      green="band2",
-      blue="band3")
-}
-@ %
-
-\begin{figure}
-<<rlogo-image-10_2, fig.width=3.5, fig.height=3.5, out.width="0.47\\textwidth", eval=doFigs>>=
-fig10.2()
-@ %
-\caption{The function \txtt{image()} has been used to display the R
-  logo image that had been input as a GDAL grid map.\label{fig:rlogo}}
-\end{figure}
-
-<<fig10_3>>=
-fig10.3 <- function(){
-## ---- spplot-col3 ----
-## Code
-col3 <- c("red","green","blue")
-spplot(rlogo, zcol=1:3, names.attr=col3,
-       col.regions=grey(0:100/100), as.table=TRUE,
-       layout=c(3,1), main=paste("3-layer (RGB)",
-       "raster image - example"))
-}
-@ %
-
-\begin{figure}
-<<spplot-col3-10_3, fig.width=6, fig.height=2, echo=FALSE, eval=doFigs>>=
-fig10.3()
-@ %
-\caption{Red, green and blue layers from the R logo image.\label{fig:rlogo3}}
-\end{figure}
-
-<<sp27-supp10_3>>=
-supp10.3 <- function(){
-## ---- sp27 ----
-sp27 <- system.file("pictures/SP27GTIF.TIF",
-                    package = "rgdal")[1]
-## ---- sp27-read ----
-SP27GTIF <- rgdal::readGDAL(sp27, output.dim=c(100,100),
-                     silent=TRUE)
-class(SP27GTIF)
-## ---- sp27-spplot ----
-spplot(SP27GTIF)
-}
-@ %
-
-\begin{suppfigure}
-<<sp27-10_3, out.width="0.6\\textwidth", eval=doFigs>>=
-supp10.3()
-@ %
-\end{suppfigure}
-
-<<load-latticeExtra>>=
-@ %
-
-<<fig10_4>>=
-fig10.4 <- function(){
-## ---- meuse-bubble ----
-data(meuse); data(meuse.riv)
-coordinates(meuse) <- ~ x + y
-gph <- bubble(meuse, "zinc", pch=1,
-              key.entries =  100 * 2^(0:4),
-              main = "Zinc(ppm)",
-              scales=list(axes=TRUE, tck=0.4))
-add <-
-  latticeExtra::layer(panel.lines(meuse.riv[,1],
-                                  meuse.riv[,2],
-                      col="gray"))
-gph+add
-}
-@ %
-
-\begin{figure}
-<<meuse-bubble-10_4, fig.width=3.75, fig.height=4, out.width="0.47\\textwidth", eval=doFigs>>=
-fig10.4()
-@ %
- \caption{Bubble plot for \txtt{zinc},
-with area of bubbles proportional to concentration.
-River Meuse boundaries are in gray.\label{fig:ZnRiv}}
+\caption{Wordcloud plots are A: for the words in Chapters 1 - 5; B: 6 -
+  7; and C: 8 - 9.\label{fig:wc}}
 \end{figure}
 
 \end{document}

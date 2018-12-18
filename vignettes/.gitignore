@@ -1,1 +1,5 @@
 *.log
+^figure$
+.Rproj.user
+.Rhistory
+.RData

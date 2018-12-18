@@ -18,7 +18,7 @@
 <<setup, cache=FALSE, echo=FALSE, purl=FALSE>>=
 library(knitr)
 options(replace.assign=FALSE,width=54)
-opts_chunk$set(fig.path='figs/xmeth-', cache.path='cache/xmeth-',
+opts_chunk$set(fig.path='figure/xmeth-', cache.path='cache/xmeth-',
                fig.align='center', dev='pdf', fig.width=3.5,
                fig.height=3.5, fig.show='hold', par=TRUE,
                tidy=FALSE,  comment=NA)
@@ -40,44 +40,9 @@ doFigs <- FALSE
 @ %
 \vspace{-0.5cm}
 
+
 <<fig9_1>>=
 fig9.1 <- function(){
-## ---- smooth-ohms ----
-## Plot points
-plot(ohms ~ juice, data=fruitohms)
-## Add smooth curve, using default
-## smoothing window
-with(fruitohms,
-     lines(lowess(ohms ~ juice), col="gray", lwd=2))
-}
-@ %
-
-\begin{figure}
-<<fig9_2>>=
-fig9.2A <- function(){
-    if(!exists("eyeAmpM.gam"))
-eyeAmpM.gam <- mgcv::gam(amp ~ s(x,y), data=subset(eyeAmp, Sex=="m"))
-        if(!exists("eyeAmpF.gam"))
-eyeAmpF.gam <- mgcv::gam(amp ~ s(x,y), data=subset(eyeAmp, Sex=="f"))
-lims <- range(c(predict(eyeAmpF.gam), predict(eyeAmpM.gam)))
-mgcv::vis.gam(eyeAmpM.gam, plot.type='contour', color="cm", zlim=lims, main="")
-}
-fig9.2B <- function(){
-    if(!exists("eyeAmpM.gam"))
-    eyeAmpM.gam <- mgcv::gam(amp ~ s(x,y), data=subset(eyeAmp, Sex=="m"))
-    if(!exists("eyeAmpF.gam"))
-    eyeAmpF.gam <- mgcv::gam(amp ~ s(x,y), data=subset(eyeAmp, Sex=="f"))
-lims <- range(c(predict(eyeAmpF.gam), predict(eyeAmpM.gam)))
-mgcv::vis.gam(eyeAmpF.gam, plot.type='contour', color="cm", zlim=lims, main="")
-}
-fig9.2 <- function(){
-print("Run the separate figures fig9.2A() and fig9.2B()")
-}
-@ %
-\end{figure}
-
-<<fig9_3>>=
-fig9.3 <- function(){
 ## ---- ant111b ----
 # ant111b is in DAAG
 Site <- with(ant111b, reorder(site, harvwt,
@@ -88,16 +53,16 @@ stripplot(Site ~ harvwt, data=ant111b,
 }
 @ %
 
-<<fig9_4>>=
-fig9.4 <- function(){
+<<fig9_2>>=
+fig9.2 <- function(){
 ## ---- Erie1 ----
 plot(Erie, xlab="",
      ylab="Level (m)")
 }
 @ %
 
-<<fig9_5A>>=
-fig9.5A <- function(){
+<<fig9_3A>>=
+fig9.3A <- function(){
 ## ---- lagErie ----
 ## Panel A
 lag.plot(Erie, lags=3,
@@ -107,20 +72,20 @@ lag.plot(Erie, lags=3,
 mtext(side=3, line=2, adj=0,
       "A: Lag plots, at lags of 1, 2 and 3")
 }
-fig9.5B <- function(){
+fig9.3B <- function(){
 ## ---- acfErie ----
 ## Panel B
 acf(Erie, main="")
 mtext(side=3, line=1, adj=0, cex=1.25,
       "B: Autocorrelation function")
 }
-fig9.5 <- function(){
-"Run the separate functions fig9.5A() and fig9.5B()."
+fig9.3 <- function(){
+"Run the separate functions fig9.3A() and fig9.3B()."
 }
 @ %
 
-<<fig9_6>>=
-fig9.6 <- function(){
+<<fig9_4>>=
+fig9.4 <- function(){
 ## ---- gamErie ----
 df <-  data.frame(
   height=as.vector(Erie),
@@ -134,8 +99,8 @@ plot(obj,
 }
 @ %
 
-<<fig9_7>>=
-fig9.7 <- function(){
+<<fig9_5>>=
+fig9.5 <- function(){
 ## ---- arima-sim ----
 for (i in 1:6){
 ysim <- arima.sim(list(ar=0.85),
@@ -151,8 +116,8 @@ plot(df.gam,
 }
 @ %
 
-<<fig9_8>>=
-fig9.8 <- function(){
+<<fig9_6>>=
+fig9.6 <- function(){
 ## ---- Erie-fcast ----
 erie.ar <- ar(Erie, order.max=1)
 fc <- forecast::forecast(erie.ar, h=15)
@@ -162,8 +127,8 @@ plot(fc, main="",
 }
 @ %
 
-<<fig9_9>>=
-fig9.9 <- function(){
+<<fig9_7>>=
+fig9.7 <- function(){
 ## ---- mdb-gam ----
 mdbRain.gam <- mgcv::gam(mdbRain ~ s(Year) + s(SOI),
                    data=bomregions)
@@ -172,8 +137,8 @@ plot(mdbRain.gam, residuals=TRUE, se=2, pch=1,
 }
 @ %
 
-<<fig9_10>>=
-fig9.10 <- function(){
+<<fig9_8>>=
+fig9.8 <- function(){
 ## ---- ar1sims ----
 opar <- par(mar=c(2.1, 3.1, 0.25, 1.1), mgp=c(2.25,0.5,0))
 mdbRain.gam <- mgcv::gam(mdbRain ~ s(Year) + s(SOI),
@@ -204,8 +169,8 @@ year <- seq(from=fromDate, to=max(dfDay06$Date), by="1 year")
 atyear=julian(year, origin=fromDate)
 @ %
 
-<<fig9_11, eval=TRUE>>=
-fig9.11A <- function(){
+<<fig9_9, eval=TRUE>>=
+fig9.9A <- function(){
   if(!exists('dfday06')){
     print(paste("Unable to plot graph.",
                 "Ensure package 'gamclass' is installed."))
@@ -220,7 +185,7 @@ plot(dfDay06.gam, xaxt="n", shift=av, trans=exp, rug=FALSE, xlab="",
 axis(1, at=atyear, labels=format(year, "%Y"))
 mtext(side=3, line=0.75, "A: Events per day, vs date", adj=0)
 }
-fig9.11B <- function(){
+fig9.9B <- function(){
 dfWeek06.gam <- mgcv::gam(num~s(day, k=200), data=dfWeek06, family=quasipoisson)
 av <- mean(predict(dfWeek06.gam))
 plot(dfWeek06.gam, xaxt="n", shift=av, trans=exp, rug=FALSE, xlab="",
@@ -228,13 +193,13 @@ plot(dfWeek06.gam, xaxt="n", shift=av, trans=exp, rug=FALSE, xlab="",
 axis(1, at=atyear, labels=format(year, "%Y"))
 mtext(side=3, line=0.75, "B: Events per week, vs date", adj=0)
 }
-fig9.11 <- function(){
+fig9.9 <- function(){
     "Run the separate functions fig9.10A() & fig9.10B()"
 }
 @ %
 
-<<fig9_12>>=
-fig9.12 <- function(){
+<<fig9_10>>=
+fig9.10 <- function(){
 ## ---- fgl-scores2D ----
 scores <- predict(fgl.lda)$x
 xyplot(scores[,2] ~ scores[,1], groups=fgl$type,
@@ -246,11 +211,11 @@ xyplot(scores[,2] ~ scores[,1], groups=fgl$type,
 }
 @ %
 
-<<fig9_13>>=
+<<fig9_11>>=
 ## ---- bronchit-first3 ----
 ## ---- bronchit-rp ----
 set.seed(47)   # Reproduce tree shown
-fig9.13 <- function(){
+fig9.11 <- function(){
 ## ---- treefig ----
 opar <- par(mar=rep(1.1,4))
 if(!exists('b.rpart'))b.rpart <- rpart(rfac ~ cig+poll, data=bronchit)
@@ -260,8 +225,8 @@ par(opar)
 }
 @ %
 
-<<fig9_14>>=
-fig9.14 <- function(){
+<<fig9_12>>=
+fig9.12 <- function(){
 ## ---- rf-x-bronchit ----
 opar <- par(mar=rep(2.1,4))
 set.seed(31)   # Reproduce the trees shown
@@ -278,8 +243,8 @@ par(opar)
 }
 @ %
 
-<<fig9_15>>=
-fig9.15 <- function(){
+<<fig9_13>>=
+fig9.13 <- function(){
 ## ---- proximity-plot ----
 parset <- simpleTheme(pch=1:2)
 if(!requireNamespace('randomForest'))
@@ -296,7 +261,7 @@ xyplot(points[,2] ~ points[,1],
 }
 @ %
 
-<<fig9_16>>=
+<<fig9_14>>=
 fig9.16 <- function(){
 opar <- par(mar=c(2,3,2,5))
 plot(aupts, axes=FALSE, ann=FALSE, fg="gray",
@@ -312,8 +277,8 @@ par(opar)
 }
 @ %
 
-<<fig9_17, eval=TRUE, echo=FALSE>>=
-fig9.17A <- function(){
+<<fig9_15, eval=TRUE, echo=FALSE>>=
+fig9.15A <- function(){
 ## ---- au-overlay ----
 oz::oz()
 fitcoords <- DAAG::align2D(lat=aulatlong$latitude,
@@ -328,7 +293,7 @@ points(aulatlong, col="red", pch=16, cex=1.5)
 lines(x, y, col="gray40", lwd=3)
 mtext(side=3, line=0.5, adj=0, "A: From Classical MDS", cex=1.35)
 }
-fig9.17B <- function(){
+fig9.15B <- function(){
 ## ---- au-sammon ----
 oz::oz()
 aupts.sam <- sammon(audists, trace=FALSE)$points
@@ -345,7 +310,7 @@ points(aulatlong, col="red", pch=16, cex=1.5)
 lines(x, y, col="gray40", lwd=3)
 mtext(side=3, line=0.5, adj=0, "B: From Sammon Scaling", cex=1.35)
 }
-fig9.17 <- function(){
+fig9.15 <- function(){
     "Run the separate functions fig9.16A() & fig9.16B()"
 }
 @ %
@@ -374,34 +339,9 @@ bronchit <-
          rfac <- factor(r, labels=c("abs","pres")))
 @ %
 
-
 \begin{figure}
-<<smooth-ohms-9_1, echo=FALSE, fig.width=4.5, fig.height=3.5, out.width="0.65\\textwidth", eval=doFigs>>=
+<<ant111b-9_1, echo=FALSE, fig.width=4.5, fig.height=3.5, out.width="0.65\\textwidth", eval=doFigs>>=
 fig9.1()
-@ %
-  \caption{Resistance in ohms is plotted against apparent juice
-    content.  A smooth curve (in gray) has been added, using the
-    \txtt{lowess} smoother.  The width of the smoothing window was the
-    default fraction $f = \frac{2}{3}$ of the range of values of the
-    $x$-variable.}\label{fig:fruitohms}
-\end{figure}
-
-\begin{figure}
-<<plotVIS-9_2, echo=FALSE, fig.width=8.5, fig.height=3.5, out.width="0.97\\textwidth", eval=doFigs>>=
-opar <- par(mfrow=c(1,2))
-fig9.2A()
-mtext(side=3, line=0.5, adj=0, "A: Response amplitudes, Males")
-fig9.2B()
-mtext(side=3, line=0.5, adj=0, "B: Response amplitudes, Females")
-par(opar)
-@ %
-\caption{Estimated contours of left eye responses to visual stimulae,
-projected onto the plane.\label{fig:visAmp}}
-\end{figure}
-
-\begin{figure}
-<<ant111b-9_3, echo=FALSE, fig.width=4.5, fig.height=3.5, out.width="0.65\\textwidth", eval=doFigs>>=
-fig9.3()
 @ %
 \caption{Yields from 4 packages of land on each of eight sites on the
   Caribbean island of Antigua. Data are a summarized version of a
@@ -415,22 +355,22 @@ Erie <- greatLakes[,"Erie"]
 @ %
 
 \begin{figure}
-<<Erie1-9_4, echo=FALSE, fig.width=5.5, fig.height=2.5, out.width="0.8\\textwidth", eval=doFigs>>=
-fig9.4()
+<<Erie1-9_2, echo=FALSE, fig.width=5.5, fig.height=2.5, out.width="0.8\\textwidth", eval=doFigs>>=
+fig9.2()
 @ %
 \caption{Level of Lake Erie, in meters.
 }\label{fig:erie}
 \end{figure}
 
 \begin{figure}
-<<lagErie-9_5, echo=FALSE, fig.width=6, fig.height=2.75, out.width="0.98\\textwidth", eval=doFigs>>=
-fig9.5A()
+<<lagErie-9_3, echo=FALSE, fig.width=6, fig.height=2.75, out.width="0.98\\textwidth", eval=doFigs>>=
+fig9.3A()
 @ %
 \vspace*{-3pt}
 
 <<acfErie, echo=FALSE, fig.width=5.4, fig.height=2.5, out.width="0.7\\textwidth", eval=doFigs>>=
 opar <- par(mar=c(4,4,2.5,0.6), oma=c(0,0,2.5,0))
-fig9.5B()
+fig9.3B()
 par(opar)
 @ %
 \caption{Panel A plots Lake Erie levels vs levels at lags 1, 2 and 3
@@ -440,8 +380,8 @@ par(opar)
 \end{figure}
 
 \begin{figure}
-<<gamErie-9_6, echo=FALSE, fig.width=6.5, fig.height=3.25, out.width="0.75\\textwidth", eval=doFigs>>=
-fig9.6()
+<<gamErie-9_4, echo=FALSE, fig.width=6.5, fig.height=3.25, out.width="0.75\\textwidth", eval=doFigs>>=
+fig9.4()
 @ %
 \caption{GAM smoothing term, fitted to the Lake Erie Data.
     Most of the autocorrelation structure has been
@@ -450,8 +390,8 @@ fig9.6()
 \end{figure}
 
 \begin{figure}
-<<arima-sim-9_7, fig.width=3.15, fig.height=3.35, echo=FALSE, out.width="0.32\\textwidth", eval=doFigs>>=
-fig9.7()
+<<arima-sim-9_5, fig.width=3.15, fig.height=3.35, echo=FALSE, out.width="0.32\\textwidth", eval=doFigs>>=
+fig9.5()
 @ %
 \caption{The plots are from repeated simulations of an AR1 process with a
   lag 1 correlation of 0.85.  Smooth curves, assuming independent
@@ -459,8 +399,8 @@ fig9.7()
 \end{figure}
 
 \begin{figure}
-<<Erie-fcast-9_8, echo=FALSE, fig.width=5.5, fig.height=2.5, out.width="0.8\\textwidth", warning=FALSE, message=FALSE, eval=doFigs>>=
-fig9.8()
+<<Erie-fcast-9_6, echo=FALSE, fig.width=5.5, fig.height=2.5, out.width="0.8\\textwidth", warning=FALSE, message=FALSE, eval=doFigs>>=
+fig9.6()
 @ %
 \caption{Predictions, 15 years into the future, of lake levels
   (m). The shaded areas give 80\% and 95\% confidence bounds.
@@ -468,8 +408,8 @@ fig9.8()
 \end{figure}
 
 \begin{figure}
-<<mdb-gam-9_9, echo=FALSE, warning=FALSE, fig.width=4.5, fig.height=3.0, out.width="0.47\\textwidth", eval=doFigs>>=
-fig9.9()
+<<mdb-gam-9_7, echo=FALSE, warning=FALSE, fig.width=4.5, fig.height=3.0, out.width="0.47\\textwidth", eval=doFigs>>=
+fig9.7()
 @ %
   \caption{Estimated contributions of the model terms to
     \txtt{mdbRain}, in a GAM model that is the sum of smooth terms in
@@ -479,8 +419,8 @@ in the trend of \txtt{mdbRain} after about 1985,}\label{fig:mdbRainSM}
 \end{figure}
 
 \begin{figure}
-<<ar1sims-9_10, echo=FALSE, warning=FALSE, fig.width=3, left=1, fig.height=2.0, out.width="0.32\\textwidth", eval=doFigs>>=
-fig9.10()
+<<ar1sims-9_8, echo=FALSE, warning=FALSE, fig.width=3, left=1, fig.height=2.0, out.width="0.32\\textwidth", eval=doFigs>>=
+fig9.8()
 @ %
 \caption{The top left panel shows the autocorrelation plot of the
   residuals from the GAM model \txtt{mdbRain.gam}.  The five remaining
@@ -489,9 +429,9 @@ fig9.10()
 \end{figure}
 
 \begin{figure*}[h]
-<<au-both-9_11, echo=FALSE, fig.width=4.25, fig.height=3.75, top=2, out.width="0.47\\textwidth", eval=doFigs>>=
-fig9.11A()
-fig9.11B()
+<<au-both-9_9, echo=FALSE, fig.width=4.25, fig.height=3.75, top=2, out.width="0.47\\textwidth", eval=doFigs>>=
+fig9.9A()
+fig9.9B()
 @ %
 \caption{Estimated number of events (aircraft crashes) per time
   interval versus time.  In Panel A, the outcome variable was events
@@ -500,10 +440,10 @@ fig9.11B()
 \end{figure*}
 
 \begin{figure}
-<<fgl-scores2D-9_12, echo=FALSE, fig.width=5, fig.height=3.75, out.width="0.65\\textwidth", eval=doFigs>>=
+<<fgl-scores2D-9_10, echo=FALSE, fig.width=5, fig.height=3.75, out.width="0.65\\textwidth", eval=doFigs>>=
 ## ---- fgl-lda ----
 fgl.lda <- lda(type ~ ., data=fgl)
-fig9.12()
+fig9.10()
 @ %
 \caption{Visual representation of a classification rule, derived using
   {\em linear discriminant analysis}, for the forensic glass data.  A
@@ -519,8 +459,8 @@ library(rpart, quietly=TRUE)
 @ %
 
 \begin{figure}
-<<treefig-9_13, echo=FALSE, fig.width=3.5, fig.height=4, out.width="0.55\\textwidth", eval=doFigs>>=
-fig9.13()
+<<treefig-9_11, echo=FALSE, fig.width=3.5, fig.height=4, out.width="0.55\\textwidth", eval=doFigs>>=
+fig9.11()
 @ %
 \caption{Decision tree for predicting whether a miner has
     bronchitis.  Where the condition at a node is satisfied, the left
@@ -533,7 +473,7 @@ fig9.13()
 
 \begin{figure}
 <<rf-x-bronchit, echo=FALSE, fig.width=2, fig.height=1.75, out.width="0.24\\textwidth", eval=doFigs>>=
-fig9.14()
+fig9.12()
 @ %
 \caption{Each tree is for a different bootstrap sample of
   observations.  The final classification is determined by a random
@@ -545,7 +485,7 @@ fig9.14()
 
 \begin{figure}
 <<proximity-plot, echo=FALSE, w=3.5, h=3.65, out.width="0.47\\textwidth", eval=doFigs>>=
-fig9.15()
+fig9.13()
 @ %
 \caption{The plot is designed to represent, in two dimensions, the random
   forest result. It aims to reflect probabilities of group membership
@@ -561,8 +501,8 @@ aupts <- cmdscale(audists)
 @ %
 
 \begin{figure}
-<<aupoints_9_16, echo=FALSE, fig.width=5.25, fig.height=4.5, rt=3, out.width="0.6\\textwidth", eval=doFigs>>=
-fig9.16()
+<<aupoints_9_14, echo=FALSE, fig.width=5.25, fig.height=4.5, rt=3, out.width="0.6\\textwidth", eval=doFigs>>=
+fig9.14()
 @ %
 \caption{Relative locations of Australian cities, derived from road
   map distances, using metric scaling.\label{fig:audists}}
@@ -583,9 +523,9 @@ align2D <- function(lat=aulatlong$latitude,
 @ %
 
 \begin{figure*}[h]
-<<au-both-9_17, echo=FALSE, fig.width=5.25, fig.height=4.5, top=2, out.width="0.47\\textwidth", eval=doFigs>>=
-fig9.17A()
-fig9.17B()
+<<au-both-9_15, echo=FALSE, fig.width=5.25, fig.height=4.5, top=2, out.width="0.47\\textwidth", eval=doFigs>>=
+fig9.15A()
+fig9.15B()
 @ %
       \caption{In Panel A, Figure \ref{fig:audists} has been rotated and
         scaled, to give a best fit to a map of Australia.  Each city

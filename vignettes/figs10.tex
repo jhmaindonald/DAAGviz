@@ -63,35 +63,99 @@
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Map Overlays  and Spatial Modeling (Set 10)}
+%\VignetteIndexEntry{Brief Notes on Text Mining (Set 10)}
 
 
 
-\title{10: Map Overlays  and Spatial Modeling}
+\title{10: Brief Notes on Text Mining}
 \author{John H Maindonald}
 \maketitle
-
 \vspace*{-0.5cm}
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{doFigs} \hlkwb{<-} \hlnum{TRUE}
+\hlstd{doFigs} \hlkwb{<-} \hlnum{FALSE}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 \vspace*{-0.5cm}
 
-Start by attaching required packages:
+Load the {\em DAAGviz} package:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(DAAGviz,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Set up a path to the directory where text (.txt) files
+are stored:
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## Create paths to the files}
+\hlstd{txdir} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlkwc{package}\hlstd{=}\hlstr{'DAAGviz'}\hlstd{,} \hlstr{"texts"}\hlstd{)}
+\hlkwd{print}\hlstd{(}\hlkwd{dir}\hlstd{(txdir,} \hlkwc{pattern}\hlstd{=}\hlstr{".txt$"}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+[1] "data6-7.txt"     "graphics8-9.txt"
+[3] "prelims1-5.txt" 
+\end{verbatim}
+\begin{alltt}
+\hlstd{txfiles} \hlkwb{<-} \hlkwd{dir}\hlstd{(txdir,} \hlkwc{pattern}\hlstd{=}\hlstr{".txt$"}\hlstd{,} \hlkwc{full.names}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Choose a color palette:
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{figset10} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'DAAG'}\hlstd{,} \hlkwc{quietly} \hlstd{=} \hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'DAAG must be installed'}\hlstd{)}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(}\hlstr{'latticeExtra'}\hlstd{,} \hlkwc{quietly} \hlstd{=} \hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'latticeExtra must be installed'}\hlstd{)}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'oz'}\hlstd{,} \hlkwc{quietly} \hlstd{=} \hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'oz must be installed'}\hlstd{)}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'rgdal'}\hlstd{,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'rgdal must be installed'}\hlstd{)}
-  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(}\hlstr{'sp'}\hlstd{,} \hlkwc{quietly} \hlstd{=} \hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'sp must be installed'}\hlstd{)}
+\hlstd{pal} \hlkwb{<-} \hlstd{RColorBrewer}\hlopt{::}\hlkwd{brewer.pal}\hlstd{(}\hlnum{6}\hlstd{,} \hlstr{"Dark2"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{dirSource} \hlkwb{<-} \hlstd{tm}\hlopt{::}\hlkwd{DirSource}\hlstd{(}\hlkwc{directory}\hlstd{=txdir,}
+                       \hlkwc{pattern}\hlstd{=}\hlstr{".txt$"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{txcorp} \hlkwb{<-} \hlstd{tm}\hlopt{::}\hlkwd{Corpus}\hlstd{(dirSource)}
+\hlstd{txcorp} \hlkwb{<-} \hlstd{tm}\hlopt{::}\hlkwd{tm_map}\hlstd{(txcorp,}
+                 \hlstd{tm}\hlopt{::}\hlkwd{content_transformer}\hlstd{(}
+                     \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{iconv}\hlstd{(x,} \hlkwc{to}\hlstd{=}\hlstr{"UTF-8"}\hlstd{,}
+                                       \hlkwc{sub} \hlstd{=} \hlstr{"byte"}\hlstd{)))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ctl} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{stopwords} \hlstd{=} \hlkwd{c}\hlstd{(tm}\hlopt{::}\hlkwd{stopwords}\hlstd{(),} \hlstr{"[1]"}\hlstd{),}
+            \hlkwc{removePunctuation} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{preserve_intra_word_dashes} \hlstd{=} \hlnum{FALSE}\hlstd{),}
+            \hlkwc{removeNumbers} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{stopwords}\hlstd{=}\hlkwd{c}\hlstd{(tm}\hlopt{::}\hlkwd{stopwords}\hlstd{(),} \hlstr{"[1]"}\hlstd{),}
+            \hlkwc{minDocFreq} \hlstd{=} \hlnum{2}\hlstd{)}
+\hlstd{tx.tdm} \hlkwb{<-} \hlstd{tm}\hlopt{::}\hlkwd{TermDocumentMatrix}\hlstd{(txcorp,} \hlkwc{control}\hlstd{=ctl)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{figset14} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'tm'}\hlstd{,} \hlkwc{quietly} \hlstd{=} \hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'tm must be installed'}\hlstd{)}
+  \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{requireNamespace}\hlstd{(}\hlstr{'wordcloud'}\hlstd{,} \hlkwc{quietly}\hlstd{=}\hlnum{TRUE}\hlstd{))}\hlkwd{stop}\hlstd{(}\hlstr{'wordcloud must be installed'}\hlstd{)}
   \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -100,7 +164,50 @@ Start by attaching required packages:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{figset10}\hlstd{()}
+\hlkwd{figset14}\hlstd{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{doTDM} \hlkwb{<-} \hlkwa{if}\hlstd{(}\hlkwd{exists}\hlstd{(}\hlstr{"tx.tdm"}\hlstd{))} \hlnum{FALSE} \hlkwa{else} \hlnum{TRUE}
+\hlstd{doCorp} \hlkwb{<-} \hlkwa{if}\hlstd{(doTDM} \hlopt{& !}\hlkwd{exists}\hlstd{(}\hlstr{"tx.corp"}\hlstd{))} \hlnum{TRUE} \hlkwa{else} \hlnum{FALSE}
+\hlkwa{if}\hlstd{(doCorp)\{}
+\hlstd{dirSource} \hlkwb{<-} \hlstd{tm}\hlopt{::}\hlkwd{DirSource}\hlstd{(}\hlkwc{directory}\hlstd{=txdir,}
+                       \hlkwc{pattern}\hlstd{=}\hlstr{".txt$"}\hlstd{)}
+\hlstd{txcorp} \hlkwb{<-} \hlstd{tm}\hlopt{::}\hlkwd{Corpus}\hlstd{(dirSource)}
+\hlstd{txcorp} \hlkwb{<-} \hlstd{tm}\hlopt{::}\hlkwd{tm_map}\hlstd{(txcorp,}
+                 \hlstd{tm}\hlopt{::}\hlkwd{content_transformer}\hlstd{(}
+                     \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{iconv}\hlstd{(x,} \hlkwc{to}\hlstd{=}\hlstr{"UTF-8"}\hlstd{,}
+                                       \hlkwc{sub} \hlstd{=} \hlstr{"byte"}\hlstd{)))}
+
+\hlstd{\}}
+\hlkwa{if}\hlstd{(doTDM)\{}
+\hlstd{ctl} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{stopwords} \hlstd{=} \hlkwd{c}\hlstd{(tm}\hlopt{::}\hlkwd{stopwords}\hlstd{(),} \hlstr{"[1]"}\hlstd{),}
+            \hlkwc{removePunctuation} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{preserve_intra_word_dashes} \hlstd{=} \hlnum{FALSE}\hlstd{),}
+            \hlkwc{removeNumbers} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{stopwords}\hlstd{=}\hlkwd{c}\hlstd{(tm}\hlopt{::}\hlkwd{stopwords}\hlstd{(),} \hlstr{"[1]"}\hlstd{),}
+            \hlkwc{minDocFreq} \hlstd{=} \hlnum{2}\hlstd{)}
+\hlstd{tx.tdm} \hlkwb{<-} \hlstd{tm}\hlopt{::}\hlkwd{TermDocumentMatrix}\hlstd{(txcorp,} \hlkwc{control}\hlstd{=ctl)}
+
+\hlstd{\}}
+\hlstd{fig10.1A} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fnam1} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(tx.tdm)[,}\hlnum{1}\hlstd{]}
+\hlstd{wordcloud}\hlopt{::}\hlkwd{wordcloud}\hlstd{(}\hlkwd{names}\hlstd{(fnam1), fnam1,} \hlkwc{max.words}\hlstd{=}\hlnum{80}\hlstd{,} \hlkwc{colors}\hlstd{=pal[}\hlopt{-}\hlnum{1}\hlstd{],}
+          \hlkwc{random.order}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{scale}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{10.5}\hlstd{,}\hlnum{.5}\hlstd{))}
+\hlstd{\}}
+\hlstd{fig10.1B} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fnam2} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(tx.tdm)[,}\hlnum{2}\hlstd{]}
+\hlstd{wordcloud}\hlopt{::}\hlkwd{wordcloud}\hlstd{(}\hlkwd{names}\hlstd{(fnam2), fnam2,} \hlkwc{max.words}\hlstd{=}\hlnum{80}\hlstd{,} \hlkwc{colors}\hlstd{=pal[}\hlopt{-}\hlnum{1}\hlstd{],}
+          \hlkwc{random.order}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{scale}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{5}\hlstd{,}\hlnum{.5}\hlstd{))}
+\hlstd{\}}
+\hlstd{fig10.1C} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
+\hlstd{fnam3} \hlkwb{<-} \hlkwd{as.matrix}\hlstd{(tx.tdm)[,}\hlnum{3}\hlstd{]}
+\hlstd{wordcloud}\hlopt{::}\hlkwd{wordcloud}\hlstd{(}\hlkwd{names}\hlstd{(fnam3), fnam3,} \hlkwc{max.words}\hlstd{=}\hlnum{80}\hlstd{,} \hlkwc{colors}\hlstd{=pal[}\hlopt{-}\hlnum{1}\hlstd{],}
+          \hlkwc{random.order}\hlstd{=}\hlnum{FALSE}\hlstd{,} \hlkwc{scale}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{6.5}\hlstd{,}\hlnum{.5}\hlstd{))}
+\hlstd{\}}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -109,19 +216,9 @@ Start by attaching required packages:
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{fig10.1} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- oz-sites ----}
-\hlstd{oz}\hlopt{::}\hlkwd{oz}\hlstd{(}\hlkwc{sections}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{3}\hlopt{:}\hlnum{5}\hlstd{,} \hlnum{11}\hlopt{:}\hlnum{16}\hlstd{),} \hlkwc{col}\hlstd{=}\hlstr{"gray"}\hlstd{)}
-\hlstd{chh} \hlkwb{<-} \hlkwd{par}\hlstd{()}\hlopt{$}\hlstd{cxy[}\hlnum{2}\hlstd{]}
-\hlkwd{with}\hlstd{(DAAG}\hlopt{::}\hlstd{possumsites, \{}
-  \hlkwd{points}\hlstd{(Longitude,}
-         \hlstd{Latitude}\hlopt{+}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{.2}\hlstd{,}\hlopt{-}\hlnum{.2}\hlstd{,} \hlnum{0}\hlstd{,}\hlnum{0}\hlstd{)}\hlopt{*}\hlstd{chh,}
-         \hlkwc{col}\hlstd{=}\hlstr{"blue"}\hlstd{)}
-  \hlkwd{text}\hlstd{(Latitude} \hlopt{~} \hlstd{Longitude,}
-       \hlkwc{labels}\hlstd{=}\hlkwd{rownames}\hlstd{(DAAG}\hlopt{::}\hlstd{possumsites),}
-       \hlkwc{col}\hlstd{=}\hlstr{"red"}\hlstd{,} \hlkwc{pos}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{2}\hlstd{,}\hlnum{4}\hlstd{,}\hlnum{2}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{3}\hlstd{,}\hlnum{2}\hlstd{,}\hlnum{2}\hlstd{),} \hlkwc{xpd}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-  \hlcom{# pos = 1:below, 2:left, 3:above, 4:right}
-  \hlcom{# xpd=TRUE allows plotting outside figure region}
-\hlstd{\})}
+    \hlkwd{cat}\hlstd{(}\hlstr{"\textbackslash{}n"}\hlstd{,}
+        \hlstr{"Run the separate functions fig10.1A(), fig10.1B() & fig10.1C()"}\hlstd{,}
+        \hlstr{"\textbackslash{}n"}\hlstd{)}
 \hlstd{\}}
 \end{alltt}
 \end{kframe}
@@ -131,236 +228,15 @@ Start by attaching required packages:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{opar} \hlkwb{<-} \hlkwd{par}\hlstd{(}\hlkwc{mar}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{4}\hlstd{,}\hlnum{4}\hlstd{,}\hlnum{1.6}\hlstd{,}\hlnum{3.1}\hlstd{))}
-\hlkwd{fig10.1}\hlstd{()}
-\hlkwd{par}\hlstd{(opar)}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.6\textwidth]{figs/map-oz-sites-10_1-1} 
-
-}
-
-
-
-\end{knitrout}
-
-\caption{Sites at which possums were collected.\label{fig:possumsites}}
-\end{figure}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{library}\hlstd{(dismo)}
-\end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{Loading required package: raster}}\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{supp10.1} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(dismo))}\hlkwd{stop}\hlstd{(}\hlstr{'dismo must be installed'}\hlstd{)}
-\hlcom{## ---- google-possums ----}
-\hlcom{## Extend longitude & latitude ranges slightly}
-\hlstd{lonlat} \hlkwb{<-} \hlkwd{with}\hlstd{(DAAG}\hlopt{::}\hlstd{possumsites,}
-               \hlkwd{c}\hlstd{(}\hlkwd{range}\hlstd{(Longitude)}\hlopt{+}\hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{3}\hlstd{,}\hlnum{3}\hlstd{),}
-                 \hlkwd{range}\hlstd{(Latitude)}\hlopt{+}\hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{2}\hlstd{,}\hlnum{2}\hlstd{))}
-\hlstd{)}
-\hlcom{## Obtain map, as a ``RasterLayer'' object}
-\hlstd{googmap} \hlkwb{<-} \hlkwd{gmap}\hlstd{(}\hlkwd{extent}\hlstd{(lonlat))}
-\hlkwd{plot}\hlstd{(googmap,} \hlkwc{inter}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\hlcom{## From latitude/longitude to Mercator projection}
-\hlstd{xy} \hlkwb{<-} \hlkwd{Mercator}\hlstd{(}\hlkwd{with}\hlstd{(DAAG}\hlopt{::}\hlstd{possumsites,}
-                    \hlkwd{cbind}\hlstd{(Longitude, Latitude)))}
-\hlcom{## Points show location of sites on the map}
-\hlkwd{points}\hlstd{(xy)}
-\hlcom{## Add labels that give the names}
-\hlkwd{text}\hlstd{(xy,} \hlkwc{labels}\hlstd{=}\hlkwd{row.names}\hlstd{(DAAG}\hlopt{::}\hlstd{possumsites))}
-\hlstd{\}}
+\hlkwd{fig10.1A}\hlstd{()}
+\hlkwd{fig10.1B}\hlstd{()}
+\hlkwd{fig10.1C}\hlstd{()}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 
-
-\begin{suppfigure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{supp10.1}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.47\textwidth]{figs/map-google-possums-10_1-1} 
-\includegraphics[width=0.47\textwidth]{figs/map-google-possums-10_1-2} 
-
-}
-
-
-
-\end{knitrout}
-\end{suppfigure}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{supp10.2} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-    \hlkwa{if}\hlstd{(}\hlopt{!}\hlkwd{require}\hlstd{(plotKML))}\hlkwd{stop}\hlstd{(}\hlstr{"plotKML must be installed."}\hlstd{)}
-\hlcom{## ---- plotKML ----}
-\hlkwd{plotKML}\hlstd{(quakes[}\hlstr{'Energy'}\hlstd{],} \hlkwc{points_names}\hlstd{=}\hlstr{""}\hlstd{)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlcom{## ---- logofile ----}
-\hlstd{logofile} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"pictures/Rlogo.jpg"}\hlstd{,}
-                        \hlkwc{package} \hlstd{=} \hlstr{"rgdal"}\hlstd{)[}\hlnum{1}\hlstd{]}
-\hlstd{rlogo} \hlkwb{<-} \hlstd{rgdal}\hlopt{::}\hlkwd{readGDAL}\hlstd{(logofile,} \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\end{alltt}
-
-
-{\ttfamily\noindent\color{warningcolor}{Warning in rgdal::readGDAL(logofile, silent = TRUE): GeoTransform values not available}}\begin{alltt}
-\hlstd{fig10.2} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- rlogo-image ----}
-\hlkwd{image}\hlstd{(rlogo,} \hlkwc{red}\hlstd{=}\hlstr{"band1"}\hlstd{,}
-      \hlkwc{green}\hlstd{=}\hlstr{"band2"}\hlstd{,}
-      \hlkwc{blue}\hlstd{=}\hlstr{"band3"}\hlstd{)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig10.2}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.47\textwidth]{figs/map-rlogo-image-10_2-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{The function \txtt{image()} has been used to display the R
-  logo image that had been input as a GDAL grid map.\label{fig:rlogo}}
-\end{figure}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{fig10.3} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- spplot-col3 ----}
-\hlcom{## Code}
-\hlstd{col3} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"red"}\hlstd{,}\hlstr{"green"}\hlstd{,}\hlstr{"blue"}\hlstd{)}
-\hlkwd{spplot}\hlstd{(rlogo,} \hlkwc{zcol}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{3}\hlstd{,} \hlkwc{names.attr}\hlstd{=col3,}
-       \hlkwc{col.regions}\hlstd{=}\hlkwd{grey}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{100}\hlopt{/}\hlnum{100}\hlstd{),} \hlkwc{as.table}\hlstd{=}\hlnum{TRUE}\hlstd{,}
-       \hlkwc{layout}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{3}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{main}\hlstd{=}\hlkwd{paste}\hlstd{(}\hlstr{"3-layer (RGB)"}\hlstd{,}
-       \hlstr{"raster image - example"}\hlstd{))}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-
-{\centering \includegraphics[width=\maxwidth]{figs/map-spplot-col3-10_3-1} 
-
-}
-
-
-
-\end{knitrout}
-\caption{Red, green and blue layers from the R logo image.\label{fig:rlogo3}}
-\end{figure}
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{supp10.3} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- sp27 ----}
-\hlstd{sp27} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"pictures/SP27GTIF.TIF"}\hlstd{,}
-                    \hlkwc{package} \hlstd{=} \hlstr{"rgdal"}\hlstd{)[}\hlnum{1}\hlstd{]}
-\hlcom{## ---- sp27-read ----}
-\hlstd{SP27GTIF} \hlkwb{<-} \hlstd{rgdal}\hlopt{::}\hlkwd{readGDAL}\hlstd{(sp27,} \hlkwc{output.dim}\hlstd{=}\hlkwd{c}\hlstd{(}\hlnum{100}\hlstd{,}\hlnum{100}\hlstd{),}
-                     \hlkwc{silent}\hlstd{=}\hlnum{TRUE}\hlstd{)}
-\hlkwd{class}\hlstd{(SP27GTIF)}
-\hlcom{## ---- sp27-spplot ----}
-\hlkwd{spplot}\hlstd{(SP27GTIF)}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{suppfigure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{supp10.3}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.6\textwidth]{figs/map-sp27-10_3-1} 
-
-}
-
-
-
-\end{knitrout}
-\end{suppfigure}
-
-
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlstd{fig10.4} \hlkwb{<-} \hlkwa{function}\hlstd{()\{}
-\hlcom{## ---- meuse-bubble ----}
-\hlkwd{data}\hlstd{(meuse);} \hlkwd{data}\hlstd{(meuse.riv)}
-\hlkwd{coordinates}\hlstd{(meuse)} \hlkwb{<-} \hlopt{~} \hlstd{x} \hlopt{+} \hlstd{y}
-\hlstd{gph} \hlkwb{<-} \hlkwd{bubble}\hlstd{(meuse,} \hlstr{"zinc"}\hlstd{,} \hlkwc{pch}\hlstd{=}\hlnum{1}\hlstd{,}
-              \hlkwc{key.entries} \hlstd{=}  \hlnum{100} \hlopt{*} \hlnum{2}\hlopt{^}\hlstd{(}\hlnum{0}\hlopt{:}\hlnum{4}\hlstd{),}
-              \hlkwc{main} \hlstd{=} \hlstr{"Zinc(ppm)"}\hlstd{,}
-              \hlkwc{scales}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{axes}\hlstd{=}\hlnum{TRUE}\hlstd{,} \hlkwc{tck}\hlstd{=}\hlnum{0.4}\hlstd{))}
-\hlstd{add} \hlkwb{<-}
-  \hlstd{latticeExtra}\hlopt{::}\hlkwd{layer}\hlstd{(}\hlkwd{panel.lines}\hlstd{(meuse.riv[,}\hlnum{1}\hlstd{],}
-                                  \hlstd{meuse.riv[,}\hlnum{2}\hlstd{],}
-                      \hlkwc{col}\hlstd{=}\hlstr{"gray"}\hlstd{))}
-\hlstd{gph}\hlopt{+}\hlstd{add}
-\hlstd{\}}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
-
-\begin{figure}
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{fig10.4}\hlstd{()}
-\end{alltt}
-\end{kframe}
-
-{\centering \includegraphics[width=0.47\textwidth]{figs/map-meuse-bubble-10_4-1} 
-
-}
-
-
-
-\end{knitrout}
- \caption{Bubble plot for \txtt{zinc},
-with area of bubbles proportional to concentration.
-River Meuse boundaries are in gray.\label{fig:ZnRiv}}
+\caption{Wordcloud plots are A: for the words in Chapters 1 - 5; B: 6 -
+  7; and C: 8 - 9.\label{fig:wc}}
 \end{figure}
 
 \end{document}
