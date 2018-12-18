@@ -13,10 +13,9 @@ the chapters:
 * 7: Graphics – _base_, _lattice_, _ggplot2_, _rgl_, _googleVis_, . . .
 * 8: Regression with Linear Terms and Factors
 * 9: A Miscellany of Models & Methods 
-* 10: Map Overlays and Spatial Modeling
-* 11: Brief Notes on Text Mining
+* 10: Brief Notes on Text Mining
 
-In the vignettes for Chapters 7 -- 11, a variable `doFigs`
+In the vignettes for Chapters 7 -- 10, a variable `doFigs`
 is set to `FALSE`.  (In __figs7.Rnw__, the code is in line
 40.)  If this is changed to `doFigs=TRUE`, then compiling
 the vignette should give a PDF file that has (with occasional
