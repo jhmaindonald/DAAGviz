@@ -1,0 +1,2194 @@
+4
+Data Objects and Functions
+
+62    learning and exploring r
+                                                                     Data objects and functions are two
+ Different types of data objects:                                    of several types of objects (others
+                                                                     include model objects, formulae, and
+   Vectors    These collect together elements of the same mode.      expressions) that are available in R.
+              (Possible modes are "logical", "integer", "numeric",   Users can create and work with such
+              "complex", "character" and "raw")                      objects in a user workspace. All can,
+                                                                     if the occasion demands, be treated as
+   Factors    Factors identify category levels in categorical data.  data!
+              Modeling functions know how to represent factors.
+              (Factors do not quite manage to be vectors! Why?)
+   Data       A list of columns – same length; modes may differ.
+   frame      Data frames are a device for organizing data.
+   Lists      Lists group together an arbitrary set of objects
+              (Lists are recursive; elements of lists are lists.)
+   NAs        Use is.na() to check for NAs.
+     We start this chapter by noting data objects that may appear as
+columns of a data frame.
+4.1      Column Data Objects – Vectors and Factors
+Column objects is a convenient name for one-dimensional data
+structures that can be included as columns in a data frame. This
+includes vectors1 , factors, and dates.                              1
+                                                                       Strictly, the vectors that we discuss
+                                                                     here are atomic vectors. Their ele-
+                                                                     ments are not, as happens with lists,
+4.1.1     Vectors                                                    wrappers for other language objects.
+Examples of vectors are                                              Common vector modes are logical,
+                                                                     numeric and character. The 4 lines of
+c(2 ,3 ,5 ,2 ,7 ,1)
+                                                                     code create vectors that are, in order:
+3:10 # The numbers 3, 4,.. , 10
+                                                                     numeric, numeric, logical, character.
+c(TRUE , FALSE , FALSE , FALSE , TRUE , TRUE , FALSE)
+c("fig"," mango","apple","prune")
+     Use mode() to show the storage mode of an object, thus:
+x <- c(TRUE , FALSE , FALSE , FALSE , TRUE , TRUE , FALSE)
+mode(x)
+[1] " logical "
+     The missing value symbol is NA. Subsection 4.1.3 will discuss
+issues that arise when one or more vector elements is an NA.
+Subsets of Vectors
+There are four common ways to extract subsets of vectors.
+     1. Specify the subscripts of elements that are to be extracted:
+x <- c(3 ,11 ,8 ,15 ,12)       # Assign to x the values
+x[c(2 ,4)]                     # Extract elements 2 and 4
+
+                                                                         data objects and functions            63
+[1] 11 15
+Negative numbers may be used to omit elements:2                         2
+                                                                          Mixing of positive and negative
+                                                                        subscripts is not allowed.
+x <- c(3 ,11 ,8 ,15 ,12)
+x[-c (2 ,3)]
+[1]       3 15 12
+       2. Specify a vector of logical values. The elements that are     Arithmetic relations that may be used
+extracted are those for which the logical value is TRUE. Thus suppose   for extraction of subsets are >=, ==,
+we want to extract values of x that are greater than 10.                != and %in%. The first four compare
+                                                                        magnitudes, == tests for equality, !=
+x >10       # Values are logical (TRUE or FALSE)                        tests for inequality, and %in% tests
+                                                                        whether any element matches.
+[1] FALSE        TRUE FALSE      TRUE    TRUE
+x[x > 10]
+[1] 11 15 12
+"John" %in% c("Jeff", "Alan", "John")
+[1] TRUE
+       3. Where elements have names, these can be used to extract
+elements:
+altitude <- c( Cambarville =800 , Bellbird =300 ,
+                      "Allyn River"=300 ,
+                      "Whian Whian"=400 ,
+                      Byrangery =200 , Conondale =400 ,
+                      Bulburin =600)
+##
+## Names can be used to extract elements
+altitude [c(" Cambarville ", " Bellbird ")]
+Cambarville            Bellbird
+             800             300
+       4. Use subset(), with the vector as the first argument, and a
+logical statement that identifies the elements to be extracted as the
+second argument. For example:
+subset (altitude , altitude >400)
+Cambarville            Bulburin
+             800             600
+4.1.2       Factors
+                                                                        Factors are an economical way to store
+Factors are column objects whose elements are integer values 1, 2,      vectors of repetitive text strings. By
+. . . , k, where k is the number of levels. They are distinguished from default, when a vector of text strings
+integer vectors by having the class factor and a levels attribute.      becomes a column in a data frame, it
+       For example, create a character vector fruit, thus:              is incorporated as a factor.
+
+64   learning and exploring r
+fruit <- c("fig","mango","apple","plum", "fig")
+This might equally well be stored as a factor, thus:
+fruitfac <- factor (fruit)
+    Internally, the factor is stored as the integer vector 2, 3, 1, 4, 2. Thus 1 is interpreted as "apple";
+These numbers are interpreted according to the attributes table:          2:"fig"; 3:"mango"; 4:"plum".
+          1           2           3           4
+      "apple"      "fig"     "mango"      "plum"
+By default, the levels are taken in alphanumeric order.
+    The function factor(), with the levels argument specified,
+can be used both to specify the order of levels when the factor is
+created, or to make a later change to the order.3 For example, the        3
+                                                                            Where counts are tabulated by factor
+following orders levels according to stated glycemic index:               level, or lattice or other graphs have
+                                                                          one panel per factor level, these are in
+glycInd <- c(apple =40, fig =35, mango =55, plum =25)                     order of the levels.
+## Take levels in order of stated glycInd index
+fruitfac <- factor (fruit ,
+                          levels =names(sort( glycInd )))
+levels ( fruitfac )
+[1] "plum"       "fig"     "apple" "mango"
+unclass ( fruitfac )      # Examine stored values
+[1] 2 4 3 1 2
+attr (," levels ")
+[1] "plum" "fig"           "apple" "mango"                                 Mis-spelt name, example:
+                                                                          trt <- c("A","A"," Control ")
+    Incorrect spelling of the level names generates missing values,       trtfac <- factor (trt ,
+for the level that was mis-spelled. Use the labels argument if you           levels =c(" control ","A"))
+                                                                          table ( trtfac )
+wish to change the level names, but be careful to ensure that the
+label names are in the correct order.                                     trtfac
+    In most places where the context seems to demand it, the integer      control             A
+                                                                                  0           2
+levels are translated into text strings, thus:
+fruit <- c("fig","mango","apple", "plum","fig")
+fruitfac <- factor (fruit)
+fruitfac == "fig"
+[1]    TRUE FALSE FALSE FALSE          TRUE
+    Section 8.5 has detailed examples of the use of factors in model
+formulae.
+Ordered factors
+In addition to factors, note the existence of ordered factors, created
+using the function ordered(). For ordered factors, the order of
+levels implies a relational ordering. For example:
+windowTint <- ordered (rep(c("lo","med","hi"), 2),
+                               levels =c("lo","med","hi"))
+windowTint
+
+                                                                       data objects and functions         65
+[1] lo med hi lo med hi
+Levels : lo < med < hi
+sum( windowTint > "lo")
+[1] 4
+Subsetting of factors
+Consider the factor fruitfac that was created earlier:
+fruitfac <- factor (c("fig","mango","apple","plum", "fig"))
+We can remove elements with levels fig and plum thus:
+ff2 <- fruitfac [! fruitfac %in% c("fig","plum")]
+ff2
+[1] mango apple
+Levels : apple fig mango plum
+table (ff2)
+ff2
+apple      fig mango     plum
+      1      0       1       0
+                                                                      Note also:
+The levels fig and plum remain, but with the table showing 0 values
+for these levels. Use the function droplevels() to remove levels      table ( droplevels (ff2 ))
+that are not present in the data:
+droplevels (ff2)                                                      apple mango
+                                                                           1       1
+[1] mango apple
+Levels : apple mango
+Why is a factor not a vector?
+Two factors that have different levels vectors are different types of Vectors can be concatenated (joined).
+object. Thus, formal concatenation of factors with different levels   Two or mare factors can be sensi-
+vectors is handled by first coercing both factors to integer vectors. bly concatenated only if they have
+                                                                      identical levels vectors.
+The integer vector that results is not, in most circumstances, mean-
+ingful or useful.
+4.1.3     Missing Values, Infinite Values and NaNs
+Any arithmetic or logical operation with NA generates an NA. The      Failure to understand the rules for
+consequences are more far-reaching than might be immediately          calculations with NAs can lead to
+obvious. Use is.na() to test for a missing value:                     unwelcome surprises.
+is.na (c(1, NA , 3, 0, NA))
+[1] FALSE      TRUE FALSE FALSE       TRUE
+
+66    learning and exploring r
+     An expression such as c(1, NA, 3, 0, NA) == NA returns a
+vector of NAs, and cannot be used to test for missing values.
+c(1, NA , 3, 0, NA) == NA
+[1] NA NA NA NA NA
+As the value is unknown, it might or might not be equal to 1, or to
+another NA, or to 3, or to 0.
+     Note that different functions handle NAs in different ways.         The modeling function lm()
+Functions such as mean() and median() accept the argument                accepts any of the arguments
+na.rm=TRUE, which causes observations that have NAs to be ig-            na.action=na.omit (omit),
+                                                                         na.action=na.exclude (omit
+nored. The plot() function omits NAs, infinities and NaNs. For use       NAs when fitting; replace by NAs when
+of lowess() to put a smooth curve through the plot, NAs must first       fitted values and residuals are calcu-
+be removed. By default, table() ignores NAs.                             lated), and na.action=na.fail.
+     Problems with missing values are a common reason why calcu-
+lations fail. Infinite values and NaNs are a further potential source of
+difficulty.
+Inf and NaN
+The expression 1/0 returns Inf. The expression log(0) returns            Note that sqrt(-1+0i) returns 0+1i.
+-Inf, i.e., smaller than any real number. The expressions 0/0 and        R distinguishes between the real
+log(-1) both return NaN.                                                 number -1 and the complex number
+                                                                         -1+0i.
+NAs in subscripts?
+It is best to ensure that NAs do not appear, when there is an assign-
+ment, in subscript expressions on either side of the expression.
+4.2      Data Frames, Matrices, Arrays and Lists
+                                                                         Data frames with all columns numeric
+Data frames: Data frames are lists of column objects. The require-       can sometimes be handled in the same
+ment that all of the column objects have the same length gives data      way as matrices. In other cases, a
+frames a row by column rectangular structure. Different columns can      different syntax may be needed, or
+have different column classes — commonly numeric or character or         conversion from one to the other.
+                                                                         Proceed with care!
+factor or logical or date.
+                                                                         Internally, matrices are stored as one
+Matrices – vectors with a Dimension: When printed, matrices              long vector in which the columns are
+appear in a row by column layout in which all elements have the          stacked one above the other. The first
+same mode – commonly numeric or character or logical.                    element in the dimension attribute
+                                                                         gives the number of rows in each
+                                                                         column.
+Arrays and tables: Matrices are two-dimensional arrays. Arrays
+more generally can have an arbitrary number of dimensions. Tables
+have a structure that is identical to that of arrays.
+     The data frame travelbooks will feature in the subsequent
+discussion. Look back to Section 1.7 to see how it can be entered.
+
+                                                                        data objects and functions           67
+ 4.2.1     Data frames versus matrices and tables
+ Modeling functions commonly return larger numeric objects as          Computations that can be performed
+ matrices rather than data frames. The principal components function   with matrices are typically much
+ prcomp() returns scores as a matrix, as does the linear discriminant  faster than their equivalents with data
+ analysis function lda() from the MASS package.                        frames. See Section 6.4.
+     Functions are available to convert data frames into matrices, and
+ vice versa. For example:
+ travelmat <- as.matrix ( travelbooks [, 1:4])
+    # From data frame to matrix
+ newtravelbooks <- as.data.frame ( travelmat )
+    # From matrix to data frame
+     In comparing data frames with matrices, note that:
+                                                                       Alternatively, do:
+• Both for data frames and for matrices or two-way tables, the func-
+                                                                       attr(travelmat , "dim")
+   tion dim() returns number of rows by number of columns, thus:
+   travelmat <- as.matrix ( travelbooks [, 1:4])                       [1] 6 4
+   dim( travelmat )
+   [1] 6 4
+• For a matrix, length() returns the number of elements. For a         A data frame is a list of columns. The
+   data frame it returns the number of columns.                        function length() returns the list
+                                                                       length.
+   c( dframelgth = length ( travelbooks ),
+      matlgth = length ( travelmat ))
+   dframelgth        matlgth
+               6            24
+• The notation that uses single square left and right brackets to
+   extract subsets of data frames, introduced in Section 1.6 works in
+   just the same way with matrices. For example
+   travelmat [, 4]
+   travelmat [, " weight "]
+   travelmat [, 1:3]
+   travelmat [2,]
+   Negative indices can be used to omit rows and/or columns.
+• Use of the subscript notation to extract a row from a data frame
+   returns a data frame, whereas extraction of a column yields a
+   column vector. Thus:
+  – Extraction of a row from a data frame, for example                 Use unlist(travelbooks[6,
+      travelbooks["Canberra - The Guide", ] or                         ]) to turn row from the data frame
+                                                                       into a vector. All elements are coerced
+      travelbooks[6, ], yields a data frame, i.e., a special form      to a common mode, in this case
+      of list.                                                         numeric. Thus the final element
+  – travelbooks$volume (equivalent to travelbooks[,1] or               becomes 1.0 (the code that is stored),
+                                                                       rather than Guide which was the first
+      travelbooks[,"volume"])) is a vector.                            level of the factor type.
+• For either a data frame or a matrix, the function rownames()
+   can be used to extract row names, and the function colnames()
+   to extract column names. For data frames, row.names() is an
+   alternative to rownames(), while names() is an alternative to
+   colnames().
+
+68   learning and exploring r
+    Note also a difference in the mechanisms for adding columns.
+The following adds new columns area (area of page), and density
+(weight to volume ratio) to the data frame travelbooks:
+travelbooks $area <- with( travelbooks , width* height )
+travelbooks $ density <- with( travelbooks ,
+                                    weight / volume )
+names ( travelbooks )      # Check column names
+[1] " thickness " "width"           " height "     " weight "
+" volume "      "type"
+[7] "area"           " density "
+Columns are added to the data frame as necessary.
+    For matrices, use cbind(), which can also be used for data
+frames, to bind in new columns.
+4.2.2     Inclusion of character vectors in data frames
+When data frames are created, whether by use of read.table()
+or another such function to input data from a file, or by use of the
+function data.frame() to join columns of data together into a data
+frame, character vectors are converted into factors. Thus, the final
+column (type) of travelbooks became, by default, a factor.4 To             4
+                                                                             This assumes that the global
+prevent such type conversions, specify stringsAsFactors=FALSE              option stringsAsFactors is
+                                                                           FALSE. To check, interrogate
+in the call to read.table() or data.frame().
+                                                                           options()$stringsAsFactors.
+4.2.3     Factor columns in data frame subsets
+The data frame ais (DAAG) has physical charateristics of athletes,
+divided up thus between ten different sports:
+with(ais , table(sport ))
+sport
+  B_Ball      Field       Gym Netball          Row     Swim    T_400m T_Sprnt     Tennis
+       25        19         4         23        37        22        29      15         11
+  W_Polo
+       17
+    Figure 7.2.1 in Subsection 7.9 limits the data to swimmers and
+rowers. For this, at the same time removing all levels except Row and
+Swim from the factor sport, do:
+rowswim <- with(ais , sport %in% c("Row", "Swim"))                         If redundant levels were left in place,
+aisRS <- droplevels ( subset (ais , rowswim ))                             the graph would show empty panels
+xtabs (~sport , data=aisRS)                                                for each such level.
+sport
+  Row Swim
+   37     22
+Contrast the above with:
+xtabs (~sport , data= subset (ais , rowswim ))
+
+                                                                           data objects and functions         69
+sport
+  B_Ball      Field      Gym Netball         Row     Swim   T_400m T_Sprnt       Tennis
+         0         0        0        0        37       22          0        0            0
+  W_Polo
+         0
+4.2.4      Handlng rows that include missing values
+The function na.omit() omits rows that contain one or more miss-
+ing values. The argument may be a data frame or a matrix. The
+function complete.cases() identifies such rows. Thus:
+test.df <- data.frame (x=c(1:2 , NA), y=1:3)
+test.df
+    x  y
+1 1    1
+2 2    2
+3 NA   3
+## complete.cases ()
+complete.cases ( test.df )
+[1]    TRUE     TRUE FALSE
+## na.omit ()
+na.omit ( test.df )
+   x y
+1 1 1
+2 2 2
+4.2.5      Arrays — some further details
+                                                                          Tables, which will be the subject
+A matrix is a two-dimensional array. More generally, arrays can           of the next subsection, have a very
+have an arbitrary number of dimensions.                                   similar structure to arrays.
+Removal of the dimension attribute
+The dimension attribute of a matrix or array can be changed or re-
+moved, thus:
+travelvec <- as.matrix ( travelbooks [, 1:4])
+dim( travelvec ) <- NULL # Columns of travelmat are stacked into one
+                              # long vector
+travelvec
+  [1]       1.3      3.9    1.2    2.0       0.6     1.5    11.3     13.1     20.0       21.1
+[11]       25.8    13.1    23.9   18.7     27.6     28.5    36.0     23.4   250.0      840.0
+[21]     550.0 1360.0    640.0   420.0
+   # as(travelmat , " vector ") is however preferable
+
+70    learning and exploring r
+     Note again that the $ notation, used with data frames and other
+list objects to reference the contents of list elements, is not relevant
+to matrices.
+4.2.6      Lists
+A list is a collection of arbitrary objects. As noted above, a data      Elements of lists are themselves lists.
+frame is a specialized form of list. Consider for example the list       Distinguish rcanberra[4], which
+                                                                         is a sub-list and therefore a list, from
+rCBR <- list( society ="ssai", branch =" Canberra ",                     rcanberra[[4]] which extracts
+                   presenter ="John",                                    the contents of the fourth list element.
+                   tutors =c("Emma", "Chris", "Frank"))
+     First, extract list length and list names:
+length (rCBR)              # rCBR has 4 elements
+names (rCBR)
+[1] 4
+[1] " society "         " branch "      " presenter " " tutors "
+     The following extracts the 4th list element:
+rCBR [4]                   # Also a list ,     name is ' tutors '
+$tutors
+[1] "Emma"        "Chris" "Frank"
+     Alternative ways to extract the contents of the 4th element are:
+                                                                         List elements can be accessed by
+rCBR [[4]]                 # Contents of 4th list element                name. Thus, to extract the contents
+                                                                         of the 4th list element, alterna-
+                                                                         tives to rcanberra[[4]] are
+[1] "Emma"        "Chris" "Frank"                                        rcanberra[["tutors"]] or
+                                                                         rcanberra$tutors.
+rCBR$ tutors               # Equivalent to rCBR [[" tutors "]]
+[1] "Emma"        "Chris" "Frank"
+Model objects are lists
+As noted in Subsection 3.4.2, the various R modeling functions all       Recall again, also, that data frames
+return their own particular type of model object, either a list or as an are a specialized form of list, with the
+S4 object.                                                               restriction that all columns must all
+                                                                         have the same length.
+
+                                                                       data objects and functions        71
+4.3     Functions
+ Different Kinds of Functions:
+  Generic         The ’class’ of the function argument determines the
+                  action taken. E.g., print(), plot(), summary()
+  Modeling        For example, lm() fits linear models.
+                  Output may be stored in a model object.
+  Extractor       These extract information from model objects.
+                  Examples include summary()), coef()),
+                  resid()), and fitted()
+  User            Use, e.g., to automate and document computations
+  Anonymous       These are user functions that are defined at the
+                  point of use, and do not need a name.
+    The above list is intended to include the some of the most impor-
+tant types of function. These categories may overlap.
+    The language that R implements has many of the features of a      Functions for working with dates are
+functional language. Functions have accordingly featured throughout   discussed in Section 4.3.9 immediately
+the earlier discussion. Here will be noted functions that are com-    following.
+monly important.
+4.3.1     Built-In Functions
+Common useful functions
+ ## Use with any R object as argument
+ print ()                # Prints a single R object
+ length ()               # Number of elements in a vector or of a list
+ ## Concatenate and print R objects [does less coercion than print ()]
+ cat ()                  # Prints multiple objects , one after the other
+ ## Use with a numeric vector argument
+ mean ()                 # If argument has NA elements , may want na.rm=TRUE
+ median ()               # As for mean (), may want na.rm=TRUE
+ range ()                # As for mean (), may want na.rm=TRUE
+ unique ()               # Gives the vector of distinct values
+ diff ()                 # Vector of first differences
+                         # N. B. diff(x) has one less element than x
+ cumsum ()               # Cumulative sums , c.f., also , cumprod ()
+ ## Use with an atomic vector object
+ sort ()                 # Sort elements into order , but omitting NAs
+ order ()                # x[order(x)] orders elements of x, with NAs last
+ rev ()                  # reverse the order of vector elements
+ any ()                  # Returns TRUE if there are any missing values
+ as()                    # Coerce argument 1 to class given by argument 2
+                         # e.g. as (1:6 , " factor ")
+ is()                    # Is argument 1 of class given by argument 2?
+                         # is (1:6 , " factor ") returns FALSE
+
+72    learning and exploring r
+                         # is(TRUE , " logical ") returns TRUE
+ is.na ()                # Returns TRUE if the argument is an NA
+ ## Information on an R object
+ str ()                  # Information on an R object
+ args ()                 # Information on arguments to a function
+ mode ()                 # Gives the storage mode of an R object
+                         # (logical , numeric , character , . . ., list)
+ ## Create a vector
+ numeric ()              #  numeric (5) creates a numeric vector , length 5,
+                         #  all elements 0.
+                         #  numeric (0) ( length 0) is sometimes useful .
+ character ()            #  Create character vector ; c.f. also logical ()
+    The function mean(), and a number of other functions, takes
+the argument na.rm=TRUE; i.e., remove NAs, then proceed with the
+calculation. For example
+mean(c(1, NA , 3, 0, NA), na.rm=T)
+[1] 1.333
+    Note that the function as() has, at present, no method for coerc-
+ing a matrix to a data frame. For this, use as.data.frame().
+Functions in different packages with the same name
+For example, as well as lattice function dotplot() the graphics
+package has a defunct function dotplot(). To be sure of getting the
+lattice function dotplot(), refer to it as lattice::dotplot.
+4.3.2     Functions for data summary and/or manipulation              For data manipulation, note:
+4.3.3     Functions for creating and working with tables              - the apply family of functions
+                                                                         (Subsection 4.3.7).
+4.3.4     Tables of Counts                                            - data manipulation functions in
+                                                                         the reshape2 and plyr packages
+Use either table() or xtabs() to make a table of counts. Use             (Chapter 6).
+xtabs() for cross-tabulation, i.e., to determine totals of numeric
+values for each table category.
+The table() function
+For use of table(), specify one vector of values (often a factor) for
+each table margin that is required. For example:
+library (DAAG)              # possum is from DAAG
+with(possum , table(Pop , sex ))
+          sex
+Pop         f m
+   Vic     24 22
+   other 19 39
+
+                                                                       data objects and functions            73
+NAs in tables
+By default, table() ignores NAs. To show information on NAs,
+specify exclude=NULL, thus:
+library (DAAG)
+table ( nswdemo $re74 ==0, exclude =NULL)
+FALSE     TRUE   <NA >
+   119     326     277
+The xtabs() function
+This more flexible alternative to table() uses a table formula to
+specify the margins of the table:
+xtabs (~ Pop+sex , data= possum )
+          sex
+Pop         f m
+   Vic     24 22
+   other 19 39
+    A column of frequencies can be specified on the left hand side of Manipulations with data frames are
+the table formula. In order to demonstrate this, the three-way table  in general conceptually simpler than
+UCBAdmissions (datasets package) will be converted into its data      manipulations with tables. For tables
+                                                                      that are not unreasonably large, it
+frame equivalent. Margins in the table become columns in the data     is in general a good strategy to first
+frame:                                                                convert the table to a data frame and
+UCBdf <- as.data.frame.table ( UCBAdmissions )                        make that the starting point for further
+head(UCBdf , n=3)                                                     calculations.
+       Admit Gender Dept Freq
+1 Admitted       Male     A 512
+2 Rejected       Male     A 313
+3 Admitted Female         A     89
+    The following then forms a table of total admissions and rejec-
+tions in each department:
+xtabs (Freq ~      Admit+Dept , data=UCBdf)
+              Dept
+Admit            A     B  C     D   E    F
+   Admitted 601 370 322 269 147 46
+   Rejected 332 215 596 523 437 668
+Information on data objects
+The function str() gives basic information on the data object that is
+given as argument.
+library (DAAG)
+str( possumsites )
+
+74    learning and exploring r
+'data.frame ':         7 obs. of 3 variables :
+  $ Longitude : num 146 149 151 153 153 ...
+  $ Latitude : num -37.5 -37.6 -32.1 -28.6 -28.6 ...
+  $ altitude : num 800 300 300 400 200 400 600
+4.3.5      Utility functions
+ dir ()                   #  List files in the working or other specified directory
+  sessionInfo ()          #  Print version numbers for R and for attached packages
+ system .file ()          #  By default , show path to ' package =" base " '
+ R.home ()                #  Path to R home directory
+ . Library                #  Path to the default library
+ . libPaths ()            #  Get/set paths to library directories
+Section A has further details.
+4.3.6      User-defined functions
+                                                                           Note also that functions can be defined
+The function mean() calculates means, The function sd() calcu-             at the point of use. Such functions
+lates standard deviations. Here is a function that calculates mean and     do not need a name, and are called
+standard deviation at the same time:                                       anonymous functions. Section 4.3.4
+                                                                           has an example.
+mean.and.sd <- function (x){
+      av <- mean(x)
+      sdev <- sd(x)
+      c(mean=av , sd = sdev)          # return value
+}
+The parameter x is the argument that the user must supply. The body
+of the function is enclosed between curly braces. The value that the
+function returns is given on its final line. Here the return value is a
+vector that has two named elements.
+    The following calculates the mean and standard deviation of
+heterozygosity estimates for seven different Drosophila species.5          5
+                                                                             Data are from Lewontin, R. 1974.
+                                                                           The Genetic Basis of Evolutionary
+hetero <- c(.43 ,.25 ,.53 ,.47 ,.81 ,.42 ,.61)                             Change.
+mean.and.sd ( hetero )
+   mean        sd
+0.5029 0.1750
+    It is useful to give the function argument a default value, so that it
+can be run without user-supplied parameters, in order to see what it
+does. A possible choice is a set of random normal numbers, perhaps
+generated using the rnorm() function. Here is a revised function
+definition. Because the function body has been reduced to a single         Note that a different set of random
+line, the curly braces are not needed.                                     numbers will be returned, giving a
+                                                                           different mean and SD, each time that
+mean.and.sd <- function (x = rnorm (20))                                   the function is run with its default
+                        c(mean=mean(x), sd=sd(x))                          argument.
+mean.and.sd ()
+    mean           sd
+-0.1610      0.9986
+
+                                                                         data objects and functions          75
+mean.and.sd ()
+    mean          sd
+0.08901 0.85100
+4.3.7     The apply family of functions
+                                                                        For the apply family of functions,
+ apply(), sapply() and friends
+                                                                        specify as the FUN argument any
+   apply()       Use apply() to apply a function across rows            function that will not generate an
+                 or columns of a matrix (or data frame)                 error. Obviously, log("Hobart") is
+                                                                        not allowed!
+   sapply()      sapply() and lapply() apply functions in               Note also the function tapply(),
+   & friends     parallel across columns of a data frame, or across     which will not be discussed here.
+                 elements of a list, or across elements of a vector.
+apply(): The function apply() is intended for use with matrices         If used with a data frames, the data
+or, more generally, with arrays. It has three mandatory arguments, a    frame is first coerced to matrix.
+matrix or data frame, the dimension (1 for rows; 2 for columns) or
+dimensions, and a function that will be applied across that dimension
+of the matrix or data frame.
+    Here is an example:                                                  Code that will input molclock1:
+apply (molclock , 2, range)                                             library (DAAG)
+                                                                        datafile (" molclock1 ")
+                                                                        molclock <-
+    The following tabulates admissions, in the three-way table             read.table (" molclock1.txt ")
+UCBAdmissions, according to sex:
+apply ( UCBAdmissions , c(1,2), sum)
+              Gender
+Admit          Male Female
+   Admitted 1198          557
+   Rejected 1493        1278
+sapply() and lapply(): Use sapply() and lapply() to apply               Warning: Use apply() with
+a function (e.g., mean(), range(), median()) in parallel to all         COLUMN=2, to apply a function to
+columns of a data frame. They take as arguments the name of the         all columns of a matrix. If sapply()
+                                                                        or lapply() is given a matrix as
+data frame, and the function that is to be applied.                     argument, the function is applied to
+    The function sapply() returns the same information as               each element (the matrix is treated as a
+lapply(). But whereas lapply() returns a list, sapply() tries           vector).
+if possible to simplify the result to give a vector or matrix or array.
+    Here is an example of the use of sapply():
+sapply (molclock , range)
+       Gpdh Sod Xdh AvRate Myr
+[1 ,] 1.5 12.6 11.5           11.9     55
+[2 ,] 40.0 46.0 31.7          24.9 1100
+                                                                         Use of na.rm=TRUE:
+    A third argument na.rm=TRUE can be supplied to the function         sapply (molclock , range ,
+sapply. This argument is then automatically passed to the function               na.rm =TRUE)
+that is given in the second argument position.
+                                                                               Gpdh Sod Xdh AvRate Myr
+                                                                        [1 ,] 1.5 12.6 11.5          11.9    55
+                                                                        [2 ,] 40.0 46.0 31.7         24.9 1100
+
+76   learning and exploring r
+    More generally, the first argument to sapply() or lapply() can
+be any vector.
+sapply() – Application of a user function
+We will demonstrate the use of sapply() to apply a function that
+counts the number of NAs to each column of a data frame. A suitable
+function can be defined thus:
+countNA <- function (x)sum(is.na(x))
+    An alternative is to define a function6 in place, without a name,        6
+                                                                               This is called an anonymous func-
+that counts number of NAs. The alternatives are:                             tion.
+Use function defined earlier:                         Define function at place of call:
+library (MASS)                                        sapply ( Pima.tr2 [, 1:5] ,
+sapply ( Pima.tr2 [, 1:5] , countNA )                          function (x)sum(is.na(x)))
+npreg       glu     bp   skin      bmi                npreg     glu     bp  skin        bmi
+      0       0     13      98       3                    0       0     13      98         3
+4.3.8      Functions for working with text strings
+The functions paste() and paste0() join text strings. The func-              For paste(), the default is to use a
+tion sprintf(), primarily designed for formatting output for print-          space as a separator; paste0() omits
+ing, usefully extends the abilities of paste() and paste0().                 the space.
+    Other simple string operations include substring() and
+nchar() (number of characters). Both of these, and strsplit()
+noted in the next paragraph, can be applied to character vectors.
+    The function strsplit(), used to split strings, has an argument          Other functions that accept an ar-
+fixed that by default equals FALSE. The effect is that the argument          gument fixed include the search
+                                                                             functions grep() and regexpr(),
+split, which specifies the character(s) on which the string will
+                                                                             and the search and replace functions
+split, is assumed to be a regular expression. See help(regexp) for           sub() and gsub().
+details. For use of a split character argument, call strsplit()
+with fixed=FALSE.
+    Bird species in the dataset cuckoos (DAAG) are:
+(spec <- levels ( cuckoos $ species ))
+[1] " hedge . sparrow " " meadow .pipit"       "pied. wagtail "
+[4] " robin "             "tree.pipit"         "wren"
+                                                                              Regular expression substitution:
+Now replace the periods in the names by spaces:                              specnam <- sub("\\.",
+                                                                                                 " ", spec)
+( specnam <- sub(".", " ", spec , fixed=TRUE ))
+                                                                             In regular expressions enter a period
+[1] " hedge sparrow " " meadow pipit"          "pied wagtail "               (".") as "\\."
+[4] " robin "             "tree pipit"         "wren"
+    For string matching, use match(), pmatch() and charmatch().              See help(regex) for information on
+For matching with regular expressions, note grep() and                       the use of regular expressions.
+regexpr(). For string substitution, use sub() and gsub().
+    Web pages with information on string manipulation in R include:
+
+                                                                     data objects and functions           77
+http://www.stat.berkeley.edu/classes/s133/R-6.html
+http://en.wikibooks.org/wiki/R_Programming/Text_Processing
+The first is an overview, with the second more detailed.
+    The package stringr, due to Hadley Wickham, provides what        For strings representing biological se-
+may be a more consistent set of functions for string handling than  quences, install the well-documented
+                                                                    Bioconductor package Biostrings.
+are available in base R.
+4.3.9     Functions for Working with Dates (and Times)
+                                                                    Good starting points for learning
+Use as.Date() to convert character strings into dates. The default  about dates in R are the help pages
+format has year, then month, then day of month, thus:               help(Dates), help(as.Date)
+                                                                    and help(format.Date).
+# Electricity Billing Dates
+dat <- c("2003 -08-24 ","2003 -11-23 ","2004 -02-22 ",
+             "2004 -05-03 ")
+dd <- as.Date (dat)
+    Use format() to set or change the way that a date is formatted.
+The following is a selection of the available symbols:
+     %d:      day, as number
+     %a:      abbreviated weekday name (%A: unabbreviated)
+     %m:      month (00-12)
+     %b:      month abbreviated name (%B: unabbreviated)
+     %y:      final two digits of year (%Y: all four digits)
+    The default format is "%Y-%m-%d". The character / can be used
+in place of -. Other separators (e.g., a space) must be explicitly
+specified, using the format argument, as in the examples below.
+    Date objects can be subtracted:                                 Subtraction yields a time difference
+                                                                    object. If necessary, use unclass()
+as.Date ("1960 -12-1") - as.Date ("1960 -1-1")
+                                                                    to convert this to a numeric vector.
+Time difference of 335 days
+                                                                     Use unclass() to turn a time
+There is a diff() method for date objects:                          difference object into an integer
+dd <- as.Date (c("2003 -08-24 ","2003 -11-23 ",                     vector:
+                      "2004 -02-22 ", "2004 -05-03 "))              unclass (diff(dd ))
+diff(dd)
+Time differences in days
+[1] 91 91 71
+Formatting dates for printing: Use format() to fine tune the
+formatting of dates for printing.                                   See help(format.Date).
+dec1 <- as.Date ("2004 -12-1")
+format (dec1 , format ="%b %d %Y")
+[1] "Dec 01 2004"
+format (dec1 , format ="%a %b %d %Y")
+[1] "Wed Dec 01 2004"
+
+78    learning and exploring r
+   Such formatting may be used to give meaningful labels on
+graphs. Figure 4.1 provides an example:
+## Labeling of graph: data frame jobs (DAAG)
+library (DAAG ); library ( lattice )
+fromdate <- as.Date ("1 Jan1995 ", format ="%d%b%Y")
+startofmonth <- seq(from=fromdate , by="1 month",
+                      length =24)
+atdates <- seq(from=fromdate , by="6 month",                                 1840                                                   ●
+                 length =4)                                                                                                         ●
+                                                                             1820                                               ●
+xyplot (BC ~ startofmonth , data=jobs ,                                                                                 ●
+                                                                                                                            ●
+        scale=list(x=list(at=atdates ,                                       1800                                     ●●●
+                                                                                                                                ●
+                                                                        BC                                      ●●
+                                                                                                                  ●
+                             labels = format (atdates ,                      1780                     ●●
+                                                                                                        ●
+                                              "%b%y"))))                                  ●
+                                                                                              ●
+                                                                                                  ●         ●
+                                                                             1760                ●          ●
+                                                                                      ●        ●
+                                                                             1740         ●
+Conversion of dates to and from integer number of days: By de-                      Jan95 Jul95 Jan96 Jul96
+fault, dates are stored in integer numbers of days. Use julian()                                 startofmonth
+to convert a date into its integer value, by default using January 1
+                                                                       Figure 4.1: Canadian worker force
+1970 as origin. Use the argument option to specify some different      numbers, with dates used to label the
+origin:                                                                x-axis. See Figure 7.12 in Subsection
+                                                                       7.2.6 for data from all Canadian
+dates <- as.Date (c("1908 -09-17 ", "1912 -07-12 "))
+                                                                       provinces.
+julian ( dates)
+[1] -22386 -20992
+attr (," origin ")
+[1] "1970 -01 -01"
+julian (dates , origin = as.Date ("1908 -01-01 "))
+[1] 260 1654
+attr (," origin ")
+[1] "1908 -01 -01"
+     Note also weekdays(), months(), and quarters():
+dates <- as.Date (c("1908 -09-17 ", "1912 -07-12 "))
+weekdays ( dates)
+[1] " Thursday " " Friday "
+months ( dates)
+[1] " September " "July"
+quarters ( dates)
+[1] "Q3" "Q3"
+Regular sequences of dates: Use the function help(seq.Date).
+   Given a vector of ‘event’ times, the following function can be
+used to count the number of events in each of a regular sequence of
+time intervals:
+
+                                                                                   data objects and functions          79
+intervalCounts <- function (date , from=NULL , to=NULL , interval ="1 month"){
+   if( is.null (from )) from <- min(date)
+   if( is.null (to))to <- max(date)
+   dateBreaks <- seq(from=from , to=to , by= interval )
+   dateBreaks <- c(dateBreaks , max( dateBreaks )+ diff( dateBreaks [1:2]))
+   cutDates <- cut(date , dateBreaks , right=FALSE)
+   countDF <- data.frame (Date= dateBreaks [ -length ( dateBreaks )],
+                                num= as.vector (table( cutDates )))
+   countDF
+}
+    The following counts the number of events by year:
+dates <- c("1908 -09-17 ", "1912 -07-12 ", "1913 -08-06 ", "1913 -09-09 ", "1913 -10-17 ")
+dates <- as.Date (dates)
+( byYear <- intervalCounts (dates , from= as.Date ("1908 -01-01 "), interval ='1 year '))
+          Date num
+1  1908 -01 -01    1
+2  1909 -01 -01    0
+3  1910 -01 -01    0
+4  1911 -01 -01    0
+5  1912 -01 -01    1
+6  1913 -01 -01    3
+Further useful functions for working with dates: Note also date()                 The CRAN Task View for Time Series
+which returns the current date and time, and Sys.Date() which                     Analysis has notes on classes and
+returns the date. For information on functions for working with                   methods for times and dates, and on
+                                                                                  packages that give useful functionality
+times, see help(ISOdatetime).
+4.3.10       Summaries of Information in Data Frames
+A common demand is to obtain a tabular summary of information
+in each of several columns of a data frame, broken down according
+to the levels of one or more grouping variables. Consider the data
+frame nswdemo (DAAG). Treatment groups are control (trt==0) and
+treatment (trt==1) group, with variables re74 (1974 income), re75
+(1975) and re78 (1978),
+    The following calculates the number of zeros for each of the
+three variables, and for rach of the two treatment categories:
+                                                                                  The data frame is split according to
+## Define a function that counts zeros
+                                                                                  the grouping elements specified in
+countzeros <- function (x)sum(!is.na(x) & x==0)
+                                                                                  the by argument. The function is then
+aggregate ( nswdemo [, c("re74", "re75", "re78")],
+                                                                                  applied to each of the columns in each
+                by=list(group= nswdemo $trt),
+                                                                                  of the splits.
+                FUN= countzeros )
+   group re74 re75 re78
+1        0 195 178 129
+2        1 131 111         67
+    Now find the proportion, excluding NAs, that are zero. The result
+will be printed out with improved labeling of the rows:
+## countprop () counts proportion of zero values
+countprop <- function (x){
+      sum(! is.na(x) & x==0)/ length ( na.omit (x))}
+
+80    learning and exploring r
+prop0 <-
+   aggregate ( nswdemo [, c("re74","re75","re78")],
+                by=list(group= nswdemo $trt),
+                FUN= countprop )
+## Now improve the labeling
+rownames ( prop0) <- c(" Control ", " Treated ")
+round (prop0 ,2)
+           group re74 re75 re78
+Control         0 0.75 0.42 0.30
+Treated         1 0.71 0.37 0.23
+    The calculation can alternatively be handled by two calls to the
+function sapply(), one nested within the other, thus:
+                                                                      The argument z in the ‘in place’
+prop0 <-
+                                                                      function is a data frame. The argument
+   sapply ( split( nswdemo [, c("re74","re75","re78")],
+                                                                      x to countprop() is a column of a
+                    nswdemo $trt),
+                                                                      data frame.
+             FUN= function (z) sapply (z, countprop ))
+round (t( prop0), 2)
+   re74 re75 re78
+0 0.75 0.42 0.30
+1 0.71 0.37 0.23
+4.4      *Classes and Methods (Generic Functions)
+ Key language constructs:
+  Classes      Classes make generic functions (methods) possible.
+  Methods      Examples are print(), plot(), summary(), etc.
+    There are two implementation of classes and methods, the orig-
+inal S3 implementation, and the newer S4 implementation that is
+implemented in the methods package. Here, consider the simpler S3
+implementation.
+    All objects have a class. Use the function class() to get this
+information.
+    For many common tasks there are generic functions – print(),      Thus print() calls a method thus:
+summary(), plot(), etc., whose action varies according to the class   factor: print.factor();
+                                                                        data frame:
+of object to which they are applied.
+                                                                      print.data.frame(); and so
+    To get details of the S3 methods that are available for a generic on. Ordered factors “inherit” the
+function such as plot(), type, e.g., methods(plot). To get a list     print method for factors. For objects
+of the S3 methods that are available for objects of class lm, type,   without an explicit print method,
+e.g., methods(class="lm")                                             print.default() is called.
+4.4.1     ∗ S4 methods
+                                                                      Packages that use S4 classes and
+The S4 conventions and mechanisms extend the abilities available      methods include lme4, Bioconductor
+under S3, build in checks that are not available with S3, and are     packages, and most of the spatial
+more conducive to good software engineering practice.                 analysis packages.
+
+                                                                          data objects and functions                                                   81
+Example – a spatial class
+                                                                          Classes defined in the sp package
+The sp package defines, among other possibilities, spatial data           are widely used across R spatial data
+classes SpatialPointsDataFrame and SpatialGridDataFrame.                  analysis packages.
+    The sp function bubble(), for plotting spatial measurement
+data, accepts a spatial data object as argument.7 The function            7
+                                                                            Each point (location) is shown as
+coordinates() can be used, given spatial coordinates, to turn a           a bubble, with area proportional to a
+                                                                          value for that point.
+data frame or matrix into an object of one of the requisite classes.
+    Data from the data frame meuse8 , from the sp package, will be        8
+                                                                            Data are from the floodplain of the
+used for an example. A first step is to create an object of one of the    river Meuse, in the Netherlands. It
+                                                                          includes concentrations of various
+classes that the function bubble() accepts as argument, thus:
+                                                                          metals (cadmium, copper, lead,
+library (sp)                                                              zinc), with Netherlands topographi-
+data( meuse )                                                             cal map coordinates.
+class ( meuse)
+[1] "data. frame"
+coordinates (meuse) <- ~ x + y                                                                                         zinc
+class ( meuse)
+                                                                                                                                     ●●●●
+                                                                                                                                ●   ●●●●●●●●
+                                                                                                                                ●●● ●●
+                                                                                                                                ● ●
+                                                                                     333000
+                                                                                                                            ●●
+                                                                                                                             ●●  ●
+                                                                                                                               ● ●
+[1] " SpatialPointsDataFrame "                                                                                              ●
+                                                                                                                            ●●  ●●
+                                                                                                                             ● ●●
+                                                                                                           ●●●●●● ●●●
+attr (," package ")                                                                                     ●●
+                                                                                                         ●●
+                                                                                                          ●●
+                                                                                                            ●●●●● ● ●
+                                                                                                           ● ●●
+                                                                                                                                               ●
+                                                                                                                                                   113
+                                                                          Northing
+                                                                                     332000            ●
+                                                                                                       ●●●  ●●
+                                                                                                            ●●
+                                                                                                                   ●        ●                  ●   198
+                                                                                                      ●  ●    ● ●● ●
+                                                                                                                            ●
+                                                                                                                                                   326
+[1] "sp"                                                                                              ●●        ●●
+                                                                                                    ●●●●● ●●●● ●●
+                                                                                                                            ●
+                                                                                                                                               ●
+                                                                                                                                               ●   674.5
+                                                                                                  ●●
+                                                                                                 ●   ●   ●
+                                                                                                              ●
+                                                                                                                 ●      ●
+                                                                                                                                               ●   1839
+                                                                                     331000
+                                                                                               ●●
+                                                                                                ●●
+                                                                                                 ●
+                                                                                                 ●
+                                                                                                  ●●
+                                                                                                  ●
+                                                                                                  ●● ●
+                                                                                                           ●●  ●
+                                                                                                            ●● ●
+                                                                                                                  ●
+                                                                                               ●
+                                                                                               ●●●●
+                                                                                                  ●●   ●
+                                                                                                  ●            ●
+This has created an object of the class SpatialPointsDataFrame.                               ● ●●●
+                                                                                                  ●●
+                                                                                                  ●
+                                                                                                  ●●
+                                                                                                 ● ● ●
+                                                                                                       ●
+                                                                                                        ●
+                                                                                                           ●
+                                                                                                                       ●●       ●
+                                                                                     330000                ●
+                                                                                               ● ●●●●●
+   Code that creates the plot, shown in Figure 4.2, is:
+                                                                                          178500 179500 180500 181500
+bubble (meuse , zcol="zinc", scales =list(tck =0.5),                                                       Easting
+        maxsize =2, xlab=" Easting ", ylab=" Northing ")
+                                                                          Figure 4.2: Bubble plot for zinc
+The function bubble() uses the abilities of the lattice package. It       concentrations. Areas of bubbles are
+returns a trellis graphics object.                                        proportional to concentrations.
+    The coordinates can be extracted using coordinates(meuse).
+Remaining columns from the original data frame are available from
+the data frame meuse@data.
+    Use slotNames() to examine the structure of the object:
+slotNames ( meuse)
+[1] "data"            " coords .nrs" " coords "
+[4] "bbox"            " proj4string "
+Typing names(meuse) returns the column names for the data slot.           Note that meuse@data is shorthand
+The effect is the same as that of typing names(meuse@data). To get        for slot(meuse, "data").
+a list of the S4 methods that are available for a generic function, use
+showMethods(). Section 11.4 has further details.
+4.5    Common Sources of Surprise or Difficulty
+  Character vectors, when incorporated as columns of a data frame,
+  become by default factors.
+
+ 82   learning and exploring r
+   Factors can often be treated as vectors of text strings, with values
+   given by the factor levels. Watch however for contexts where the
+   integer codes are used instead.
+   Use is.na() to check for missing values. Do not try to test for
+   equality with NA. Refer back to Section 4.1.3.
+   If there is a good alternative, avoid the attaching of data frames.  Assignment of new values to an
+   If you do use this mechanism, be aware of the traps.                 attached data frame creates a new
+                                                                        local data frame with the same name.
+   The syntax elasticband[,2], extracts the second column from          The new local copy remains in the
+                                                                        workspace when the data frame is
+   the data frame elasticband, yielding a numeric vector. Observe
+                                                                        detached.
+   however that elasticband[2, ] yields a data frame, rather than
+   the numeric vector that the user may require. Use the function
+   unlist() to extract the vector of numeric values.
+ 4.6      Summary
+   Important R data structures are vectors, factors, data frames and
+   lists. Vector modes include numeric, logical, character or complex.
+   Factors, used for categorical data, can be important in the use of
+   many of R’s modeling functions. Ordered factors are appropriate
+   for use with ordered categorical data.
+   Use table() for tables of counts, and xtabs() for tables of
+   counts or totals.
+   R allows the use of infinite Values (Inf or -Inf) and NaNs (not
+   a number) in calculations. Introduce such quantities into your
+   calculations only if you understand the implications.
+   A matrix is a vector that is stacked column upon column into
+   a rectangular array that has dimensions given by its dimension
+   attribute. A data frame is, by contrast, a list of columns.
+   Matrices are in some (not all) contexts handled similarly to data    Calculations with matrices are likely
+                                                                        to be much faster than with data
+   frames whose elements are all of one type (typically all numeric).   frames.
+   Lists are “non-atomic” vectors. Use the function c() (concate-
+   nate) to join lists, just as for “atomic” vectors.
+   Modeling functions typically output a model object that has a list   Generic functions that may be used
+   structure. This holds information from the model fit, in a form      with model objects typically include
+   from which generic model functions can then extract commonly         print(), summary(), fitted(),
+                                                                        coef() and resid().
+   required forms of output.
+ 4.7      Exercises
+1. Find an R function that will sort a vector. Give an example.
+
+                                                                         data objects and functions 83
+2. Modify the function mean.and.sd() so that it outputs, in addi-
+   tion to mean and standard deviation, the number of vector ele-
+   ments.
+3. ∗ What  is the mode of: (i) a factor; (ii) a dataframe?; (iii) a list
+   that is not necessarily a dataframe? Apply the function mode() to
+   objects of each of these classes. Explain what you find.
+4. The attempt to assign values to an expression whose subscripts
+   include missing values generates an error. Run the following code
+   and explain the error that results:
+   y <- c(1, NA , 3, 0, NA)
+   y[y > 0]
+   y[y > 0] <- c(11, 12)
+5. Run the following code:
+   gender <- factor (c(rep(" female ", 91), rep("male", 92)))
+   table ( gender )
+   gender <- factor (gender , levels =c("male", " female "))
+   table ( gender )
+   gender <- factor (gender , levels =c("Male", " female ")) # Note the mistake
+                                         # The level was "male", not "Male"
+   table ( gender )
+   rm( gender )                          # Remove gender
+   The output from the final table(gender) is
+   gender
+      Male female
+          0       91
+   Explain the numbers that appear.
+6. In the data set nswpsdi1 (DAAGxtras), do the following for each
+   of the two levels of trt:
+ (a) Determine the numbers for each of the levels of black;
+ (b) Determine the numbers for each of the levels of hispanic;
+      item Determine the numbers for each of the levels of marr
+      (married).
+7. Sort the rows in the data frame Acmena in order of increasing
+   values of dbh.
+   [Hint: Use the function order(), applied to age to determine the
+   order of row numbers required to sort rows in increasing order of
+   age. Reorder rows of Acmena to appear in this order.]
+   Acmena <- subset (rainforest , species ==" Acmena smithii ")
+   ord <- order( Acmena $dbh)
+   acm <- Acmena [ord , ]
+   Sort the row names of possumsites (DAAG) into alphanumeric
+   order. Reorder the rows of possumsites in order of the row
+   names.
+
+  84    learning and exploring r
+ 8.(a) Create a for loop that, given a numeric vector, prints out one
+        number per line, with its square and cube alongside.
+  (b) Look up help(while). Show how to use a while loop to
+        achieve the same result.
+   (c) Show how to achieve the same result without the use of an
+        explicit loop.
+ 9. Here are examples that illustrate the use of paste() and
+     paste0():
+     paste ("Leo", "the", "lion")
+     paste ("a", "b")
+     paste0 ("a", "b")
+     paste ("a", "b", sep="")
+     paste (1:5)
+     paste (1:5 , collapse ="")
+     What are the respective effects of the parameters sep and
+     collapse?
+10. The following function calculates the mean and standard deviation
+     of a numeric vector.
+     meanANDsd <- function (x){
+           av <- mean(x)
+           sdev <- sd(x)
+           c(mean=av , sd = sdev) # The function returns this vector
+     }
+     Modify the function so that: (a) the default is to use rnorm()
+     to generate 20 random normal numbers, and return the standard
+     deviation; (b) if there are missing values, the mean and standard
+     deviation are calculated for the remaining values.
+11. Try the following:
+     class (2)
+     class ("a")
+     class ( cabbages $ HeadWt )        # cabbages is in the datasets package
+     class ( cabbages $Cult)
+     Now do sapply(cabbages, class), and note which columns
+     hold numerical data. Extract those columns into a separate data
+     frame, perhaps named numtinting.
+     [Hint: cabbages[, c(2,3)] is not the correct answer, but it is,
+     after a manner of speaking, close!]
+12. Functions that may be used to get information about data frames
+     include str(), dim(), row.names() and names(). Try each
+     of these functions with the data frames allbacks, ant111b and
+     tinting (all in DAAG).
+     For getting information about each column of a data frame, use
+     sapply(). For example, the following applies the function
+     class() to each column of the data frame ant111b.
+
+                                                            data objects and functions 85
+library (DAAG)
+sapply (ant111b , class)
+For columns in the data frame tinting that are factors, use
+table() to tabulate the number of values for each level.
+
+86 learning and exploring r
+5
+Data Input and Storage
+
+88    learning and exploring r
+5.1      ∗ Data   Input from a File
+                                                                        Most data input functions allow
+.                                                                       import from a file that is on the web
+    Use of the RStudio menu is recommended. This is fast, and           — give the URL when specifying
+allows a visual check of the data layout before input proceeds. If      the file. Another possibility is to
+input options are incorrectly set, these can be changed as necessary    copy the file, or a relevant part of it,
+                                                                        to the clipboard. For reading from
+before proceeding. The code used for input is shown. In those rare
+                                                                        and writing to the clipboard under
+cases where input options are required for which the menu does not      Windows, see http://bit.ly/
+make provision, the command line code can be edited as needed,          2sxyOhG. For MacOS, see http:
+before proceeding.                                                      //bit.ly/2t1nX0I
+                                                                        It is important to check, when data
+5.1.1     Managing input is from the RStudio menu                       have been entered, that data values
+                                                                        appear sensible. Do minimal checks
+Data input that is initiated from the RStudio menu uses func-           on: ranges of variable values, the
+tions from the package readr for input of tabular data. The             mode of the input columns (numeric
+function readr::read_table() replaces read.table(),                     or factor, or . . . ). Scatterplot matrices
+readr::read_csv() replaces read.csv(), and similarly for other          are helpful both for checking variable
+                                                                        ranges and for identifying impossible
+read.table() aliases.                                                   or unusual combinations of variable
+    It uses the function readxl::readxl() for Excel spreadsheet         values.
+data. There is provision, also, using functions from the package
+haven, to import data from SPSS (POR and SAV files), from SAS
+(XPT and SAS files), and from Stata (DTA files).                        See vignette("semantics",
+    Output is in all cases to a tibble, which is a specialized form of  package="haven") for details of the
+data frame. Character columns are not automatically converted to        way that labelled data and missing
+                                                                        values are handled, for input from
+factors, column names are not converted into valid R identifiers,       SPSS, SAS, and Stata.
+and row names are not set. For subsequent processing, there are
+important differences between tibbles and data frames that users
+need to note.
+5.1.2     Input using the read.table() family of functions
+There are several aliases for read.table() that have different set-     Non-default option settings can
+tings for input defaults. Note in particular read.csv(), for reading    however, for very large files, severely
+in comma delimited .csv files such as can be output from Excel          slow data input.
+spreadsheets. See help(read.table). Recall that                         For factor columns check that the
+                                                                        levels are as expected.
+- Character vectors are by default converted into factors. To prevent
+   such type conversions, specify stringsAsFactors=FALSE.
+- Specify heading=TRUE1 to indicate that the first row of input has     1
+                                                                          By default, if the first row of the file
+   column names. Use heading=FALSE to indicate that it holds data.      has one less field than later rows, it is
+                                                                        taken to be a header row. Otherwise, it
+   [If names are not given, columns have default names V1, V2, . . . .] is taken as the first row of data.
+- Use the parameter row.names, then specifying a column number,
+   to specify a column for use to provide row names.
+Issues that may complicate input
+                                                                        NB also that count.fields() counts
+Where data input fails, consider using read.table() with the            the number of fields in each record
+argument fill=TRUE, and carefully check the input data frame.           — albeit watch for differences from
+                                                                        input fields as detected by the input
+                                                                        function.
+
+                                                                                   data input and storage          89
+Blank fields will be implicitly added, as needed, so that all records
+have an equal number of identified fields.
+    Carefully check the parameter settings2 for the version of the          2
+                                                                              For text with embedded single
+input command that is in use. It may be necessary to change the             quotes, set quote = "". For text with
+                                                                            # embedded; change comment.char
+field separators (specify sep), and/or the missing value character(s)
+                                                                            suitably.
+(specify na.strings). Embedded quotes and comment characters
+(#; by default anything that follows # on the same line is ignored.)
+can be a source of difficulty.                                              Among other possibilities, there
+    Where a column that should be numeric is converted to a factor          may be a non-default missing value
+this is an indication that it has one or more fields that, as numbers,      symbol (e.g., "."), but without using
+                                                                            na.strings to indicate this.
+would be illegal. For example, a "1" (one) may have been mistyped
+as an "l" (ell), or "0" (zero) as "O" (oh).
+    Note options that allow the limiting of the number of input rows.
+For read.table()) and aliases, set nrows. For functions from
+the readr package, set n_max. For scan(), discussed in the next
+subsection, set nlines. All these functions accept the argument
+skip, used to set the number of lines to skip before input starts.
+5.1.3     ∗ The   use of scan() for flexible data input
+Data records may for example spread over several rows. There
+seems no way for read.table() to handle this.
+    The following code demonstrates the use of scan() to read in
+the file molclock1.txt. To place this file in your working directory,
+attach the DAAG package and type datafile("molclock1").
+                                                                            There are two calls to scan(), each
+colnam <- scan(" molclock1.txt ", nlines =1, what="")
+                                                                            time taking information from the
+molclock <- scan(" molclock1.txt ", skip =1,
+                                                                            file molclock1.txt. The first, with
+                        what=c(list(""), rep(list (1) ,5)))
+                                                                            nlines=1 and what="", input
+molclock <- data.frame (molclock , row.names =1)
+                                                                            the column names. The second, with
+   # Column 1 supplies row names
+                                                                            skip=1 and what=c(list(""),
+names ( molclock ) <- colnam
+                                                                            rep(list(1),5)))], input the
+The what parameter should be a list, with one list element for each         several rows of data.
+                                                                             For repeated use with data files that
+field in a record. The "" in the first list element indicates that the data have a similar format, consider putting
+is to be input as character. The remaining five list elements are set to    the code into a function, with the what
+1, indicating numeric data. Where records extend over several lines,        list as an argument.
+set multi.line=TRUE.
+5.1.4     The memisc package: input from SPSS and Stata
+                                                                            Note also the haven package, men-
+The memisc package has highly effective abilities for examining and         tioned above, and the foreign package.
+inputting data from various SPSS formats. These include .sav, .por,         The foreign package has functions that
+and Stata .dta data types. Note in particular the ability to check the      allow input of various types of files
+contents of the columns of the dataset before importing part or all of      from Epi Info, Minitab, S-PLUS, SAS,
+                                                                            SPSS, Stata, Systat and Octave. There
+the file.
+                                                                            are abilities for reading and writing
+    An initial step is to use an importer function to create an importer    some dBase files. For further infor-
+object. As of now, importer functions are: spss.fixed.file(),               mation, see the R Data Import/Export
+spss.portable.file() ( .por files), spss.system.file()                      manual.
+(.sav files), and Stata.file() (.dta files). The importer object
+
+90    learning and exploring r
+has information about the variables: including variable labels, value
+labels, missing values, and for an SPSS ‘fixed’ file the columns that
+they occupy, etc.                                                        Additionally, it has also information
+    Functions that can be used with an importer object include:          from further processing of the file
+                                                                         header and/or the file proper that is
+- description(): column header information;                              needed in preparation for importing
+                                                                         the file.
+- codebook(): detailed information on each column;
+- as.data.set(): bring the data into R, as a ‘data.set’ object;
+- subset(): bring a subset of the data into R, as a ‘data.set’ object
+                                                                         Use as.data.frame() to coerce
+    The functions as.data.set() and subset() yield ‘data.set’            data.set objects into data frames. In-
+objects. These have structure that is additional to that in data frames. formation that is not readily retainable
+Most functions that are available for use with data frames can be        in a data frame format may be lost in
+                                                                         the process.
+used with data.set class objects.
+    The vignette anes48 that comes with the memisc package illus-
+trates the use of the above abilities.
+Example
+                                                                         To substitute your own file, store the
+A compressed version of the file “NES1948.POR” (an SPSS                  path to the file in path2file.
+‘portable’ dataset) is stored as part of the memisc installation. The
+following does the unzipping, places the file in a temporary direc-
+tory, and stores the path to the file in the text string path2file:
+library ( memisc )
+## Unzip ; return path to " NES1948.POR "
+path2file <- unzip( system.file ("anes/ NES1948.ZIP ",package =" memisc "),
+                            " NES1948.POR ",exdir= tempfile ())
+    Now create an ‘importer’ object, and get summary information:
+# Get information about the columns in the file
+nes1948imp <- spss.portable.file ( path2file )
+show( nes1948imp )
+SPSS portable file '/var/ folders /00/ _kpyywm16hnbs2c0dvlf0mwr0000gq /T// RtmpbgTESJ / file4d0
+            with 67 variables and 662 observations
+There will be a large number of messages that draw attention to
+duplicate labels.
+    Before importing, it may be well to check details of what is in the  Use labels()) to change labels, or
+file. The following, which restricts attention to columns 4 to 9 only,   missing.values() to set missing
+                                                                         value filters, prior to data import.
+indicates the nature of the information that is provided.
+## Get details about the columns (here , columns 4 to 9 only)
+description ( nes1948imp )[4:9]
+$v480002
+[1] " INTERVIEW NUMBER "
+$v480003
+[1] "POP CLASSIFICATION "
+
+                                                                           data input and storage        91
+$v480004
+[1] " CODER "
+$v480005
+[1] " NUMBER OF CALLS TO R"
+$v480006
+[1] "R REMEMBER PREVIOUS INT"
+$v480007
+[1] "INTR INTERVIEW THIS R"
+As there are in this instance 67 columns, it might make sense to look
+at columns perhaps 10 at a time.
+    More detailed information is available by using the R function
+codebook(). The following gives the codebook information for
+column 5:
+                                                                      This is more interesting than what
+## Get codebook information for column 5                              appears for columns (1 - 4).
+codebook ( nes1948imp [, 5])
+======================================================
+    nes1948imp [, 5] 'POP CLASSIFICATION '
+------------------------------------------------------
+    Storage mode: double
+    Measurement : nominal
+            Values and labels         N      Percent
+    1    'METROPOLITAN AREA '       182    27.5 27.5
+    2    'TOWN OR CITY '            354    53.5 53.5
+    3    'OPEN COUNTRY '            126    19.0 19.0
+    The following imports a subset of just four of the columns:
+vote.socdem.48 <- subset (nes1948imp ,
+                  select =c(
+                        v480018 ,
+                        v480029 ,
+                        v480030 ,
+                        v480045
+                        ))
+    To import all columns, do:
+socdem.48 <- as.data.set ( nes1948imp )
+                                                                       Look also at the vignette:
+    For more detailed information, type:
+                                                                      vignette (" anes48 ")
+## Go to help page for ' importers '
+help( spss.portable.file )
+
+92   learning and exploring r
+5.2      ∗ Input   of Data from a web page
+                                                                         The web page:
+This section notes some of the alternative ways in which data that          http://www.visualizing.
+is available from the web can be input into R. The first subsection      org/data/browse/ has an ex-
+below comments on the use of a point and click interface to identify     tensive list of web data sources. The
+and download data.                                                       World Bank Development Indicators
+                                                                         database will feature prominently in
+    A point and click interface is often convenient for an initial look.
+                                                                         the discussion below.
+Rather than downloading the data and then inputting it to R, it may
+be better to input it directly from the web page. Direct input into
+R has the advantage that the R commands that are used document
+exactly what has been done.3                                             3
+                                                                           This may be especially important
+    Note that the functions read.table(), read.csv(), scan(),            if a data download will be repeated
+                                                                         from time to time with updated data,
+and other such functions, are able to read data directly from a file
+                                                                         or if data are brought together from a
+that is available on the web. There is a limited ability to input part   number of different files, or if a subset
+only of a file.                                                          is taken from a larger database.
+    Suppose however that the demand is to downlaod data for several
+of a large number of variables, for a specified range of years, and for
+a specified geographical area or set of countries. A number of data      GML, or Geography Markup Lan-
+archives now offer data in one or more of several markup formats         guage, is based on XML.
+that assist selective access. Formats include XML, GML, JSON and
+JSONP.
+                                                                         4
+A browser interface to World Bank data: The web page http:                 Click on COUNTRY to modify
+//databank.worldbank.org/data/home.aspx4 gives a point                   the choice of countries. To ex-
+                                                                         pand (to 246) countries beyond
+and click interface to, among other possibilities, the World Bank        the 20 that appear by default, click
+development indicator database. Clicking on any of 20 country            on Add more country. Click on
+names that are displayed shows data for these countries for 1991-        SERIES and TIME to modify and/or
+2010, for 54 of the 1262 series that were available at last check.       expand those choices. Click on
+Depending on the series, data may be available back to 1964. Once        Apply Changes to set the choices
+                                                                         in place.
+selections have been made, click on DOWNLOAD to download the
+data. For input into R, downloading as a .csv file is convenient.
+    Manipulation of these data into a form suitable for a motion chart
+display was demonstrated in Subsection 6.2.3
+Australian Bureau of Meteorology data: Graphs of area-weighted
+time series of rainfall and temperature measures, for various regions
+of Australia, can be accessed from the Australian Bureau of Meteo-
+rology web page http://www.bom.gov.au/cgi-bin/climate/
+change/timeseries.cgidemo. Click on Raw data set5 to down-               5
+                                                                           To copy the web address, right
+load the raw data.                                                       click on Raw data set and click on
+                                                                         Copy Link Location (Firefox) or
+    Once the web path to the file that has the data has been found, the
+                                                                         Copy Link Address (Google Chrome)
+data can alternatively be input directly from the web. The following     or Copy Link (Safari).
+gets the annual total rainfall in Eastern Australia, from 1910 through
+to the present’:
+webroot <- "http:// www.bom.gov.au /web01/ncc/www/ cli_chg / timeseries /"
+rpath <- paste0 (webroot , "rain/0112/eaus/", " latest.txt ")
+totrain <- read.table (rpath)
+
+                                                                                data input and storage 93
+A function to download multiple data series: The following ac-
+cesses the latest annual data, for total rainfall and average tempera-
+ture, from the command line:
+getbom <-
+function ( suffix =c("AVt","Rain"), loc="eaus"){
+           webroot <- "http:// www.bom.gov.au /web01/ncc/www/ cli_chg / timeseries /"
+           midfix <- switch ( suffix [1], AVt="tmean/0112/", Rain="rain/0112/")
+           webpage <- paste(webroot , midfix , loc , "/ latest.txt ", sep="")
+           print( webpage )
+           read.table ( webpage )$V2
+           }
+##
+## Example of use
+offt = c( seaus =14.7 , saus =18.6 , eaus =20.5 , naus =24.7 , swaus =16.3 ,
+             qld =23.2 , nsw =17.3 , nt =25.2 ,sa =19.5 , tas =10.4 , vic =14.1 ,
+             wa =22.5 , mdb =17.7 , aus =21 .8)
+z <- list ()
+for(loc in names(offt ))z[[ loc ]] <- getbom ( suffix ="Rain", loc=loc)
+bomRain <- as.data.frame (z)
+The function can be re-run each time that data is required that in-
+cludes the most recent year.
+∗ Extraction     of data from tables in web pages
+The function readHTMLTable(), from the XML package, will prove
+very useful for this. It does not work, currenty at least, for pages that
+use https:.
+Historical air crash datra: The web page http://www.
+planecrashinfo.com/database.htm has links to tables of
+aviation accidents, with one table for each year. The table for
+years up to and including 1920 is on the web page http://www.
+planecrashinfo.com/1920/1920.htm, that for 1921 on the page
+http://www.planecrashinfo.com/1921/1921.htm, and so on
+through until the most recent year. The following code inputs the
+table for years up to and including 1920:
+library (XML)
+url <- "http:// www.planecrashinfo.com /1920/1920 .htm"
+to1920 <- readHTMLTable (url , header =TRUE)
+to1920 <- as.data.frame ( to1920 )
+    The following inputs data from 2010 through until 2014:
+url <- paste0 ("http:// www.planecrashinfo.com /",
+                    2010:2014 , "/", 2010:2014 , ".htm")
+tab <- sapply (url , function (x) readHTMLTable (x, header =TRUE ))
+## The following less efficent alternative code spells the steps out in more detail
+## tab <- vector ( ' list ' , 5)
+## k <- 0
+## for(yr in 2010:2014){
+##  k <- k+1
+
+94    learning and exploring r
+## url <- paste0 (" http:// www.planecrashinfo.com /", yr , "/", yr , ".htm ")
+## tab [[k]] <- as.data.frame ( readHTMLTable (url , header =TRUE ))
+## }
+    Now combine all the tables into one:
+## Now combine the 95 separate tables into one
+airAccs <- do.call ('rbind ', tab)
+names ( airAccs ) <- c("Date", " Location / Operator ",
+                            " AircraftType / Registration ", " Fatalities ")
+airAccs $Date <- as.Date ( airAccs $Date , format ="%d %b %Y")
+    The help page help(readHTMLTable) gives examples that
+demonstrate other possibilities.
+5.2.1      ∗ Embedded    markup — XML and alternetives
+Data are are now widely available, from a number of differet web
+sites, in one or more of several markup formats. Markup code, de-
+signed to make the file self-describing, is included with the data.
+The user does not need to supply details of the data structure to the
+software reading the data.
+    Markup languages that may be used include XML, GML, JSON                   For details of markup use, as they
+and JSONP. Queries are built into the web address. Alternatives to             relate to the World Bank Development
+                                                                               Indicators database, see http://
+setting up the query directly may be:
+                                                                               data.worldbank.org/node/11.
+- Use a function such as fromJSON() in the RJSONIO package to
+   set up the link and download the data;
+- In a few cases, functions have been provided in R packages that
+   assist selection and downloading of data. For the World Bank
+   Development Indicators database, note WDI() and other functions
+   in the WDI package.
+Download of NZ earthquake data: Here the GML markup conven-                    WFS is Web Feature Service. OGC is
+tions are used, as defined by the WFS OGC standard. Details can be             Open Geospatial Consortium. GML is
+found on the website http://info.geonet.org.nz/display/                        Geographic Markup language GML,
+                                                                               based on XML.
+appdata/Earthquake+Web+Feature+Service
+    The following extracts earthquake data from the New Zealand                The .csv format is one of several
+GeoNet website. Data is for 1 September 2009 onwards, through                  formats in which data can be retrieved.
+until the current date, for earthquakes of magnitude greater than 4.5.
+## Input data from internet
+from <-
+   paste (c("http:// wfs-beta.geonet.org.nz /",
+              " geoserver / geonet /ows? service =WFS",
+              "& version =1 .0.0",
+              "& request = GetFeature ",
+              "& typeName = geonet :quake",
+              "& outputFormat =csv",
+              "& cql_filter =origintime >= '2009 -08-01 '",
+              "+AND+magnitude >4.5"),
+            collapse ="")
+quakes <- read.csv (from)
+z <- strsplit ( as.character ( quakes $ origintime ),
+
+                                                                             data input and storage         95
+                    split="T")
+quakes $Date <- as.Date ( sapply (z, function (x)x[1]))
+quakes $Time <- sapply (z, function (x)x[2])
+World Bank data — using the WDI package Use the function
+WDIsearch() to search for indicators. Thus, to search for indica-
+tors with “CO2” in their name, enter WDIsearch(’co2’). Here are
+the first 4 (out of 38) that are given by such a search:
+library (WDI)
+WDIsearch ('co2 ')[1:4 ,]
+       indicator
+[1 ,]  "EN.ATM.CO2E.CP.KT"
+[2 ,]  "EN.CO2.TRAN.ZS"
+[3 ,]  "EN.CO2.TRAN.MT"
+[4 ,]  "EN.CO2.OTHX.ZS"
+       name
+[1 ,]  "CO2 emissions from        cement production ( thousand metric tons )"
+[2 ,]  "CO2 emissions from        transport (% of total fuel combustion )"
+[3 ,]  "CO2 emissions from        transport ( million metric tons )"
+[4 ,]  "CO2 emissions from        other sectors , excluding residential buildings and commercial and public
+    Use the function WDI() to input indicator data, thus:
+library (WDI)
+inds <- c('SP.DYN.TFRT.IN ','SP.DYN.LE00.IN ', 'SP.POP.TOTL ',
+  'NY.GDP.PCAP.CD ', 'SE.ADT.1524.LT.FE.ZS ')
+indnams <- c(" fertility.rate ", " life.expectancy ", " population ",
+                  " GDP.per.capita.Current.USD ", "15 .to.25.yr.female.literacy ")
+names (inds) <- indnams
+wdiData <- WDI( country ="all",indicator =inds , start =1960 , end =2013 , extra=TRUE)
+colnum <- match(inds , names( wdiData ))
+names ( wdiData )[ colnum ] <- indnams
+## Drop unwanted " region "
+WorldBank <- droplevels ( subset (wdiData , ! region %in% " Aggregates "))
+The effect of extra=TRUE is to include the additional variables        The function WDI() calls the non-
+iso2c (2-character country code), country, year, iso3c (3-             visible function wdi.dl(), which in
+character country code), region, capital, longitude, latitude,         turn calls the function fromJSON()
+income and lending.                                                    from the RJSONIO package. To
+                                                                       see the code for wdi.dl(), type
+    The data frame Worldbank that results is in a form where it        getAnywhere("wdi.dl").
+can be used with the googleVIS function gvisMotionChart(), as
+described in Section 7.5.1
+5.3      Creating and Using Databases
+                                                                       In addition to the RSQLite, note the
+The RSQLite package makes it possible to create an SQLite              RMySQL and ROracle packages. All
+database, or to add new rows to an existing table, or to add new       use the interface provided by the DBI
+table(s), within an R session. The SQL query language can then         package.
+be used to access tables in the database. Here is an example. First
+create the database:
+
+96    learning and exploring r
+library (DAAG)
+library ( RSQLite )
+driveLite <- dbDriver (" SQLite ")
+con <- dbConnect (driveLite , dbname =" hillracesDB ")
+dbWriteTable (con , " hills2000 ", hills2000 ,
+                  overwrite =TRUE)
+dbWriteTable (con , " nihills ", nihills ,
+                  overwrite =TRUE)
+dbListTables (con)
+[1] " hills2000 " " nihills "
+The database hillracesDB, if it does not already exist, is created in
+the working directory.
+    Now input rows 16 to 20 from the newly created database:
+## Get rows 16 to 20 from the nihills DB
+dbGetQuery (con ,
+   " select * from nihills limit 5 offset 15")
+   dist climb       time timef
+1 5.5 2790 0.9483 1.2086
+2 11.0 3000 1.4569 2.0344
+3 4.0 2690 0.6878 0.7992
+4 18.9 8775 3.9028 5.9856
+5 4.0 1000 0.4347 0.5756
+dbDisconnect (con)
+5.4      ∗ File  compression:
+The functions for data input in versions 2.10.0 and later of R are able
+to accept certain types of compressed files. This extends to scan()
+and to functions such as read.maimages() in the limma package,
+that use the standard R data input functions.
+    By way of illustration, consider the files coral551.spot, . . . ,
+coral556.spot that are in the subdirectory doc of the DAAGbio pack-
+age. In a directory that held the uncompressed files, they were cre-
+ated by typing, on a Unix or Unix-like command line:                    Severer compression: replace
+                                                                          gzip -9
+gzip -9 coral55 ?.spot                                                  by
+                                                                          xz -9e.
+The .zip files thus created were renamed back to *.spot files.
+    When saving large objects in image format, specify
+compress=TRUE. Alternatives that may lead to more compact files
+are compress="bzip2" and compress="xz".
+    Note also the R functions gzfile() and xzfile() that can
+be used to create files in a compressed text format. This might for
+example be text that has been input using readLines().
+
+                                                                         data input and storage 97
+5.5     Summary
+  Following input, perform minimal checks that values in the vari-
+  ous columns are as expected.
+  With very large files, it can be helpful to read in the data in chunks
+  (ranges of rows).
+  Note mechanisms for direct input of web data. Many data archives
+  now offer one or more of several markup formats that facilitate
+  selective access.
+
+98 learning and exploring r
+6
+Data Manipulation and Management
+
+ 100    learning and exploring r
+     Data analysis has as its end point the use of forms of data sum-
+ mary that will convey, fairly and succinctly, the information that is in
+ the data. The fitting of a model is itself a form of data summary.
+     Be warned of the opportunities that simple forms of data sum-        Data summaries that can lead to mis-
+ mary, which seem superficially harmless, can offer for misleading        leading inferences arise often, from
+                                                                          a unbalance in the data and/or failure
+ inferences. These issues affect, not just data summary per se, but       to account properly for important
+ all modeling. Data analysis is a task that should be undertaken with     variables or factors.
+ critical faculties fully engaged.
+ Alternative types of data objects
+Column objects: These include (atomic) vectors, factors, and dates.
+Date and date-time objects: The creation and manipulations of date
+ objects will be described below.
+Data Frames: These are rectangular structures. Columns may be             A data frame is a list of column
+ “atomic” vectors, or factors, or other objects (such as dates) that are  objects, all of the same length.
+ one-dimensional.
+Matrices and arrays: Matrices1 are rectangular arrays in which            1
+                                                                            Internally, matrices are one long
+ all elements have the same mode. An array is a generalization of a       vector in which the columns follow
+                                                                          one after the other.
+ matrix to allow an arbitrary number of dimensions.
+Tables: A table is a specialized form of array.
+Lists: A list is a collection of objects that can be of arbitrary class.
+ List elements are themselves lists. In more technical language, lists
+ are recursive data structures.
+S3 model objects: These are lists that have a defined structure.
+S4 objects: These are specialized data structures with tight control
+ on the structure. Unlike S3 objects, they cannot be manipulated as
+ lists. Modeling functions in certain of the newer packages2 return S4    2
+                                                                            These include lme4, the Bioconduc-
+ objects.                                                                 tor packages, and the spatial analysis
+                                                                          packages.
+ 6.1      Manipulations with Lists, Data Frames and
+          Arrays
+ Recall that data frames are lists of columns that all have the same
+ length. They are thus a specialised form of list. Matrices are two-
+ dimensional arrays. Tables are in essence arrays that hold numeric
+ values.
+ 6.1.1     Tables and arrays
+ The dataset UCBAdmissions is stored as a 3-dimensional table. If
+ we convert it to an array, very little changes:
+     It changes from a table object to a numeric object, which affects
+ the way that it is handled by some functions. In either case, what we
+ have is a numeric vector of length 24 (= 2 × 2 × 6) that is structured
+ to have dimensions 2 by 2 by 6.
+
+                                                                              data manipulation and management   101
+6.1.2      Conversion between data frames and tables
+The three-way table UCBAdmissions are admission frequencies, by
+Gender, for the six largest departments at the University of Califor-
+nia at Berkeley in 1973. For a reference to a web page that has the
+details; see the belp page for UCBAdmissions. Type
+help( UCBAdmissions )                # Get details of the data
+example ( UCBAdmissions )
+Note the margins of the table:
+str( UCBAdmissions )
+  'table ' num [1:2 , 1:2, 1:6] 512 313 89 19 353 207 17 8 120 205 ...
+  - attr (*, " dimnames ")= List of 3
+   ..$ Admit : chr [1:2] " Admitted " " Rejected "
+   ..$ Gender : chr [1:2] "Male" " Female "
+   ..$ Dept : chr [1:6] "A" "B" "C" "D" ...
+    In general, operations with a table or array are easiest to
+conceptualise if the table is first converted to a data frame in
+which the separate dimensions of the table become columns.
+Thus, the UCBAdmissions table will be converted to a data
+frame that has columns Admit, Gender and Dept. Either use the
+as.data.frame.table() command from base R, or use the
+adply() function from the plyr package.
+    The following uses the function as.data.frame.table() to                          As UCBAdmissions is
+convert the 3-way table UCBAdmissions into a data frame in which                      a table (not an array),
+                                                                                      as.data.frame(UCBAdmissions)
+the margins are columns:
+                                                                                      will give the same result.
+UCBdf <- as.data.frame.table ( UCBAdmissions )
+head(UCBdf , 5)
+        Admit Gender Dept Freq
+1  Admitted         Male         A 512
+2  Rejected         Male         A 313
+3  Admitted Female               A    89
+4  Rejected Female               A    19
+5  Admitted         Male         B 353
+   Alternatively, use the function adply() from the plyr package that is de-
+   scribed in Section 6.2. Here the identity() function does the manipulation,
+   working with all three dimensions of the array:
+   library (plyr)
+   UCBdf <- adply(.data= UCBAdmissions ,
+                       .margins =1:3 ,
+                       .fun= identity )
+   names ( UCBdf )[4] <- "Freq"
+First, calculate overall admission percentages for females and males.
+The following calculates also the total accepted, and the total who
+applied:
+library ( dplyr)
+
+102    learning and exploring r
+gpUCBgender <- dplyr :: group_by (UCBdf , Gender )
+AdmitRate <- dplyr :: summarise ( gpUCBgender ,
+                                      Accept =sum(Freq[Admit ==" Admitted "]),
+                                      Total=sum(Freq),
+                                      pcAccept =100* Accept /Total)
+AdmitRate
+# A tibble : 2 x 4
+   Gender Accept Total pcAccept
+   <fct >    <dbl > <dbl >     <dbl >
+1 Male         1198 2691        44.5
+2 Female         557 1835       30.4
+    Now calculate admission rates, total number of females applying,
+and total number of males applying, for each department:
+gpUCBgd <- dplyr :: group_by (UCBdf , Gender , Dept)
+rateDept <- dplyr :: summarise (gpUCBgd ,
+      Total =sum(Freq),
+      pcAccept =100*sum(Freq[Admit ==" Admitted "])/Total)
+    Results can conveniently be displayed as follows. First show
+admission rates, for females and males separately:
+xtabs ( pcAccept ~ Gender +Dept , data= rateDept )
+           Dept
+Gender             A       B       C        D        E       F
+   Male     62.061 63.036 36.923 33.094 27.749          5.898
+   Female 82.407 68.000 34.064 34.933 23.919            7.038
+    Now show total numbers applying:
+xtabs ( Total~ Gender +Dept , data= rateDept )
+           Dept
+Gender         A     B   C   D   E     F
+   Male     825 560 325 417 191 373
+   Female 108 25 593 375 393 341
+    As a fraction of those who applied, females were strongly fa-       The overall bias arose because males
+vored in department A, and males somewhat favored in departments        favored departments where admission
+C and E. Note however that relatively many males applied to A and       rates were relatively high.
+B, where admission rates were high. This biased overall male rates
+upwards. Relatively many females applied to C, D and F, where
+rates were low. This biased the overall female rates downwards.
+6.1.3     Table margins
+For working directly on tables, note the function margin.table().
+The following retains margin 1 (Admit) and margin 2 (Gender),
+adding over Dept (the remaining margin):
+                                                                        Take margin 2, first, then margin 1,
+## Tabulate by Admit ( margin 2) & Gender ( margin 1)
+                                                                        gving a table where rows correspond
+( margin21 <- margin.table ( UCBAdmissions ,
+                                                                        to levels of Gender.
+                                margin =2:1))
+
+                                                                    data manipulation and management              103
+            Admit
+Gender       Admitted Rejected
+   Male           1198       1493
+   Female          557       1278
+    Use the function margin.table() to turn this into a table that
+has the proportions in each row:
+prop.table (margin21 , margin =1)
+            Admit
+Gender       Admitted Rejected
+   Male         0.4452     0.5548
+   Female       0.3035     0.6965
+6.1.4     Categorization of continuous data
+The data frame bronchit, in the DAAGviz package, has observa-               The dataset bronchit may alterna-
+tions on 212 men in a sample of Cardiff (Wales, UK) enumeration             tively be found in the SMIR package.
+districts. Variables are r (1 if respondent suffered from chronic bron-
+chitis and 0 otherwise), cig (number of cigarettes smoked per day)
+and poll (the smoke level in the locality).
+    It will be convenient to define a function props that calculates
+the proportion of the total in the first (or other nominated element) of
+a vector:
+props <- function (x, elem =1) sum(x[elem ])/sum(x)
+Now use the function cut() to classify the data into four categories,       The argument breaks can be either
+and form tables:                                                            the number of intervals, or it can be
+                                                                            a vector of break points such that
+library ( DAAGviz )                                                         all data values lie within the range
+catcig <- with(bronchit ,                                                   of the breaks. If the smallest of the
+                    cut(cig , breaks =c(0 ,1 ,10 ,30) ,                     break points equals the smallest
+                          include.lowest =TRUE ))                           data value, supply the argument
+tab <- with(bronchit , table(r, catcig ))                                   include.lowest=TRUE.
+round ( apply(tab , 2, props , elem =2), 3)
+   [0 ,1]    (1 ,10] (10 ,30]
+   0.072      0.281     0.538
+There is a clear increase in the risk of bronchitis with the number of
+cigarettes smoked.
+    This categorization was purely for purposes of preliminary analy-       It was at one time common practice to
+sis. Categorization for purposes of analysis is, with the methodology       categorize continuous data, in order to
+and software that are now available, usually undesirable. Tables            allow analysis methods for multi-way
+                                                                            tables. There is a loss of information,
+that are based on categorization can nevertheless be useful in data         which can at worst be serious.
+exploration.
+6.1.5     ∗ Matrix   Computations
+Let X (n by p), Y (n by p) and B (p by k) be numeric matrices. Some
+of the possibilities are:                                                   Note that if t() is used with a data
+                                                                            frame, a matrix is returned. If neces-
+                                                                            sary, all values are coerced to the same
+                                                                            mode.
+
+ 104    learning and exploring r
+ X + Y                     #  Elementwise addition
+ X * Y                     #  Elementwise multiplication
+ X %*% B                   #  Matrix multiplication
+ solve (X, Y)              #  Solve X B = Y for B
+ svd(X)                    #  Singular value decomposition
+ qr(X)                     #  QR decomposition
+ t(X)                      #  Transpose of X
+                                                                           Section 4.3.7 will discuss the use
+     Calculations with data frames that are slow and time consuming        of apply() for operations with
+ will often be much faster if they can be formulated as matrix calcula-    matrices, arrays and tables.
+ tions. This is in general become an issue only for very large datasets,
+ with perhaps millions of observations. Section 6.4 has examples. For
+ small or modest-sized datasets, convenience in formulating the cal-
+ culations is likely to be more important than calculation efficiency.
+ 6.2      plyr, dplyr & reshape2 Data Manipulation
+ The plyr package has functions that together:
+• provide a systematic approach to computations that perform a
+    desired operation across one or more dimensions of an array, or of
+    a data frame, or of a list;
+• allow the user to choose whether results will be returned as an
+    array, or as a data frame, or as a list.
+     The dplyr package has functions for performing various sum-
+ mary and other operations on data frames. For many purposes, it
+ supersedes the plyr package.
+     The reshape2 package is, as its name suggests, designed for
+ moving between alternative data layouts.
+ 6.2.1 plyr
+ The plyr package has a separate function for each of the nine possi-
+ ble mappings. The first letter of the function name (one of a = array,
+ d = data frame, l = list) denotes the class of the input object, while
+ the second letter (the same choice of one of three letters) denotes
+ the class of output object that is required. This pair of letters is then
+ followed by ply.
+     Here is the choice of functions:
+                                        Class of Output Object
+                                  a (array) d (data frame) l (list)
+       Class of Input Object
+                     a (array)    aaply      adply             alply
+               d (data frame)     daply      ddply             dlply
+                        l (list)  laply      ldply             llply
+     First observe how the function adply can be used to change
+ from a tabular form of representation to a data frame. The dimension
+ names will become columns in the data frame.
+
+                                                                   data manipulation and management           105
+detach (" package :dplyr")
+library (plyr)
+dreamMoves <-
+     matrix (c(5 ,3 ,17 ,85) , ncol =2,
+              dimnames =list(" Dreamer "=c("Yes","No"),
+                               " Object "=c("Yes","No")))
+( dfdream <- plyr :: adply(dreamMoves , 1:2,
+                               .fun= identity ))
+   Dreamer Object V1
+1        Yes      Yes 5
+2          No     Yes 3
+3        Yes       No 17
+4          No      No 85
+    To get the table back, do:
+plyr :: daply(dfdream , 1:2, function (df)df [ ,3])
+           Object
+Dreamer Yes No
+      Yes     5 17
+      No      3 85
+    The following calculates sums over the first two dimensions of
+the table UCBAdmissions:
+                                                                           Here, aaply() behaves exactly like
+plyr :: aaply( UCBAdmissions , 1:2, sum)
+                                                                           apply().
+              Gender
+Admit          Male Female
+   Admitted 1198         557
+   Rejected 1493        1278
+    The following calculates, for each level of the column trt in the
+data frame nswdemo, the number of values of re74 that are zero:
+library (DAAG , quietly =TRUE)
+plyr :: daply(nswdemo , .(trt),
+         function (df)sum(df[,"re74"]==0 , na.rm=TRUE ))
+   0     1
+195 131
+To calculate the proportion that are zero, for each of control and         Notice the use of the syntax .(trt,
+treatment and for each of non-black and black, do:                         black) to identify the columns trt
+                                                                           and black. This is an alternative to
+options ( digits =3)                                                       c("trt", "black").
+plyr :: daply(nswdemo , .(trt , black),
+         function (df)sum(df[,"re75"]==0)/nrow(df))
+     black
+trt         0      1
+   0 0.353 0.435
+   1 0.254 0.403
+
+106    learning and exploring r
+    The function colwise() takes as argument a function that op-
+erates on a column of data, returning a function that operates on
+all nominated columns of a data frame. To get information on the
+proportion of zeros for both of the columns re75 and re78, and for
+each of non-black and black, do:                                        Here, colwise() operates on the
+                                                                        objects that are returned by splitting
+plyr :: ddply(nswdemo , .(trt , black),
+                                                                        up the data frame nswdemo according
+         colwise ( function (x)sum(x==0)/ length (x),
+                                                                        to levels of trt and black. Note the
+                   .cols=.(re75 , re78 )))
+                                                                        use of ddply(), not daply().
+   trt black re75         re78
+1     0      0 0.353 0.1529
+2     0      1 0.435 0.3412
+3     1      0 0.254 0.0847
+4     1      1 0.403 0.2605
+6.2.2     Use of dplyr with Word War 1 cricketer data
+Data in the data frame cricketer, extracted by John Aggleton (now
+at Univ of Cardiff), are from records of UK first class cricketers born
+1840 – 1960. Variables are
+-  Year of birth
+-  Years of life (as of 1990)
+-  1990 status (dead or alive)
+-  Cause of death: killed in action / accident / in bed
+-  Bowling hand – right or left
+The following creates a data frame in which the first column has the
+year, the second the number of right-handers born in that year, and
+the third the number of left-handers born in that year. .
+                                                                        Both plyr and dplyr have functions
+library (DAAG)
+detach (" package :plyr")
+                                                                        summarise(). As in the code
+                                                                        shown, detach plyr before proceeding.
+library ( dplyr)
+                                                                        Alternatively, or additionally, specify
+                                                                        dplyr::summarise() rather than
+names ( cricketer )[1] <- "hand"
+                                                                        summarise()
+gpByYear <- group_by (cricketer , year)
+lefrt <- dplyr :: summarise (gpByYear ,
+                                  left=sum(hand == 'left '),
+                                  right=sum(hand =='right '))
+## Check first few rows
+lefrt [1:4 , ]
+# A tibble : 4 x 3
+     year left right
+   <int > <int > <int >
+1 1840          1       6
+2 1841          4      16
+3 1842          5      16
+4 1843          3      25
+The data frame is split by values of year. Numbers of left and right
+handers are then tabulated.
+                                                                        Note that a cricketer who was born
+                                                                        in 1869 would be 45 in 1914, while a
+                                                                        cricketer who was born in 1896 would
+                                                                        be 18 in 1914.
+
+                                                                      data manipulation and management 107
+    From the data frame cricketer, we determine the range of birth
+years for players who died in World War 1. We then extract data for
+all cricketers, whether dying or surviving until at least the final year
+of Workd War 1, whose birth year was within this range of years.
+The following code extracts the relevant range of birth years.
+## Use subset () from base R
+ww1kia <- subset (cricketer ,
+                      kia ==1 & (year+life )%in% 1914:1918)
+range ( ww1kia $year)
+[1] 1869 1896
+    Alternatively, use filter() from dplyr:
+ww1kia <- filter (cricketer ,
+                      kia ==1, (year+life )%in% 1914:1918)
+    For each year of birth between 1869 and 1896, the following
+expresses the number of cricketers killed in action as a fraction of
+the total number of cricketers (in action or not) who were born in
+that year:
+## Use filter (), group_by () and summarise () from dplyr
+crickChoose <- filter (cricketer ,
+                            year%in %(1869:1896) , (( kia ==1)|( year+life ) >1918))
+gpByYearKIA <- group_by ( crickChoose , year)
+crickKIAyrs <- dplyr :: summarise ( gpByYearKIA ,
+                                         kia=sum(kia), all= length (year), prop=kia/all)
+crickKIAyrs [1:4 , ]
+# A tibble : 4 x 4
+     year     kia    all    prop
+   <int > <int > <int > <dbl >
+1 1869          1     37 0.0270
+2 1870          2     36 0.0556
+3 1871          1     45 0.0222
+4 1872          0     39 0
+    For an introduction to dplyr, enter:
+vignette (" introduction ", package ="dplyr")
+6.2.3 reshape2: melt(), acast() & dcast()
+The reshape2 package has functions that move between a dataframe
+layout where selected columns are unstacked, and a layout where
+they are stacked. In moving from an unstacked to a stacked layout,
+column names become levels of a factor. In the move back from
+stacked to unstacked, factor levels become column names.
+    Here is an example of the use of melt():
+## Create dataset Crimean , for use in later calculations
+library ( HistData )      # Nightingale is from this package
+library ( reshape2 )      # Has the function melt ()
+Crimean <- melt( Nightingale [,c(1 ,8:10)] , "Date")
+
+108    learning and exploring r
+names ( Crimean ) <- c("Date", "Cause", " Deaths ")
+Crimean $ Cause <- factor (sub("\\ .rate", "", Crimean $Cause ))
+Crimean $ Regime <- ordered (rep(c(rep('Before ', 12), rep('After ', 12)) , 3),
+                                  levels =c('Before ', 'After '))
+formdat <- format.Date (sort( unique ( Crimean $Date )), format ="%d %b %y")
+Crimean $Date <- ordered ( format.Date ( Crimean $Date ,
+                                format ="%b %y"), levels = formdat )
+The dataset is now in a suitable form for creating a Florence                    The dataset Crimean has been
+Nightingale style wedge plot, in Figure C.2.                                     included in the DAAGviz package.
+Reshaping data for Motion Chart display – an example
+The following inputs and displays World Bank Development Indica-
+tor data that has been included with the package DAAGviz:
+## DAAGviz must be installed , need not be loaded
+path2file <- system.file (" datasets / wdiEx.csv ", package =" DAAGviz ")
+wdiEx <- read.csv ( path2file )
+print (wdiEx , row.names =FALSE)
+ Country .Name Country .Code      Indicator .Name Indicator .Code       X2010    X2000
+     Australia            AUS Labor force , total SL.TLF.TOTL.IN    1.17e+07  9.62e+06
+     Australia            AUS Population , total      SP.POP.TOTL   2.21e+07  1.92e+07
+         China            CHN Labor force , total SL.TLF.TOTL.IN    8.12e+08  7.23e+08
+         China            CHN Population , total      SP.POP.TOTL   1.34e+09  1.26e+09
+    A googleVis Motion Chart does not make much sense for this
+dataset as it stands, with data for just two countries and two years.
+Motion charts are designed for showing how scatterplot relation-
+ships, here between forest area and population, have changed over a
+number of years. The dataset will however serve for demonstrating
+the reshaping that is needed.
+    For input to Motion Charts, we want indicators to be columns,
+and years to be rows. The melt() and dcast()3 functions from the                 3
+                                                                                   Note also acast(), which outputs
+reshape2 package can be used to achieve the desired result. First,               an array or a matrix.
+create a single column of data, indexed by classifying factors:
+library ( reshape2 )
+wdiLong <- melt(wdiEx , id.vars =c(" Country.Code ",
+                      " Indicator.Name "),
+                      measure.vars =c("X2000", "X2010"))
+## More simply : wdiLong <- melt(wdiEx[, -c (2 ,4)])
+wdiLong
+   Country .Code          Indicator .Name variable           value
+1               AUS Labor force , total          X2000 9.62e+06
+2               AUS   Population , total         X2000 1.92e+07
+3               CHN Labor force , total          X2000 7.23e+08
+4               CHN   Population , total         X2000 1.26e+09
+5               AUS Labor force , total          X2010 1.17e+07
+6               AUS   Population , total         X2010 2.21e+07
+7               CHN Labor force , total          X2010 8.12e+08
+8               CHN   Population , total         X2010 1.34e+09
+    Now use dcast() to “cast” the data frame into a form where the               If a matrix or array is required, use
+indicator variables are columns:                                                 acast() in place of dcast().
+
+                                                                     data manipulation and management             109
+names ( wdiLong )[3] <- "Year"
+wdiData <- dcast(wdiLong ,
+                        Country.Code +Year ~ Indicator.Name ,
+                        value.var ="value")
+wdiData
+   Country .Code      Year Labor force , total Population , total
+1              AUS   X2000                9.62e+06              1.92e+07
+2              AUS   X2010                1.17e+07              2.21e+07
+3              CHN   X2000                7.23e+08              1.26e+09
+4              CHN   X2010                8.12e+08              1.34e+09
+    A final step is to replace the factor Year by a variable that has the
+values 2000 and 2010.
+wdiData <- within (wdiData , {
+     levels (Year) <- substring ( levels (Year ),2)
+     Year <- as.numeric ( as.character (Year ))
+})
+wdiData
+   Country .Code     Year Labor force , total Population , total
+1              AUS   2000               9.62e+06              1.92e+07
+2              AUS   2010               1.17e+07              2.21e+07
+3              CHN   2000               7.23e+08              1.26e+09
+4              CHN   2010               8.12e+08              1.34e+09
+6.3      Session and Workspace Management
+6.3.1     Keep a record of your work
+A recommended procedure is to type commands into an editor                   Be sure to save the script file from
+window, then sending them across to the command line. This makes             time to time during the session, and
+it possible to recover work on those hopefully rare occasions when           upon quitting the session.
+the session aborts.
+6.3.2     Workspace management
+For tasks that make heavy memory demands, it may be important to
+ensure that large data objects do not remain in memory once they are
+no longer needed. There are two complementary strategies:
+- Objects that cannot easily be reconstructed or copied from else-
+   where, but are not for the time being required, are conveniently
+   saved to an image file, using the save() function.
+- Use a separate working directory for each major project.
+    Note the utility function dir() (get the names of files, by default      Use getwd() to check the name and
+in the current working directory).                                           path of the current working directory.
+    Several image files (“workspaces”) that have distinct names can          Use setwd() to change to a new
+                                                                             working directory, while leaving the
+live in the one working directory. The image file, if any, that is called    workspace contents unchanged.
+.RData is the file whose contents will be loaded at the beginning of
+a new session in the directory.
+
+110    learning and exploring r
+The removal of clutter: Use a command of the form rm(x, y,                As noted in Section 2.2.2, a good
+tmp) to remove objects (here x, y, tmp) that are no longer required.      precaution can be to make an archive
+                                                                          of the workspace before such removal.
+Movement of files between computers: Files that are saved in the
+default binary save file format, as above, can be moved between
+different computer systems.
+Further possibilities – saving objects in text form: An alternative to
+saving objects4 in an image file is to dump them, in a text format, as    4
+                                                                            Dumps of S4 objects and environ-
+dump files, e.g.                                                          ments, amongs others, cannot cur-
+                                                                          rently be retrieved using source().
+volume <- c(351 , 955, 662, 1203 , 557, 460)                              See help(dump).
+weight <- c(250 , 840, 550, 1360 , 640, 420)
+dump(c(" volume ", " weight "), file=" books.R ")
+The objects can be recreated 5 from this “dump” file by inputting         5
+                                                                            The same checks are performed
+the lines of books.R one by one at the command line. This is what,        on dump files as if the text had been
+                                                                          entered at the command line. These
+effectively, the command source() does.
+                                                                          can slow down entry of the data or
+source (" books.R ")                                                      other object. Checks on dependencies
+                                                                          can be a problem. These can usually
+     For long-term archival storage, dump (.R) files may be prefer-       be resolved by editing the R source
+able to image files. For added security, retain a printed version. If a   file to change or remove offending
+problem arises (from a system change, or because the file has been        code.
+corrupted), it is then possible to check through the file line by line to
+find what is wrong.
+6.4      Computer Intensive Computations
+Computations may be computer intensive because of the size of
+datasets. Or the computations may themselves be demanding, even
+for data sets that are of modest size.
+     Note that using all of the data for an analysis or for a plot is not
+always the optimal strategy. Running calculations separately on
+different subsets may afford insights that are not otherwise available.
+The subsets may be randomly chosen, or they may be chosen to
+reflect, e.g., differences in time or place.
+     Computation will be slow where computationally intensive cal-        The computationally intensive parts
+culations are implemented directly in R code, rather than passed to       of regression calculations with lm()
+                                                                          work with matrices, making these
+efficient compiled code that is called from R. Matrix calculations are
+                                                                          relatively efficient.
+passed to highly efficient compiled code.
+     Where it is necessary to look for ways to speed up computations,     The relatively new Julia language
+it is important to profile computations to find which parts of the code   appears to offer spectacular im-
+are taking the major time. Really big improvements will come from         provements on both R and Python,
+                                                                          with times that are within a factor
+implementing key parts of the calculation in C or Fortran rather than     of 2 of the Fortran or C times. See
+in an application oriented language such as R or Python. Python may       http://julialang.org/.
+do somewhat better than R.
+     There can be big differences between the alternatives that may be
+available in R for handling a calculation. Some broad guidelines will
+now be provided, with examples of how differences in the handling
+of calculations can affect timings.
+
+                                                                     data manipulation and management            111
+Use matrices, where possible, in preference to data frames: Most             Biological expression array appli-
+of R’s modeling functions (regression, smoothing, discriminant               cations are among those that are
+analysis, etc.) are designed to work with data frames. Where an              commonly designed to work with data
+                                                                             that is in a matrix format. The matrix
+alternative available that works with matrices, this will be faster.         or matrices may be components of a
+    Matrix operations can be more efficient even for such a simple           more complex data structure.
+operation as adding a constant quantity to each element of the array,
+or taking logarithms of all elements. Here is an example:
+xy <- matrix (rnorm (5*10^7) , ncol =100)
+dim(xy)
+[1] 500000         100
+                                                                             Timings are on a mid 2012 1.8 Ghz
+system.time (xy +1)                                                          Intel i5 Macbook Air laptop with 8
+                                                                             gigabytes of random access memory.
+    user    system elapsed
+   0.138      0.122     0.261
+xy.df <- data.frame (xy)
+system.time (xy.df +1)
+    user    system elapsed
+   0.436      0.159     0.814
+Use efficient coding: Matrix arithmetic can be faster than the
+equivalent computations that use apply(). Here are timings for
+some alternatives that find the sums of rows of the matrix xy above:
+                                      user   system   elapsed
+             apply(xy,1,sum)        0.528     0.087     0.617
+           xy %*% rep(1,100)        0.019     0.001     0.019
+                   rowSums(xy)      0.034     0.001     0.035
+The bigmemory project: For details, go to http://www.
+bigmemory.org/. The bigmemory package for R “supports the cre-
+ation, storage, access, and manipulation of massive matrices”. Note
+also the associated packages biganalytics, bigtabulate, synchronicity,
+and bigalgebra.
+The data.table package: This allows the creation of data.table               On 64-bit systems, massive data sets,
+objects from which information can be quickly extracted, often in            e.g., with tens or hundreds of millions
+a fraction of the time required for extracting the same information          of rows, are possible. For such large
+                                                                             data objects, the time saving can be
+from a data frame. The package has an accompanying vignette. To              huge.
+display it (assuming that the package has been installed), type
+vignette (" datatable-intro ", package =" data.table ")
+6.5      Summary
+   apply(), and sapply() can be useful for manipulations with
+   data frames and matrices. Note also the functions melt(),
+   dcast() and acast() from the reshape2 package.
+
+112   learning and exploring r
+  Careful workspace management is important when files are large.
+  It pays to use separate working directories for each different
+  project, and to save important data objects as image files when
+  they are, for the time being, no longer required.
+  In computations with large datasets, operations that are formally
+  equivalent can differ greatly in their use of computational re-
+  sources.
+

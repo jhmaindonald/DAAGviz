@@ -1,0 +1,504 @@
+2
+The R Working Environment
+
+30    learning and exploring r
+                                                                        Important R technical terms include
+   Object         Objects can be data objects, function objects,        object, workspace, working directory,
+                  formula objects, expression objects, . . .            image file, package, library, database
+                  Use ls() to list contents of current workspace.       and search list.
+   Workspace      User’s “database”, where the user can make
+                  additions or changes or deletions.
+   Working        Default directory for reading or writing files.
+   directory      Use a new working directories for a new project.      Use the relevant menu. or enter
+   Image files    Use to store R objects, e.g., workspace contents.     save.image() on the command
+                                                                        line, to store or back up workspace
+                  (The expected file extension is .RData or .rda)       contents. During a long R session, do
+   Search list    search() lists ‘databases’ that R will search.        frequent saves!
+                  library() adds packages to the search list
+2.1       The Working Directory and the Workspace
+Each R session has a working directory and a workspace. If not
+otherwise instructed, R looks in the working directory for files, and
+saves files that are output to it.
+    The workspace is at the base of a list of search locations, known   The workspace is a volatile database
+as databases, where R will as needed search for objects. It holds       that, unless saved, will disappear at the
+                                                                        end of the session.
+objects that the user has created or input, or that were there at the
+start of the session and not later removed.
+    The workspace changes as objects are added or deleted or
+modified. Upon quitting from R (type q(), or use the relevant
+menu item), users are asked whether they wish to save the current
+workspace. If saved, it is stored in the file .RData, in the current    The file .RData has the name image
+working directory. When an R session is next started in that working    file. From it the workspace can, as and
+directory, the off-the-shelf action is to look for a file named .RData, when required, be reconstructed.
+and if found to reload it.
+Setting the Working Directory
+When a session is started by clicking on a Windows icon, the icon’s
+Properties specify the Start In directory.1 Type getwd() to identify    1
+                                                                          When a Unix or Linux command
+the current working directory.                                          starts a session, the default is to use
+                                                                        the current directory.
+    It is good practice to use a separate working directory, and as-
+sociated workspace or workspaces, for each different project. On
+Windows systems, copy an existing R icon, rename it as desired,
+and change the Start In directory to the new working directory. The
+working directory can be changed2 once a session has started, either    2
+                                                                          To make a complete change to
+from the menu (if available) or from the command line. Changing         a new workspace, first save the
+                                                                        existing workspace, and type
+the working directory from within a session requires a clear head; it
+                                                                        rm(list=ls(all=TRUE) to
+is usually best to save one’s work, quit, and start a new session.      empty its contents. Then change the
+                                                                        working directory and load the new
+                                                                        workspace.
+
+                                                                      the r working environment            31
+2.2      Code, data, and project Maintenance
+2.2.1     Maintenance of R scripts
+It is good practice to maintain a transcript from which work done     Note again RStudio’s abilities for
+during the session, including data input and manipulation, can as     managing and keeping R scripts.
+necessary be reproduced. Where calculations are quickly completed,
+this can be re-executed when a new session is started, to get to the
+point where the previous session left off.
+2.2.2     Saving and retrieving R objects
+Use save() to save one or more named objects into an image            The command save.image()) saves
+file. Use load() to reload the image file contents back into the      everything in the workspace, by
+workspace. The following demonstrate the explicit use of save()       default into a file named .RData in
+                                                                      the working directory. Or, from a GUI
+and load() commands:                                                  interface, click on the relevant menu
+volume <- c(351, 955, 662, 1203, 557, 460)                            item.
+weight <- c(250, 840, 550, 1360, 640, 420)
+save(volume, weight, file="books.RData")
+                                                                      See Subsection 2.3.2 for use of
+    # Can save many objects in the same file
+                                                                      attach("books.RData") in
+rm(volume, weight)                # Remove volume and weight          place of load("books.RData").
+load("books.RData")               # Recover the saved objects
+     Where it will be time-consuming to recreate objects in the
+workspace, users will be advised to save (back up) the current
+workspace image from time to time, e.g., into a file, preferably with
+a suitably mnemonic name. For example:
+                                                                      Before saving the workspace, consider
+fnam <- "2014Feb1.RData"                                              use of rm() to remove objects that are
+save.image(file=fnam)                                                 no longer required.
+     Two further possibilities are:
+- Use dump() to save one or more objects in a text format. For
+   example:
+   volume <- c(351, 955, 662, 1203, 557, 460)
+   weight <- c(250, 840, 550, 1360, 640, 420)
+   dump(c("volume", "weight"), file="volwt.R")
+   rm(volume, weight)
+   source("volwt.R")                # Retrieve volume & weight
+- Use write.table() to write a data frame to a text file.
+
+ 32    learning and exploring r
+ 2.3       Packages and System Setup
+                                                                        For download or installation of R or
+   Packages        Packages are structured collections of R             CRAN packages, use for preference
+                   functions and/or data and/or other objects.          a local mirror. In Australia http://
+                                                                        cran.csiro.au is a good choice. The
+   Installation    R Binaries include ’recommended’ packages.           mirror can be set from the Windows
+   of packages     Install other packages, as required,                 or Mac GUI. Alternatively (on any
+                                                                        system), type chooseCRANmirror()
+   library()       Use to attach a package, e.g., library(DAAG)         and choose from the list that pops up.
+                   Once attached, a package is added to the list of
+                   “databases” that R searches for objects.
+ An R installation is structured as a library of packages.
+• All installations should have the base packages (one of them is
+    called base). These provide the infrastructure for other packages.
+• Binaries that are available from CRAN sites include, also, all the
+    recommended packages.
+• Other packages can be installed as required, from a CRAN mirror        To discover which packages are
+    site, or from another repository.                                   attached, enter one of:
+                                                                        search()
+     A number of packages are by default attached at the start of a     sessionInfo()
+ session. To attach other packages, use library() as required.            Use sessionInfo() to get more
+                                                                        detailed information.
+ 2.3.1      Installation of R packages
+ Section 1.3 described the installation of packages from the internet.
+ Note also the use of update.packages() or its equivalent from the
+ GUI menu. This identifies packages for which updates are available,
+ offering the user the option to proceed with the update.
+     The function download.packages() allows the downloading of         Arguments are a vector of package
+ packages for later installation. The menu, or install.packages(),      names and a destination directory
+ can then be used to install the packages from the local directory. For destdir where the latest file ver-
+                                                                        sions will be saved as .zip or (MacOS
+ command line installation of packages that are in a local directory,   X) .tar.gz files.
+ call install.packages() with pkgs giving the files (with path, if
+ necessary), and with the argument repos=NULL.
+     If for example the binary DAAG_1.22.zip has been downloaded        On Unix and Linux systems, gzipped
+ to D:\tmp\, it can be installed thus                                   tar files can be installed using the shell
+                                                                        command:
+ install.packages(pkgs="D:/DAAG_1.22.zip",
+                                                                          R CMD INSTALL xx.tar.gz
+                         repos=NULL)
+                                                                        (replace xx.tar.gz by the file name.)
+     On the R command line, be sure to replace the usual Windows
+ backslashes by forward slashes.
+     Use .path.package() to get the path of a currently attached
+ package (by default for all attached packages).
+ 2.3.2      The search path: library() and attach()
+ The R system maintains a search path (a list of databases) that de-
+ termines, unless otherwise specified, where and in what order to
+
+                                                                       the r working environment               33
+look for objects. The search list includes the workspace, attached     Database 1, where R looks first,
+packages, and a so-called Autoloads database. It may include other     is the user workspace, called
+items also.                                                            ".GlobalEnv".
+    To get a snapshot of the search path, here taken after starting up Packages other than MASS were
+and entering library(MASS), type:                                      attached at startup.
+search ()
+                                                                       If the process runs from RStudio,
+  [1]   ". GlobalEnv "           " package :MASS"                      "tools:rstudio" will appear in
+  [3]  " tools:RGUI"             " package :stats"                     place of "tools:RGUI".
+  [5]  " package : graphics "    " package : grDevices "
+  [7]  " package :utils"         " package : datasets "
+  [9]  " package : methods "     " Autoloads "
+[11]   " package :base"
+    For more detailed information that has version numbers of any
+packages that are additional to base packages, type:
+sessionInfo()
+The ’::’ notation
+Use notation such as base::print() to specify the package where
+a function or other object is to be found. This avoids any risk of
+ambiguity when two or more objects with the same name can be
+found in the search path.
+    In Subsection 7.2.9 the notation latticeExtra::layer()
+will be used to indicate that the function layer() from the lat-
+ticeExtra package is required, distinguishing it from the func-
+tion layer() in the ggplot2 package. Use of the notation               It is necessary that the latticeExtra
+latticeExtra::layer() makes unnecessary prior use of                   package has been installed!
+library(latticeExtra) or its equivalent.
+Attachment of image files
+                                                                       Objects that are attached, whether
+The following adds the image file books.RData to the search list:      workspaces or packages (using
+attach("books.RData")                                                  library()) or other entities, are
+                                                                       added to the search list.
+The session then has access to objects in the file books.RData. Note   The file becomes a further “database”
+that if an object from the image file is modified, the modified copy   on the search list, separate from the
+becomes part of the workspace.                                         workspace.
+    In order to detach books.RData, proceed thus:                      Alternatively, supply the numeric
+                                                                       position of books.RData on the
+detach("file:books.RData")                                             search list (if in position 2, then 2) as
+                                                                       an argument to detach().
+2.3.3      ∗ Where  does the R system keep its files?
+                                                                       Note that R expects (and displays)
+Type R.home() to see where the R system has stored its files.          either a single forward slash or double
+R.home()                                                               backslashes, where Windows would
+                                                                       show a single backslash.
+[1] "/Library/Frameworks/R.framework/Resources"
+
+34   learning and exploring r
+    Notice that the path appears in abbreviated form. Type
+normalizePath(R.home()) to get the more intelligible result
+    [1] "C:\\Program Files\\R\\R-2.15.2"
+    By default, the command system.file() gives the path to the
+base package. For other packages, type, e.g.
+                    system.file(package="DAAG")
+                    [1] "/Library/Frameworks/R.framework/Versions/3.5/Resources/library/DAAG"
+    To get the path to a file viewtemps.RData that is stored with the
+DAAG package in the misc subdirectory, type:
+                    system.file("misc/viewtemps.RData", package="DAAG")
+2.3.4    Option Settings
+                                                                       To display the setting for the line
+Type help(options) to get full details of option settings. There are
+                                                                      width (in characters), type:
+a large number. To change to 60 the number of characters that will
+                                                                      options()$width
+be printed on the command line, before wrapping, do:
+                                                                      [1] 54
+options(width=60)
+    The printed result of calculations will, unless the default is
+changed (as has been done for most of the output in this document)
+often show more significant digits of output than are useful. The
+following demonstrates a global (until further notice) change:        Use signif() to affect one statement
+                                                                      only. For example
+sqrt(10)                                                                signif(sqrt(10),2)
+[1] 3.162                                                             NB also the function round().
+opt <- options(digits=2) # Change until further notice,
+                                   # or until end of session.
+sqrt(10)
+[1] 3.2
+options(opt)                       # Return to earlier setting
+    Note that options(digits=2) expresses a wish, which R will
+not always obey!
+Rounding will sometimes introduce small inconsistencies!
+For example:
+round(sqrt(85/7), 2)
+[1] 3.48
+round(c(sqrt(85/7)*9,            3.48*9), 2)
+[1] 31.36 31.32
+
+                                                                      the r working environment              35
+2.4     Enhancing the R experience — RStudio
+                                                                      The screenshots here are for version
+The url for RStudio is http://www.rstudio.com/. Click on the          0.98.501 of RStudio.
+icon for the downloaded installation file to install it. An RStudio
+icon will appear. Click on the icon to start RStudio. RStudio should
+find any installed version of R, and if necessary start R. Figure 2.1
+shows an RStudio display, immediately after starting up and enter-
+ing, very unimaginatively, 1+1.
+                                                                      Figure 2.1: Here is shown the RStudio
+                                                                      interface, after starting up and entering
+                                                                      1+1.
+
+ 36   learning and exploring r
+     Techncally, RStudio offers an Interactive Development Environ-       Extensive and careful RStudio docu-
+ ment. It provides, from a graphical user interface, a range of abilities mentation can be accessed, assuming
+ that are helpful for organizing and managing work with R. Helpful        an internet connection, from the Help
+                                                                          drop-down menu. The notes included
+ features of RStudio include:                                             here are designed to draw attention to
+• The organisation of work into projects.                                 some of the more important RStudio
+                                                                          abilities and features.
+• The recording of files that have been accessed from RStudio, of
+   help pages accessed, and of plots. The record of files is maintained
+   from one session of a project to the next.
+• By default, a miniature is displayed of any graph that is plotted. A
+   single click expands the miniature to a full graphics window.
+• The editing, maintenance and display of code files.
+• Abilities that assist reproducible reporting. Markup text sur-          Alternative available types of markup
+   rounds R code that is incorporated into a document, with option        are R Markdown or R HTML or
+   settings used to control the inclusion of code and/or computer out-    Sweave with LaTeX.
+   put in the final document. Output may include tables and graphs.
+• Abilities that help in the creation of packages.
+ 2.4.1     The RStudio file menu
+                                                                          Figure 2.2: The RStudio File drop-
+                                                                          down menu. The New File submenu
+                                                                          has been further expanded.
+     For now, the RStudio drop-down menus that are of most immedi-
+ ate importance are File and Help. Here (Figure 2.2) is the File menu,
+ with the New File submenu also shown.
+
+                                                                         the r working environment              37
+    Here, note the possibility of opening a new R script file, and
+entering code into that file. Or, to open an existing R code file, click
+on the Open File... submenu.
+    The key combination <CTRL><ENTER> can be used to send                Here, <CTRL> is the control key and
+code to the command line. Code that has been selected will be sent       <ENTER> is the Enter key.
+to the command line. Or if no code has been selected, the line on
+which the cursor is placed will be sent to the command line.
+2.4.2     Compile a code notebook
+Figure 2.3 shows a script file in the upper left panel. The code has
+been sent to the command line, so that it also appears in the code
+history panel on the upper right.
+                                                                         Figure 2.3: Code from the script
+                                                                         window has been sent to the command
+    In Figure 2.3, take particular note of the icon on which you can     line.
+click to create an R notebook. Upon clicking this icon, the system
+will ask for a name for the file. It will then create an HTML file that
+has, along with the code and comment, the compluter output. An           For the code that is shown, the HTML
+alternative to clicking on the icon is to click on the File drop-down    file that results will include the output
+menu, and then on Compile Notebook... .                                  from summary(cars) and the graph
+                                                                         from plot(cars).
+
+38   learning and exploring r
+2.5      Abilities for reproducible reporting
+Markdown editors use simple markup conventions to control how
+text and other document features will appear. For example:
+  **Help** or __Help__ will be rendered as Help
+  *Help* or _Help_ will be rendered as Help.
+2.5.1     R Markdown
+                                                                    R Markdown, as available under
+Click on File | New File | R Markdown.... Clicking on HTML (alter-  RStudio, is an enhanced version of
+natives are PDF, Word), on Document (alternatives are Presentation, Markdown. It adds the ability to
+Shiny, From Template) and then on OK displays a simple skeleton R   include R code, surrounded by markup
+Markdown document thus:                                             that controls what code and/or output
+                                                                    will appear in the final document.
+                                                                      R users are strongly encouraged
+---                                                                 to use R Markdown, or another such
+title: "Untitled"                                                   markup system that allows embedded
+output: html_document                                               R code, for documenting any work
+---                                                                 that is more than trivial. Those who
+                                                                    are familiar with more sophisticated
+                                                                    markdown languages may still, for
+This is an R Markdown document. Markdown is a simple
+                                                                    some types of work, find benefit in the
+formatting syntax for authoring HTML, PDF, and MS                   simplicity and speed of working with
+Word documents. For more details on using R Markdown                R markdown.
+see <http://rmarkdown.rstudio.com>.
+When you click the **Knit** button a document will
+be generated that includes both content as well as
+the output of any embedded R code chunks within the
+document. You can embed an R code chunk like this:
+```{r}
+summary(cars)
+```
+You can also embed plots, for example:
+```{r, echo=FALSE}
+plot(cars)
+```
+Note that the `echo = FALSE` parameter was added                    For tutorial purposes, the file can
+to the code chunk to prevent printing of the R                      be processed as it stands. Click the
+code that generated the plot.                                       Knit HTML button to start the process
+                                                                    of generating the HTML file. When
+    In actual use, one would edit out the text and R code and re-   prompted, enter a name for the file.
+                                                                    An HTML file will be generated and
+place it with one’s own text and R code chunks, then clicking on
+                                                                    displayed in a browser.
+Knit HTML. When prompted, enter a name for the file.
+
+                                                                       the r working environment        39
+R Markdown code chunk options
+The markup that surrounds R code can include instructions on what
+to do with R code and/or any output, including tables and graphs.
+Should code be executed, should it be echoed, and what output text
+and/or tables and/or graphs should appear in the final document?
+    Here is an example of code with surrounding markup, with
+the code chunk options fig.width and fig.height giving
+the width and height of the initial figure, and out.width giv-
+ing the width to which it should be scaled in the final document:
+```{r plotgph, fig.width=7, fig.height=6, out.width="80%"}
+plot(cars)
+```
+    Giving the code chunk a name, here plotgph, is optional. The       Other possible settings include:
+fig.width and fig.height settings control the size of the output       echo=FALSE (do not show code), &
+plot, before it is scaled to fit within the available line width. The  eval=FALSE (do not evaluate).
+out.width setting controls the width (here given as a percentage
+of the line width) in the final HTML document. The width may
+alternatively be given in pixels, e.g., ‘out.width="600px"‘.
+    An image from a file pic.png that has been generated separately
+from the markup R code can be input thus:
+    ```{r, out.width="80%"}
+    knitr::include\_graphics("pic.png")
+    ```
+∗ Inclusion     of HTML in R Markdown documents
+Note also that HTML markup can be included in R Markdown doc-
+uments. The following is a less preferred alternative to the R code
+knitr::include_graphics("pic.png") whose use was demon-
+strated above:
+<IMG SRC="pic.png" alt="Show this, if no image" STYLE="width: 1200px"/>
+    The image position can if necessary be adjusted thus:
+<IMG SRC="pic.png" alt="Show this, if no image" STYLE="position:absolute;
+TOP:-25px; LEFT:40px; WIDTH:800px; HEIGHT:500px"/>
+R Presentation
+Note the R Presentation variant of R Markdown. To display a simple
+skeleton document, click on:
+   File | New File | R Presentation
+An R Presentation document is a specific type of R Markdown docu-
+ment that is formatted to provide slides that can be displayed using a
+browser.
+    Click on Knit HTML to process the document, either as it stands
+or after replacing the sample text and code with one’s own text and
+code.
+
+40    learning and exploring r
+2.5.2     ∗ Other   markup types – HTML, LaTeX, . . .
+R HTML
+                                                                      Also available is reStructuredText
+Click on File | New File | R HTML to display a skeleton HTML doc-     (reST), which is an extended variant of
+ument that has embedded R code. The following shows the markup        R Markdown.
+format:
+<!--begin.rcode fig.width=7, fig.height=6, out.width="600px"
+plot(cars)
+end.rcode-->
+    Again, the document that appears can be processed as it stands –
+click on Knit HTML.
+R Sweave:
+Click on File | New File | R Sweave to display a template for a La-
+TeX file. The web page http://maths-people.anu.edu.au/
+~johnm/r-book/knitr/ has files that demonstrate the use of knitr
+Sweave type markup.
+2.5.3     RStudio documentation – markup and other
+Extensive RStudio documentation is available online. Click on Help
+| RStudio Docs to go to the relevant web page. For R Markdown and
+R Presentation, note the documentation files for Using R Mark-
+down. LATEX users should note the Sweave and knitr documenta-
+tion files.
+2.5.4     A strategy for RStudio project management
+RStudio is designed to encourage good project management prac-
+tices, using a strategy akin to the following:
+   Set up each new project in its own working directory.
+   For each project, maintain one or more script files that holds the
+   code. Script files can be compiled into "notebooks" for purposes
+   of keeping a paper record.
+   Script files are readily expanded into R Markdown documents –
+   a simple form of "reproducible reporting" document. They can as
+   required be expanded into a draft for a paper.
+2.6      Summary and Exercises
+2.6.1     Summary
+   Each R session has a working directory, where R will by default
+   look for files or store files that are external to R.
+
+                                                                         the r working environment              41
+                                                                         From within functions, R will look
+   User-created R objects are added to the workspace, which is at the    first in the functions environment,
+                                                                         and then if necessary look within the
+   base of a search list, i.e., a list of “databases” that R will search search list.
+   when it looks for objects.
+   It is good practice to keep a separate workspace and associated
+   working directory for each major project. Use script files to keep a
+   record of work.                                                       Before making big changes to the
+                                                                         workspace, it may be wise to save the
+   At the end of a session an image of the workspace will typically      existing workspace under a name (e.g.,
+   (respond “y” when asked) be saved into the working directory.         Aug27.RData) different from the
+   Note also the use of attach() to give access to objects in an         default .RData.
+   image (.RData or .rda) file.3                                         3
+                                                                           Include the name of the file (option-
+                                                                         ally preceded by a path) in quotes.
+   R has an extensive help system. Use it!
+ 2.6.2     Exercises
+                                                                         The function DAAG::datafile()
+ Data files used in these exercises are available from the web page      is able to place in the working di-
+ http://www.maths.anu.edu.au/~johnm/datasets/text/.                      rectory any of the files: fuel.txt
+                                                                         molclock1.txt, molclock2.txt, travel-
+1. Place the file fuel.txt to your working directory.                    books.txt. Specify, e.g.
+                                                                            datafile(file="fuel")
+2. Use file.show() to examine the file, or click on the RStudio
+   Files menu and then on the file name to display it. Check carefully
+   whether there is a header line. Use the RStudio menu to input
+   the data into R, with the name fuel. Then, as an alternative, use
+   read.table() directly. (If necessary use the code generated by
+   RStudio as a crib.) In each case, display the data frame and check
+   that data have been input correctly.
+                                                                         A shortcut for placing these files in the
+3. Place the files molclock1.txt and molclock2.txt in a directory        working directory is:
+                                                                            datafile(file=c("molclock1",
+   from which you can read them into R. As in Exercise 1, use the                              "molclock2"))
+   RStudio menu to input each of these, then using read.table()
+   directly to achieve the same result. Check, in each case, that data
+   have been input correctly.
+   Use the function save() to save molclock1, into an R image file.
+   Delete the data frame molclock1, and check that you can recover
+   the data by loading the image file.
+4. The following counts, for each species, the number of missing val-
+   ues for the column root of the data frame DAAG::rainforest:
+   library(DAAG)
+   with(rainforest, table(complete.cases(root), species))
+   For each species, how many rows are “complete”, i.e., have no
+   values that are missing?
+5. For each column of the data frame MASS::Pima.tr2, determine
+   the number of missing values.
+
+  42   learning and exploring r
+ 6. The function dim() returns the dimensions (a vector that has the
+    number of rows, then number of columns) of data frames and
+    matrices. Use this function to find the number of rows in the data
+    frames tinting, possum and possumsites (all in the DAAG
+    package).
+ 7. Use mean() and range() to find the mean and range of:
+  (a) the numbers 1, 2, . . . , 21
+  (b) the sample of 50 random normal values, that can be generated
+       from a normaL distribution with mean 0 and variance 1 using
+       the assignment y <- rnorm(50).                                    The datasets package that has the data
+  (c) the columns height and weight in the data frame women.             frame women is by default attached
+                                                                         when R is started.
+    Repeat (b) several times, on each occasion generating a nwe set of
+    50 random numbers.
+ 8. Repeat exercise 6, now applying the functions median() and
+    sum().
+ 9. Extract the following subsets from the data frame DAAG::ais
+  (a) Extract the data for the rowers.
+  (b) Extract the data for the rowers, the netballers and the tennis
+       players.
+  (c) Extract the data for the female basketballers and rowers.
+10. Use head() to check the names of the columns, and the first
+    few rows of data, in the data frame DAAG::rainforest. Use
+    table(rainforest$species) to check the names and numbers
+    of each species that are present in the data. The following extracts
+    the rows for the species Acmena smithii
+    Acmena <- subset(rainforest, species=="Acmena smithii")
+    The following extracts the rows for the species Acacia
+    mabellae and Acmena smithii:
+                      AcSpecies <- subset(rainforest, species %in% c("Acacia mabellae",
+                                                                                 "Acmena smithii"))
+    Now extract the rows for all species except C. fraseri.
+

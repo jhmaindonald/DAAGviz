@@ -127,14 +127,13 @@ fig10.1 <- function(){
 @ %
 
 \begin{figure}
-<<wc-14_1x, fig.width=5.75, fig.height=5.75, cache=FALSE, out.width="0.32\\textwidth", top=5, eval=doFigs>>=
+<<wc-10_1x, fig.width=5.75, fig.height=5.75, cache=FALSE, out.width="0.32\\textwidth", top=5, eval=doFigs>>=
 fig10.1A()
 fig10.1B()
 fig10.1C()
 @ %
 
-\caption{Wordcloud plots are A: for the words in Chapters 1 - 5; B: 6 -
-  7; and C: 8 - 9.\label{fig:wc}}
+\caption{Wordcloud plots are for the words in A: Chapter 1; B: Chapter 2; and C: Chapter 3.\label{fig:wc}}
 \end{figure}
 
 \end{document}
