@@ -1,15 +1,15 @@
 Package: DAAGviz
 Type: Package
 Title: Functions, data and vignettes for R tutorials
-Version: 1.0.7
+Version: 1.0.8
 Date: 2018-December-18
 Author: John Maindonald
 Maintainer: John Maindonald <john.maindonald@anu.edu.au>
 LazyData: true
 Depends: R (>= 3.0.0)
-Suggests: car, mgcv, leaps, quantreg, oz, forecast, DAAGbio, RColorBrewer, gamclass,
+Suggests: car, mgcv, leaps, quantreg, oz, forecast, DAAGbio, gamclass,
   KernSmooth, tm, wordcloud, ggplot2, knitr, Ecdat, rgl, googleVis, randomForest
-Imports: DAAG, MASS, rpart, lattice, latticeExtra
+Imports: DAAG, MASS, rpart, lattice, latticeExtra, RColorBrewer
 VignetteBuilder: knitr
 Description: Functions are provided that can be used to reproduce graphs in the course notes.
 License: GPL (>= 2)
