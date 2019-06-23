@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 figs*
 ^figure$
+^packrat/
+^\.Rprofile$

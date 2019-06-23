@@ -1,10 +1,10 @@
 Package: DAAGviz
 Type: Package
-Title: Functions, data and vignettes for R tutorials
-Version: 1.0.8
-Date: 2018-December-18
+Title: Functions, Data and Vignettes for R Tutorials
+Version: 1.0.9
+Date: 2019-6-23
 Author: John Maindonald
-Maintainer: John Maindonald <john.maindonald@anu.edu.au>
+Maintainer: John Maindonald <jhmaindonald@gmail.com>
 LazyData: true
 Depends: R (>= 3.0.0)
 Suggests: car, mgcv, leaps, quantreg, oz, forecast, DAAGbio, gamclass,
