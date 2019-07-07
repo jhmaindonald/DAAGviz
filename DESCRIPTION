@@ -1,7 +1,7 @@
 Package: DAAGviz
 Type: Package
 Title: Functions, Data and Vignettes for R Tutorials
-Version: 1.0.9
+Version: 1.1.1
 Date: 2019-6-23
 Author: John Maindonald
 Maintainer: John Maindonald <jhmaindonald@gmail.com>

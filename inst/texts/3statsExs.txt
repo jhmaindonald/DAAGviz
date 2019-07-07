@@ -1,0 +1,1106 @@
+3
+Data Analysis – Models and Examples
+
+44   learning and exploring r
+       Science,            What is the role of statistics and statistical
+       statistics & R      analysis in the wider scientific enterprise?
+       Scatterplot         Scatterplot matrices can give useful insights on
+       matrices            data that will be used for regression or related
+                           calculations.
+       Transformation      Data often require transformation prior to entry
+                           into a regression model.
+       Model               Fitting a regression or other such model gives,
+       objects             in the first place, a model object.
+       Generic             plot(), print() and summary() are examples
+       functions           of generic functions. With a dataframe as
+                           argument plot() gives a scatterplot matrix.
+                           With an lm object, it gives diagnostic plots.
+       Extractor           Use an extractor function to extract output from
+       function            a model object. Extractor fucntions are generic
+                           functions
+       List objects        An lm model object is a list object. Lists are
+                           used extensively in R.
+    This chapter will use examples to illustrate common issues in           Issues that will be noted include the use
+the exploration of data and the fitting of regression models. It will       of generic functions such as plot()
+                                                                            and print(), the way that regression
+round out the discussion of Chapters 1 and 2 by adding some further
+                                                                            model objects are structured, and the
+important technical details.                                                use of extractor functions to extract
+    The notes that follow assume a knowledge of basic statistical ideas     information from model objects.
+and methods, to the extent that readers will be comfortable with output
+that includes details of standard errors, t-statistics, and p-values. At
+one point, there is a mention of Bayesian prior probability.
+    There is use, in several places, of cross-validation for assessing
+predictive accuracy. For this, data is split up into several subsets (10 is
+a common choice). Each subset is then left out in turn for use to check
+predictive accuracy when the model is fitted to the remaining data.
+Once the process is complete, predictions made independently of the
+observed values are available for all observations. Differences between
+observed values and predictions made independently of those values
+can then be used to assess predictive accuracy.
+    In bootstrap resampling, repeated with replacement samples are
+taken from the data. The model can then be refitted to each such re-
+sample, generating multiple estimates of each coefficient or other
+statistic of interest. Standard error estimates can then be based on
+variation between the multiple estimates.
+    All the approaches that have been noted assume that data can be
+treated as a random sample from the population to which results will
+be applied. That may be a heroic assumption.
+
+                                                                           data analysis – models and examples           45
+ Notation, when referring to datasets
+ Data will be used that is taken from several different R packages. The
+ notation MASS::mammals, which can be used in code as well as in
+ the textual description, makes it clear that the dataset mammals that is
+ required is from the MASS package. Should another attached package
+ happen to have a dataset mammals, there is no risk of confusion.
+ 3.1      Science, statistics, and R
+ How does statistical analysis fit into the wider scientific enterprise?
+ While not a central focus of the present notes, the issues that will now
+ be noted are too important to be ignored.
+      The R system is an enabler that allows users to do effective data            Note, however, the chapters on map
+ analysis, and much else besides. These notes hint at its scope, primar-           overlays and on text mining — these
+                                                                                   extend into areas that would not ordi-
+ ily for data manipulation, for data analysis, and for graphics.
+                                                                                   narily be described as "data analysis".
+      For the purposes of this next, the terms "data science" and "statis-
+ tics" are different names for an endeavour whose concern is to extract
+ meaning from data, leading for example to results that might be re-
+ ported in a scientific paper, or that might form the basis for a business
+ or government policy. Statistical issues and ideas are fundamental to
+ any use of data to make generalizations that extend beyond the par-
+ ticular data that have been collected, or that are otherwise available.
+ They are fundamental, in that sense, to any scientific use of data. It is,
+ at the same time, important to acknowledge that there are strict limits
+ to what statistical analysis can achieve. Statistical analysis is a partner
+ to, and not a substitute for, robust scientific processes. The use of ex-
+ perimental data provides the simplest context in which to explore this
+ point further.
+      For experimental work, over and above what may emerge from
+ a statistical analsysis, the demand is that results be replicable. Lab-
+ oratory studies have repeatedly shown shown that drinking regular
+ caffeinated coffee increases blood pressure, though with minimal long
+ term effects.1 It is accepted that there is this effect, not from the sta-        1
+                                                                                     Green et al. (1996)
+ tistical analysis of results from any individual trial, but because the
+ effect has been demonstrated in repeated trials. The role of statistical
+ analysis has been:
+1. to demonstrate that, collating the evidence from repeated trials, the
+    effect does appear real;
+2. to assess the magnitude of the effect.
+      Worldwide, hundreds of thousands of randomised trials are con-
+ ducted annually. What do they tell us? In clinical medicine, follow-up
+ trials are common, and clear conclusions will often emerge from the
+
+46    learning and exploring r
+careful collation of evidence that, in important cases, is likely to fol-
+low. In many other areas follow-up trials have until recently been
+uncommon. This is now changing, and for good reason. Independent
+replication of the experimental process provides checks on the total
+experimental process, including the statistical analysis. It is unlikely
+that the same mistakes in experimental procedure and/or statistical
+analysis will be repeated.
+     Papers that had a key role in getting attention to reproducibility               These replication rates are so low, in
+concerns have been Prinz et al. (2011) and (Begley and Ellis, 2012).                  the areas to which these papers relate,
+                                                                                      that they make nonsense of citations
+The first (6 out of 53 "landmark" studies reproduced) related to drug
+                                                                                      to published individual trial results as
+trials, and the second (19 out of 65 "seminal" studies) to cancer drug                evidence that a claimed effect has been
+trials. Since those studies appeared, results have appeared from sys-                 scientifically demonstrated.
+tematic attempts to reproduce published work in psychology (around
+40%), in laboratory economics (11 of 18), and in social science (12 of
+18).
+     For research and associated analyses with observational data, the
+absence of experimental control offers serious challenges. In a case
+where the aim is to compare two or more groups, there are certain to
+be more differences than the difference that is of interest. Commonly,
+regression methods are used to apply "covariate adjustments". It is
+then crucial that all relevant covariates and covariate interactions
+are accounted for, and that covariates are measured with adequate
+accuracy. Do covariates require transformation (e.g., x, or log( x), or
+x2 ) for purposes of use in the regression model?
+     In a hard-hitting paper titled "Cargo-cult statistics and scientific
+crisis", Stark and Saltelli (2018) comment, quoting also from Edwards
+and Roy (2017):
+   While some argue that there is no crisis (or at least not a systemic problem), bad
+   incentives, bad scientific practices, outdated methods of vetting and disseminat-
+   ing results, and techno-science appear to be producing misleading and incorrect
+   results. This might produce a crisis of biblical proportions: as Edwards and Roy
+   write: “If a critical mass of scientists become untrustworthy, a tipping point is
+   possible in which the scientific enterprise itself becomes inherently corrupt and
+   public trust is lost, risking a new dark age with devastating consequences to
+   humanity.”
+Statistical issues are then front and centre in what many are identi-
+fying as a crisis, but are not the whole story. The crisis is one that
+scientists and statisticians need to tackle in partnership.
+     In a paper that deserves much more attention than it has received,
+(Tukey, 1997), John W Tukey argued that, as part of the process of
+fitting a model and forming a conclusion, there should be incisive and
+informed critique of the data used, of the model, and of the inferences
+made. It is important that analysts search out available information
+about the processes that generated the data, and consider critically
+
+                                                                         data analysis – models and examples 47
+ how this may affect the reliance placed on it. Other specific types of
+ challenge (this list is longer than Tukey’s) may include:
+•   For experiments, is the design open to criticism?
+•   Look for biases in processes that generated the data.
+•   Look for inadequacies in laboratory procedure.
+•   Use all relevant graphical or other summary checks to critique the
+    model that underpins the analysis.
+• Where possible, check the performance of the model on test data
+    that reflects the manner of use of results. (If for example predictions
+    are made that will be applied a year into the future, check how
+    predictions made a year ahead panned out for historical data.)
+• For experimental data, have the work replicated independently by
+    another research group, from generation of data through to analysis.
+• Have analysis results been correctly interpreted, in the light of sub-
+    ject area knowledge.
+ Exposure to diverse challenges will build (or destroy!) confidence
+ in model-based inferences. We should trust those results that have
+ withstood thorough and informed challenge.
+     Data do not stand on their own. An understanding of the processes
+ that generated the data is crucial to judging how data can and connot
+ reasonably be used. So also is application area insight. Numerous
+ studies found that women taking combined hormone replacement
+ therapy (HRT) also had a lower incidence of coronary heart disease
+ (CHD), relative to women no taking HRT. Randomized trials showed
+ a small but clear increase in risk. The risk was lower in the population
+ as a whole because, for reasons associated with socio-economic status,
+ women taking HRT were on the whole eating healthier food and get-
+ ting more exercise. In analyses of the population data, account had not
+ been taken of lifestyle effects.
+ 3.1.1     What does R add to the mix?
+ R clearly has a huge range of abilities for manipulating data, fitting
+ and checking statistical models, and for using graphs and tables to
+ present results. More than this, it has extensive reproducible reporting
+ abilities that can be used to allow others to repeat the data manipula-
+ tion, analysis, and steps in the processing of output that have led to an
+ eventual paper or report. A file is provided that mixes code with the
+ text for the eventual document, and that is then processed ("woven" or
+ "knitted") to provide the final document, complete with analysis out-
+ put, tables, graphs, and code (if any) that is to be included in the final
+ document. This makes it straightforward for referees, or for anyone
+ with an interest in the work, to check the analysis and/or try modifi-
+
+48   learning and exploring r
+cations. The publication of data and code is an important step on the
+way to making results more open and transparent, and to encouraging
+informed post-publication critique.
+3.2      Generalization beyond the available data
+A common statistical analysis aim is to assess the extent to which
+available data supports conclusions that extend beyond the circum-
+stances that generated the data. The hope is that available data – the
+sample values – can be used as a window into a wider population.
+3.2.1     Models for the random component
+Introductory statistics courses are likely to focus on models that as-
+sume that error terms are independently and identically normally
+distributed — they make the iid normal assumption. This involves the
+separate assumptions of independence, assumptions of homogeneity
+of variance (i.e., the standard deviations of all measurements are the
+same), and normality.
+    Strict normality is commonly, depending on the use that will be
+made of model results, unnecessary. Commonly, the interest is in
+parameter estimates and/or in model predictions. Standard forms
+of statistical inference then rely on the normality of the the rele-
+vant sampling distributions. Central Limit Theorem type effects will
+then, given enough data, often work to bring these distributions close
+enough to normality for purposes of the required inferences.
+    Much of the art of applied statistics lies in recognizing those as-
+sumptions that, in any given context, are important and need careful
+checking. Models are said to be robust against those assumptions that
+are of relatively minor consequence.
+    Most of the standard elementary methods assume that all popula-
+tion values are chosen with equal probability, independently between
+sample values. Or, if this is not strictly the case, departures from this
+assumption will not be serious enough to compromise results. In de-
+signed experiments and in sample surveys, randomization mechanisms
+are used to ensure the required independence. Failures in the random-
+ization process will compromise results.
+    Where there has not been explicit use of a randomization mecha-
+nism, it is necessary to consider carefully how this may have affected
+the data. Is some form of dependence structure likely? Temporal and
+spatial dependence arise because values that are close together in time
+or space are relatively more similar. Is there clustering that arises be-
+cause all individuals within chosen streets or within chosen families
+have been included? Two individuals in the same family or in the
+
+                                                                          data analysis – models and examples           49
+same street may be more similar than two individuals chosen at ran-
+dom from the same city suburb. Model choice and model fitting then
+needs to account for such effects.
+    Models account for both fixed and random effects. In a straight line
+model, the fixed effect is the line, while the random effect accounts for
+variation about the line. The random part of the model can matter a
+great deal.
+3.2.2      R functions for working with distributions
+For each distribution, there are four functions, with names whose first
+letter is, respectively, d (probability or probability density), p (cumu-
+lative probability), q (quantile), and r (generate a random sample).
+Functions that have d as their first letter are probabilities for distribu-
+tions that are discrete, or densities) for continuoua distributions.
+    Common discrete distributions are the binomial and the Poisson.
+The betabinomial is often used to model binomial type data that have
+a larger than binomial variance. The negative binomial is widely used
+to model count data that have a larger than Poisson variance. Flexible
+implementations of the betabinomial, including the ability to model
+the scale parameter that controls the variance, have appeared only
+recently. Alternatives to the betabinomial have been little explored. By
+constrast, for count data, there has been extensive investigation of the
+negative binomial, as well as of other alternatives to the Poisson.
+    Easily the most widely used distribution for continuous data is the           Another name for the normal distribu-
+normal. Data where the error term is not normal will often come close             tion is the Gaussian distribution.
+to normal after transformation. The most widely used transformation
+for this purpose is the logarithmic.
+    Other continuous distributions are common in the context of spe-
+cial types of model, e.g., the exponential distribution, or the Weibull of
+which it is a special case, in waiting time models.
+3.3      The Uses of Scatterplots
+## Below , the dataset MASS :: mammals will be required
+library (MASS , quietly =TRUE)
+3.3.1      Transformation to an appropriate scale
+A first step is to elicit basic information on the columns in the data,           Among other issues, is there a wide
+including information on relationships between explanatory variables.             enough spread of distinct values that
+Is it desirable to transform one or more variables?                               data can be treated as continuous.
+    Transformations are helpful that ensure, if possible, that:
+
+50   learning and exploring r
+• All columns have a distribution that is reasonably well spread out
+  over the whole range of values, i.e., it is unsatisfactory to have most
+  values squashed together at one end of the range, with a small num-
+  ber of very small or very large values occupying the remaining part
+  of the range.
+• Relationships between columns are roughly linear.
+• the scatter about any relationship is similar across the whole range                        A: Unlogged data
+                                                                                                                                  ●
+  of values.
+                                                                                       5000
+                                                                                                            ●
+It may happen that the one transformation, often a logarithmic trans-                  4000
+                                                                               brain
+formation, will achieve all these at the same time.                                    3000
+    The scatterplot in Figure 3.1A, showing data from the dataset                      2000
+MASS::mammals, is is an extreme version of the common situation                        1000
+                                                                                               ●
+                                                                                                 ●
+where positive (or non-zero) values are squashed together in the lower                        ●
+                                                                                              ●
+                                                                                              ●
+                                                                                              ●
+                                                                                              ●
+                                                                                              ●
+                                                                                              ●
+                                                                                               ●●
+                                                                                               ●
+                                                                                               ●
+                                                                                         0    ●
+part of the range, with a tail out to the right. Such a distribution is said
+                                                                                              0          2000     4000       6000
+to be “skewed to the right”.
+    Code for Figure 3.1A                                                                                        body
+plot( brain ~ body , data= mammals )
+mtext (side =3, line =0.5 , adj =0,
+       "A: Unlogged data", cex =1.1)                                                          B: Log scales (both axes)
+                                                                                                                                 ● ●
+   Figure 3.1B shows the scatterplot for the logged data. Code for                                                     ●
+                                                                                   1e+03
+Figure 3.1B is:                                                                                                            ●●
+                                                                                                                        ●● ●
+                                                                                                                           ●
+                                                                                                                             ●
+                                                                                                                  ●● ●●●   ●
+                                                                                   1e+02                           ●● ●●
+                                                                                                                        ●
+                                                                               brain
+                                                                                                                ●      ●
+plot( brain ~ body , data=mammals , log="xy")                                                                  ●
+                                                                                                               ●
+                                                                                                                ●
+                                                                                                                ●
+                                                                                                                ●
+                                                                                                             ● ●
+                                                                                                          ●● ●  ●
+mtext (side =3, line =0.5 , adj =0,                                                1e+01                   ●
+                                                                                                             ●●●
+                                                                                                             ● ●
+                                                                                                       ● ●●●●●
+                                                                                                                ●
+       "B: Log scales (both axes)", cex =1.1)                                                          ● ●●
+                                                                                                       ●   ●
+                                                                                                         ●
+                                                                                   1e+00             ●●●
+                                                                                                    ●
+                                                                                                  ● ●●
+    Where, as in Figure 3.1A, values are concentrated at one end of                1e−01      ●
+the range, the small number (perhaps one or two) of values that lie at                        1e−02       1e+00      1e+02       1e+04
+the other end of the range will, in a straight line regression with that
+column as the only explanatory variable, be a leverage point. When it                               body
+is one explanatory variable among several, those values will have an           Figure 3.1: Brain weight (g) versus
+                                                                               Body weight (kg), for 62 species of
+overly large say in determining the coefficient for that variable.             mammal. Panel A plots the unlogged
+    As happened here, a logarithmic transformation will often remove           data, while Panel B has log scales for
+much or all of the skew. Also, as happened here, such transformations          both axes, but with axis labels in the
+often bring the added bonus that relationships between the resulting           original (unlogged) units.
+variables are approximately linear.
+3.3.2    The Uses of Scatterplot Matrices
+Subsequent chapters will make extensive use of scatterplot matrices.
+A scatterplot matrix plots every column against every other column,            The datasets package is, in an off-
+with the result in the layout used for correlation matrices. Figure 3.2        the-shelf installation, attached when R
+shows a scatterplot matrix for the datasets::trees dataset.                    starts.
+
+                                                                         data analysis – models and examples                                     51
+  Interpreting Scatterplot Matrices:
+                                                                                                 65       75       85
+  For identifying the axes for each panel                                                                             ●                     ●
+                                                                                                                                              20
+                                                                                                               ●●
+                                                                                                                ●
+                                                                                                                                      ● ●
+                                                                                                                                       ●      18
+                                                                                                             ●                     ●●
+                                                                                                        ●                                     16
+  - look across the row to the diagonal to identify the vari-                  Girth             ●     ●
+                                                                                                          ● ●●
+                                                                                                          ●         ●●
+                                                                                                                              ●
+                                                                                                                             ●● ●
+                                                                                                                                  ●
+                                                                                                                               ● ●●           14
+                                                                                                     ●     ●                ●●                12
+     able on the vertical axis.                                                                    ●    ●
+                                                                                                           ●● ●●● ●        ●
+                                                                                                                           ●●●
+                                                                                                                            ●
+                                                                                                                            ●
+                                                                                                                             ●
+                                                                                                                            ●●
+                                                                                                                                              10
+                                                                                                ●●    ●                  ●
+                                                                                                                         ●
+                                                                                                                                              8
+  - look up or down the column to the diagonal for the                           ●●
+                                                                                             ●                                 ●●           ●
+                                                                      85
+     variable on the horizontal axis.                                 80
+                                                                             ●
+                                                                            ●●
+                                                                              ●     ●
+                                                                                   ● ●
+                                                                                         ●
+                                                                                         ●●
+                                                                                                                            ●
+                                                                                                                            ●● ●
+                                                                                                                              ● ●
+                                                                                                                                       ●
+                                                                                                                                      ●●●
+                                                                                                                                    ●
+                                                                      75
+                                                                            ●
+                                                                             ●
+                                                                             ●●●
+                                                                                 ● ●                 Height                 ●
+                                                                                                                            ●
+                                                                                                                            ●●
+                                                                                                                             ●    ●
+                                                                                  ● ●                                      ●       ●
+  Each below diagonal panel is the mirror image of the corre-         70 ●     ●                                         ● ●●
+                                                                             ●                                           ●● ●
+                                                                      65  ●
+  sponding above diagonal panel.                                          ●        ●                                     ●
+                                                                                             ●                        ●
+                                                                                                                                              70
+                                                                                         ●●
+                                                                                         ●                     ●●●                            60
+                                                                                          ●                    ●                              50
+ ## Code used for the plot                                                             ●                     ●               Volume
+                                                                                    ● ●                 ●●                                    40
+                                                                                 ●●                           ●●    ●
+ plot(trees , cex.labels =1.5)                                               ●
+                                                                                  ●
+                                                                              ●● ●●
+                                                                                    ●
+                                                                                                 ●     ●
+                                                                                                          ●●● ●● ●
+                                                                                                                     ●                        30
+                                                                             ●
+                                                                             ●●                      ●                                        20
+                                                                             ●●                         ● ●     ●
+    # Calls pairs(trees)                                                 ●●
+                                                                          ●
+                                                                            ●●
+                                                                                                ●●
+                                                                                                   ●
+                                                                                                      ●                                       10
+                                                                         8    12      16    20                          10     30    50   70
+                                                                                           Figure 3.2: Scatterplot matrix for
+                                                                                           the trees data, obtained using the
+     Notice that plot(), called with the dataframe trees, has                              default plot() method for data frames.
+ in turn called the plot method for a data frame, i.e., it has called                      The scatterplot matrix is a graphical
+ plot.data.frame() which has in turn called the function pairs().                          counterpart of the correlation matrix.
+     The scatterplot matrix may be examined, if there are enough
+ points, for evidence of:
+1. Strong clustering in the data, and/or obvious outliers;                                 The scatterplot matrix is best used
+                                                                                           as an initial coarse screening device.
+2. Clear non-linear relationships, so that a correlation will underesti-                   Skewness in the individual distributions
+    mate the strength of any relationship;                                                 is better checked using plots of density
+                                                                                           estimates.
+3. Severely skewed distributions, so that the correlation is a biased
+    measure of the strength of relationship.
+ 3.4      World record times for track and field events
+ The first example is for world track and road record times,                               Note also the use of these data in
+ as at 9th August 2006. Data, copied down from the web page                                the exercise at the end of Chapter 2
+ http://www.gbrathletics.com/wrec.htm, are in the dataset                                  (Section 1.9.2)
+ DAAG::worldRecords.
+ Data exploration
+ First, use str() to get information on the data frame columns:
+ library (DAAG , quietly =TRUE)
+ str( worldRecords , vec.len =3)
+
+52       learning and exploring r
+'data.frame ':                                    40 obs. of 5 variables :
+ $ Distance    :                                  num 0.1 0.15 0.2 0.3 0.4 0.5 0.6 0.8 ...
+ $ roadORtrack :                                  Factor w/ 2 levels "road "," track ": 2 2 2 2 2 2 2 2 ...
+ $ Place       :                                  chr " Athens " " Cassino " " Atlanta " ...
+ $ Time        :                                  num 0.163 0.247 0.322 0.514 ...
+ $ Date        :                                  Date , format : "2005 -06 -14" "1983 -05 -22" ...
+   Distinguishing points for track events from those for road events is
+easiest if we use lattice graphics, as in Figure 3.3.
+## Code
+library ( lattice )                                                                                                                                                 road             ●       track   ●
+xyplot (Time ~ Distance , scales =list(tck =0.5),
+        groups = roadORtrack , data= worldRecords ,                                                                                                          1500                                    ●
+        auto.key =list( columns =2), aspect =1)
+## On a a colour device the default is to use
+                                                                                                                                                             1000
+## different colours , not different symbols ,
+## to distinguish groups.                                                                                                                             Time                               ●
+                                                                                                                                                                                         ●
+                                                                                                                                                              500
+    Clearly increases in Time are not proportional to increases in                                                                                                               ●
+                                                                                                                                                                                     ●
+                                                                                                                                                                             ●
+Distance. Indeed, such a model does not make sense; velocity de-                                                                                               0    ●
+                                                                                                                                                                    ●
+                                                                                                                                                                    ●●
+                                                                                                                                                                     ●
+                                                                                                                                                                     ●
+                                                                                                                                                                        ●
+                                                                                                                                                                      ●●●
+                                                                                                                                                                         ●
+creases as the length of the race increases. Proportionality when loga-                                                                                             0    50 100 150 200 250 300
+rithmic scales are used for the two variables does make sense.
+                                                                                                                                                                                     Distance
+    Figure 3.4 uses logarithmic scales on both axes. The two panels
+differ only in the labeling of the scales. The left panel uses labels on                                                                             Figure 3.3: World record times versus
+scales of loge , while the right panel has labels in the orginal units.                                                                              distance, for field and road events.
+Notice the use of auto.key to obtain a key.
+                                                                                                                                                     Figure 3.4: World record times versus
+                      road          ●                 track               ●                  road          ●                 track               ●
+                                                                                                                                                     distance, for field and road events,
+                                                                                                                                                     using logarithmic scales. The left panel
+                                                                          ●                                                                      ●
+                                                                      ●
+                                                                                     10^3                                                    ●       uses labels on scales of loge , while in
+                  6                                               ●                                                                      ●
+                                                             ●
+                                                              ●
+                                                                                                                                    ●
+                                                                                                                                     ●               the right panel, labeling is in the orginal
+                                                                                     10^2                                       ●
+     log(Time)
+                                                         ●
+                                                        ●●                                                                     ●●
+                  4                                   ●●
+                                                      ●                                                                      ●●
+                                                                                                                             ●
+                                                                                                                                                     units, expressed as powers of 10.
+                                                                              Time
+                                                   ●●●                                                                    ●●●
+                                                  ●                                                                      ●
+                                                 ●                                                                      ●
+                  2                          ●
+                                             ●                                       10^1                           ●
+                                                                                                                    ●
+                                        ●●
+                                        ●                                                                      ●●
+                                                                                                               ●
+                                   ●●                                                                     ●●
+                  0              ●●                                                  10^0               ●●
+                                ●                                                                      ●
+                               ●                                                                      ●
+                          ●●                                                                     ●●
+                      ●                                                                      ●
+                 −2
+                      −2           0              2          4            6                 10^−1 10^0                  10^1        10^2
+                                log(Distance)                                                              Distance
+## Code for Left panel
+xyplot (log(Time) ~ log( Distance ),
+        groups = roadORtrack , data= worldRecords ,
+        scales =list(tck =0.5),
+        auto.key =list( columns =2), aspect =1)
+## Right panel
+xyplot (Time ~ Distance , groups = roadORtrack ,
+
+                                                                        data analysis – models and examples             53
+          data= worldRecords ,
+          scales =list(log =10, tck =0.5),
+          auto.key =list( columns =2), aspect =1)
+Fitting a regression line
+The plots suggest that a line is a good fit. Note however that the data
+span a huge range of distances. The ratio of longest to shortest dis-
+tance is almost 3000:1. Departures from the line are of the order of
+15% at the upper end of the range, but are so small relative to this
+huge range that they are not obvious.
+    The following uses the function lm() to fit a straight line fit to the      The name lm is a mnemonic for linear
+logged data, then extracting the regression coefficients:                       model.
+worldrec.lm <- lm(log(Time) ~ log( Distance ),
+                        data= worldRecords )
+coef( worldrec.lm )                                                             The equation gives predicted times:
+                                                                                  Time
+                                                                                   [       =    e0.7316 × Distance1.1248
+   ( Intercept ) log( Distance )
+                                                                                           =    2.08 × Distance1.1248
+          0.7316            1.1248
+                                                                                This implies, as would be expected,
+There is no difference that can be detected visually between the track          that kilometers per minute increase
+races and the road races. Careful analysis will in fact find no differ-         with increasing distance. Fitting a line
+                                                                                to points that are on a log scale thus
+ence.
+                                                                                allows an immediate interpretation.
+3.4.1     Summary information from model objects
+In order to avoid recalculation of the model information each time              The name worldrec.lm is used to
+that some different information is required, we store the result from           indicate that this is an lm object, with
+the lm() calculation in the model object worldrec.lm.                           data from worldRecords. Use any
+                                                                                name that seems helpful!
+    Note that the function abline() can be used with the model
+object as argument to add a line to the plot of log(Time) against               Plot points; add line:
+log(Distance).                                                                  plot(log(Time) ~ log( Distance ),
+                                                                                       data = worldRecords )
+                                                                                abline ( worldrec.lm )
+Diagnostic plots
+Panel A is designed to give an indication whether the relationship
+really is linear, or whether there is some further systematic component
+that should perhaps be modeled. It does show systematic differences
+from a line.
+    The largest difference is more than a 15% difference.2 There are            2
+                                                                                  A difference of 0.05 on a scale of loge
+mechanisms for using a smooth curve to account for the differences              translates to a difference of just over
+                                                                                5%. A difference of 0.15 translates
+from a line, if these are thought important enough to model.
+                                                                                to a difference of just over 16%, i.e.,
+    The plot in panel B allows an assessment of the extent to which             slightly more than 15%.
+individual points are influencing the fitted line. Observation 40 does
+have both a very large leverage and a large Cook’s distance. The plot
+
+54          learning and exploring r
+                     A: Residuals vs Fitted                                                          B: Residuals vs Leverage                                   Figure 3.5: First and last of the de-
+                                                                                                                                                          1
+                                                                        Standardized residuals
+                                                             40 ●                                3                                      40 ●                    fault diagnostic plots, from the linear
+  0.15                                                                                                                                                          model for log(record time) versus
+                                                                                                                                                          0.5
+                                                             ● 39                                                                   ● 39
+  0.10                                                                                           2                                                              log(distance), for field and road events.
+Residuals
+                                                             ● 24                                                                   ● 24
+                                ●
+  0.05       ●               ●
+                              ●●
+                                  ●●
+                                  ●                                                              1           ●●
+                                                                                                              ●
+                                                                                                                  ●
+                                                                                                                      ● ●
+                                                                                                                            ●                         ●
+                                     ●
+                                     ●                                                                   ●
+                                       ●●●
+                                         ●            ● ●                                               ●●
+                                                                                                        ●
+                                                                                                        ●             ●
+                                                        ●                                                                   ●
+  0.00           ●
+                                         ●
+                                             ●
+                                                     ●                                           0      ●
+                                                                                                        ●
+                                                                                                                  ●
+                                                                                                                            ●                  ●
+                             ●               ●●                                                         ●●
+                                                     ●                                                            ●             ●
+                         ●                                                                                                          ●
+−0.05                ●                       ●● ●
+                                              ●● ●                                           −1         ●● ●
+                                                                                                         ●● ●                              ●
+                                                 ●
+                                               ●●●                                                          ●
+                                                                                                          ●●●
+                                                                                                         Cook’s distance
+−0.10                                                                                        −2
+            −2               0       2        4          6                                     0.00      0.04                   0.08           0.12
+                                 Fitted values                                                                Leverage
+on the left makes it clear that this is the point with the largest fitted
+time. Observation 40 is for a 24h race, or 1440 min. Examine
+worldRecords ["40", ]
+            Distance roadORtrack Place Time        Date
+40             290.2        road Basle 1440 1998 -05 -03
+3.4.2                    The model object
+Functions that are commonly used to get information about model
+objects are: print(), summary() and plot(). These are all generic
+functions. The effect of the function depends on the class of object
+that is printed (ie, by default, displayed on the screen) or or plotted, or
+summarized.
+    The function print() may display relatively terse output, while
+summary() may display more extensive output. This varies from one
+type of model object to another.
+    Compare the outputs from the following:
+print ( worldrec.lm )                                         # Alternatively , type worldrec.lm
+Call:
+lm( formula = log(Time) ∼ log( Distance ), data = worldRecords )
+Coefficients :
+  ( Intercept )                              log( Distance )
+         0.732                                        1.125
+summary ( worldrec.lm )
+Call:
+lm( formula = log(Time) ∼ log( Distance ), data = worldRecords )
+
+                                                                       data analysis – models and examples          55
+Residuals :
+      Min        1Q    Median        3Q       Max
+-0.0807 -0.0497        0.0028   0.0377    0.1627
+Coefficients :
+                  Estimate Std. Error t value Pr(>|t|)
+( Intercept )       0.73160      0.01241          59     <2e -16
+log( Distance )     1.12475      0.00437         257     <2e -16
+Residual standard error: 0.0565 on 38 degrees of freedom
+Multiple R2 : 0.999 ,          Adjusted R2 : 0.999
+F- statistic : 6.63e+04 on 1 and 38 DF , p-value: <2e -16
+    Used with lm objects, print() calls print.lm(), while                      Internally, summary(wtvol.lm)
+summary() calls summary.lm(). Note that typing worldrec.lm                     calls UseMethod("summary"). As
+                                                                               wtvol.lm is an lm object, this calls
+has the same effect as print(worldrec.lm).                                     summary.lm().
+3.4.3     The lm model object is a list
+The model object is actually a list. Here are the names of the list ele-
+ments:
+names ( worldrec.lm )
+  [1] " coefficients " " residuals "           " effects "
+"rank"
+  [5] " fitted . values " " assign "           "qr"
+"df. residual "
+  [9] " xlevels "          "call"              "terms"
+" model "
+These different list elements hold very different classes and dimen-
+sions (or lengths) of object. Hence the use of a list; any collection of
+different R objects can be brought together into a list.
+    The following is a check on the model call:
+worldrec.lm $call
+lm( formula = log(Time) ∼ log( Distance ), data = worldRecords )
+    Commonly required information is best accessed using generic                Use extractor function coef():
+extractor functions. Above, attention was drawn to print(),                    coef( worldrec.lm )
+summary() and plot(). Other commonly used extractor functions
+are residuals(), coefficients(), and fitted.values(). These
+can be abbreviated to resid(), coef(), and fitted().
+
+56   learning and exploring r
+3.5        Regression with two explanatory variables
+The dataset nihills in the DAAG package will be used for a regres-
+sion fit in Section 8.6. This has record times for Northern Ireland
+mountain races. Overview details of the data are:
+str( nihills )
+'data.frame ':                  23 obs. of 4 variables :
+  $ dist : num                 7.5 4.2 5.9 6.8 5 4.8 4.3 3 2.5 12 ...
+  $ climb : int                1740 1110 1210 3300 1200 950 1600 1500 1500 5080 ...
+  $ time : num                 0.858 0.467 0.703 1.039 0.541 ...
+  $ timef : num                1.064 0.623 0.887 1.214 0.637 ...
+    Figure 3.6 uses the function lattice::splom() to give scatter-                                                       The function splom() is a lattice
+plot matrices, one for the unlogged data, and the other for the logged                                                   alternative to pairs(), giving a differ-
+data. The left panel shows the unlogged data, while the right panel                                                      ent panel layout.
+shows the logged data:
+   A: Untransformed data                                                          B: Log transformed data
+                        ●                  ●                  ●    6                                   ●                      ●                      ●
+                                                                           4 5 6                                                                         1.5 0.5 1.5
+                                                                   5
+                                                                   4                                ●                     ●                      ●       1.0
+                                                                                                   ●                   ●                      ●
+                                                                       timef 3                                                                           0.5 ltimef
+                  ●                 ●                  ●                                     ●●                       ●●                   ●●
+                                                                                                 ●                ●                       ●                          0.0
+                 ●              ●                   ●                         2               ●               ●●● ●                     ●
+                                                                                         ●●● ●                                         ●●
+                                                                                                                                        ●
+                                                                                         ●
+                                                                                    ● ● ●●
+                                                                                          ●                    ●●●                    ●●
+          ● ●●
+          ●                 ●● ●●               ●●
+                                                  ●
+                                                  ●                1 2 3      1           ●●●
+                                                                                            ●               ●●●●●
+                                                                                                            ●    ●●                ●
+                                                                                                                                   ●●
+                                                                                                                                    ●●
+                                                                                                                                    ●●
+                                                                                                                                                     −1.0 0.0      −0.5
+     ●
+        ●
+      ●●●
+      ●
+        ●
+        ●
+        ●●●
+         ●
+         ●                ●
+                          ●
+                           ●
+                           ●●
+                           ●
+                           ●●
+                            ●
+                            ●
+                            ●
+                             ● ●              ●
+                                             ●●
+                                                ●
+                                                ●
+                                               ●●                                    ●                    ●                      ●
+                                                                                                                                                                   −1.0
+                        ●                  ●    4                               ●                      ●                      ●                                          ●
+                                                          3   4                                                                    1.0 0.00.51.0
+                                                3                                                   ●                     ●                                        ●
+                                                                                                   ●                   ●           0.5                           ●
+                  ●                 ●                time   2           ●                    ● ●●                 ● ●
+                                                                                                                        ●          0.0 ltime 0.0               ●
+                                                                                                                                                              ●●
+                 ●              ●                                     ●                  ●●● ●●               ●●                                             ●
+                                                                                                                                                             ●
+                                                                                                                ●● ●                            −0.5       ●●●
+          ● ●●                   ●                          1       ●                    ●●●●                 ●●●●                                        ●
+                                                                                                                                                          ●●
+          ●                ●●● ●                  1    2          ●●●                    ●
+                                                                                    ● ● ●●● ●               ●
+                                                                                                            ●● ●●
+                                                                                                            ●                   −1.0 0.0                 ●
+                                                                                                                                                         ●
+                                                                                                                                                         ●●
+                                                                                                                                                          ●
+        ●
+        ●
+        ●
+        ●
+        ●●●
+         ●                 ●
+                           ●●
+                            ●
+                            ●● ●                                 ●
+                                                                 ●
+                                                                 ●●
+                                                                                                                                                −1.0
+     ●  ●
+      ●●●
+      ●  ●                ●
+                          ●●●●                                   ●
+                                                                ●●                   ●                    ●                                            ●          0.994
+                        ●                                     ●                 ●                      ●                                             ●                   ●
+                             8000 6000                                                                      9.0
+                                                                                                                      8.08.59.0
+                                                                                                    ●       8.5                                  ●                 ●
+                             6000                                                               ●                                           ●                  ●
+                                                                                                            8.0
+                                                                                                                  lclimb 8.0
+                  ●                                    ●                ●                ● ●       ●                                    ● ● ●               ● ●  ●
+                                 climb
+                                      4000                                              ●●       ●                        7.5       ● ● ●                ● ●●
+            ●    ●                                ●                 ●               ●● ●                                           ●●●●●●                ●●●
+        ●●                                      ●● ●              ●● ●                   ●●●●                                        ●                    ●●●
+                                                                                                                                                          ●  ●
+                           2000       2000                                                ● ●●              7.07.58.0 7.0          ●●
+                                                                                                                                     ●●                   ●
+                                                                                                                                                          ●
+     ●●●●
+        ●
+        ●●●
+         ●●
+             ●                                ●●
+                                              ●●
+                                               ●●●
+                                                ●
+                                                ●
+                                                ●
+                                                                 ●
+                                                                 ●
+                                                                 ●
+                                                                 ●
+                                                                 ●
+                                                                  ●
+                                                                  ●
+                                                                  ●
+                                                                   ●                     ●  ●                                       ●
+                                                                                                                                    ●                    ●
+                                                                                                                                                         ●
+                                                                                                                                                         ●
+      ●●●●                                   ●●
+                                              ●                 ●●                   ●                                           ●             0.924   ●             0.92
+                                           ●                  ●                 ●     3.0                                     ●                      ●                   ●
+               10   15                                                                         2.0 2.5 3.0
+        15                                                                            2.5                              ●  ●                   ● ●                ●●
+                                    ●                  ●                ●                                         ●                       ●                   ●
+               dist 10          ●                   ●                 ●               2.0    ldist 2.0                  ●                   ●                  ●
+        10                                                                                                    ●●      ●                 ● ●                  ●
+                                                                                                                                                             ●●
+                             ● ●                 ●●                ●●                                       ● ●●●                    ●●
+                                                                                                                                    ●●                   ●●●
+                           ●● ●                 ●                 ●
+                                                                                                   1.5      ●●●  ●●   ●            ●● ●●
+                                                                                                                                    ●● ●                 ●
+                                                                                                                                                         ●
+                                                                                                                                                          ●
+                                                                                                                                                          ●●
+                                                                                                                                                          ●● ●
+                                               ● ●                ●●                                               ●                ●                    ●
+         5     10     5   ●
+                          ●
+                           ●
+                           ●
+                           ●●
+                            ●● ●              ●
+                                              ●
+                                              ●●●
+                                               ●●
+                                                                 ●
+                                                                 ●
+                                                                 ●
+                                                                 ●
+                                                                 ●●
+                                                                  ●                 1.0 1.5 2.0           ●      ●               ● ●                   ● ●
+                             ●                ●                  ●
+                          ●●●                 ●
+                                             ●●                  ●
+                                                                ●●                                 1.0           ●        0.78     ●           0.945     ●        0.933
+                                                                                                                         Figure 3.6: Scatterplot matrices for the
+                                                                                                                         Northern Ireland mountain racing data.
+                                                                                                                         The left panel is for the unlogged data,
+    The following panel function was used to show the correlations:
+                                                                                                                         while the right panel is for the logged
+showcorr <- function (x,y,... ){                                                                                         data. Code has been added that shows
+     panel.xyplot (x,y,...)                                                                                              the correlations, in the lower panel.
+     xy <- current.panel.limits ()
+     rho <- paste(round(cor(x,y) ,3))
+     eps <- 0.035*diff(range(y))
+     panel.text (max(x), min(y)+eps , rho ,
+                               pos =2, offset =-0.2)
+}
+
+                                                                          data analysis – models and examples          57
+    Code for the scatterplot matrix in the left panel is:
+## Scatterplot matrix ; unlogged data
+library ( lattice )
+splom (~nihills , xlab="",
+          main=list("A: Untransformed data", x=0,
+          just="left", fontface ="plain"))
+    For the right panel, create a data frame from the logged data:
+lognihills <- log( nihills )
+names ( lognihills ) <- paste0 ("l", names( nihills ))
+## Scatterplot matrix ; log scales
+splom (~ lognihills , lower.panel =showcorr , xlab="",
+          main=list("B: Log transformed data", x=0,
+          just="left", fontface ="plain"))
+    Note that the data are positively skewed, i.e., there is a long tail to       Unlike paste(), the function
+the right, for all variables. For such data, a logarithmic transforma-            paste0() does not leave spaces
+tion often gives more nearly linear relationships. The relationships              between text strings that it pastes
+between explanatory variables, and between the dependent variable                 together.
+and explanatory variables, are closer to linear when logarithmic scales
+are used. Just as importantly, issues with large leverage, so that the
+point for the largest data values has a much greater leverage and hence
+much greater influence than other points on the the fitted regression,
+are greatly reduced.
+    Notice also that the correlation of 0.913 between climb and dist
+in the left panel of Figure 3.6 is very different from the correlation
+of 0.78 between lclimb and ldist in the right panel. Correlations
+where distributions are highly skew are not comparable with correla-
+tions where distributions are more nearly symmetric. The statistical
+properties are different.
+    The following regresses log(time) on log(climb) and
+log(dist):
+nihills.lm <- lm(ltime ~ lclimb + ldist ,
+                        data= lognihills )
+3.6      One-way Comparisons
+The dataset tomato has weights of plants that were grown under one                A common strategy for getting a valid
+of four different sets of experimental comditions. Five plants were               comparison is to grow the plants in sep-
+grown under each of the treatments:                                               arate pots, with a random arrangement
+                                                                                  of pots.
+- ‘water only’
+- ‘conc nutrient’
+- ‘2-4-D + conc nutrient’
+- ‘x conc nutrient’
+
+58    learning and exploring r
+Figure 3.7, created using the function quickplot() from the
+ggplot2 package, shows the plant weights. Are the apparent differ-
+ences between treatments large enough that they can be distinguished
+statistically?
+             conc nutrient              ●     ●  ●          ●         ●
+                                                                                Figure 3.7: Weights (g) of tomato
+                                                                                plants grown under four different
+          3x conc nutrient  ● ● ●  ●    ●  ●
+                                                                                treatments.
+     2−4−D + conc nutrient    ● ●     ●          ●    ●
+               water only                  ●  ●       ●       ●
+                                  1.0        1.5        2.0     2.5     3.0
+                                                Weight (g)
+                                                                                Notice that ‘water only’ is made
+                                                                                the reference level. This choice makes
+## Code
+                                                                                best sense for the analysis of variance
+library ( ggplot2 )
+                                                                                calculations that appear below.
+tomato <- within (DAAG :: tomato ,
+                          trt <- relevel (trt , ref="water only"))
+quickplot (weight , trt , data=tomato ,
+              xlab=" Weight (g)", ylab="")
+    The command aov(), followed by a call to summary.lm(), can be               Observe that, to get estimates and SEs
+used to analyse these data, thus:                                               of treatment effects, tomato.aov can
+                                                                                be treated as an lm (regression) object.
+tomato.aov <- aov( weight ~ trt , data= tomato )
+round (coef( summary.lm ( tomato.aov )), 3)
+                                     Estimate Std. Error t value Pr(>|t|)
+( Intercept )                             1.683         0.187   9.019     0.000
+trt2 -4-D + conc nutrient               -0.358          0.264 -1.358      0.190
+trt3x conc nutrient                     -0.700          0.264 -2.652      0.015
+trtconc nutrient                          0.067         0.264   0.253     0.803
+Because we made ‘water only’ the reference level, ‘(Intercept)’
+is the mean for water only, and the other coefficients are for differ-
+ences from water only.
+A randomized block comparison
+Growing conditions in a glasshouse or growth chamber — tempera-
+ture, humidity and air movement — will not be totally uniform. This
+makes it desirable to do several repeats of the comparison between
+treatments3 , with conditions within each repeat ("block") kept as              3
+                                                                                  In language used originally in con-
+uniform as possible. Each different "block" may for example be a                nection with agricultural field trials,
+                                                                                where the comparison was repeated on
+different part of the glasshouse or growth chamber.
+                                                                                different blocks of land, each different
+                                                                                location is a "block".
+
+                                                                                   data analysis – models and examples            59
+    The dataset DAAG::rice is from an experiment where there were
+six treatment combinations — three types of fertilizer were applied to
+each of two varieties of rice plant. There were two repeats, i.e., two
+blocks.
+                  mean of ShootDryMass
+                                                                                           Figure 3.8: Interaction plot for the
+                                                                    variety
+                                         100                                               terms fert and variety, with
+                                                                          wt               ShootDryMass as the dependent
+                                          80                              ANU843           variable. Notice that for fertilizer F10,
+                                                                                           there is a huge variety difference in the
+                                          60                                               response. For the other fertilizers, there
+                                                                                           is no difference of consequence.
+                                          40
+                                          20
+                                               F10   NH4Cl     NH4NO3
+                                                        fert
+## Code
+library (DAAG)
+with(rice , interaction.plot ( x.factor =fert ,
+                               trace.factor =variety ,
+                               ShootDryMass ,
+                               cex.lab =1.4))
+    For these data, Figure 3.8 gives a clear picture of the result. For                    The effect of an appropriate choice of
+fertilizers NH4Cl and NH4NO3, any difference between the varieties                         clocks, then carrying out an analysis
+is inconsequential. There is strong ‘interaction’ between fert and                         that accounts for block effects, is to
+                                                                                           allow a more precise comparison
+variety. A formal analysis, accounting for block differences, will                         between treatments.
+confirm what seems already rather clear.
+3.7     Time series – Australian annual climate data
+                                                                                           Data are from the website
+The data frame DAAG::bomregions2018 has annual rainfall data,                               http://www.bom.gov.au/
+both an Australian average and broken down by location within                              climate/change/
+Australia, for 1900 – 2018. Figure 3.9 shows annual rainfall in the
+Murray-Darling basin, plotted against year.
+## Code
+library (DAAG)
+plot( mdbRain ~ Year , data= bomregions2018 )
+## Calculate and plot curve showing long-term trend
+with( bomregions2018 , lines( lowess ( mdbRain ~ Year , f=2/3), lty =2))
+## Calculate and plot curve of short-term trends
+with( bomregions2018 , lines( lowess ( mdbRain ~ Year , f=0.1),
+                              lty =1, col=" gray45 "))
+
+ 60    learning and exploring r
+                                                                                         ●
+                                                                                                    Figure 3.9: Annual rainfall in the
+                    800                                  ● ●                                        Australian Murray-Darling Basin. by
+                                                                    ●
+                                                                                                    year. The lowess() function is used to
+                    700                                                                             The dashed curve with f=2/3 captures
+                                                                    ●
+                                                                            ●
+                                    ●                     ●             ●                           the overall trend, while the solid curve
+          mdbRain
+                              ●     ● ●                                                       ●
+                    600                              ●
+                                                                                           ●
+                                                                                                    with f=0.1 captures trends on a scale
+                                      ●●    ●                              ●●● ●     ●
+                                                                                     ●
+                                                ●       ●●     ●      ●
+                                                                      ●            ●                of around eleven years. (10% of the
+                             ●                                                 ● ●●
+                                 ●                            ● ●●            ●
+                    500          ●           ●● ● ●
+                                             ●                    ●●     ●                 ●        113 year range from 1900 to 2012 is a
+                                ●                          ●●●●
+                                                             ●
+                                           ●                                 ●          ●●
+                             ●           ●       ●                          ●            ●
+                              ●●
+                               ● ●      ●●            ● ●        ●             ● ● ●●        ●      little more than 11 years.)
+                           ●                ●                          ●    ●             ● ●●
+                    400           ●                 ●                                 ●
+                                     ● ●       ●   ● ● ●                ●
+                           ●       ●                                     ●                  ●
+                                         ●    ●●                    ●
+                                    ● ● ●                                         ●
+                                     ●                     ●    ●
+                    300                          ●               ●                     ●●      ●
+                            ●                      ●                      ●
+                          1900     1920         1940      1960       1980        2000        2020
+                                                          Year
+      The lowess() function has been used to fit smooth curves, formed                              For each smoothing window, a line
+ by moving a smoothing window across the data. The dashed curve                                     or other simple response function is
+ with f=2/3 (include 2/3 of the data in the smoothing window) cap-                                  fitted. Greatest weight to points near
+ tures the overall trend in the data. The choice of f=0.1 for the solid                             the centre of the smoothing window,
+                                                                                                    with weights tailing off to zero at the
+ curve has the effect that somewhat more than ten years of data are                                 window edge.
+ used in determining each fitted value on the smooth.
+      This graph is exploratory. A next step might to model a correlation                           The functions acf() and pacf()
+ structure in residuals from the overall trend. There are extensive abil-                           might be used to examine the correla-
+                                                                                                    tion structure in the residuals.
+ ities for this. For graphical exploration, note lag.plot() (plot series
+ against lagged series).
+      The cube root of average rainfall has a more symmetric distribution
+ than rainfall. Thus, use this in preference to average rainfall when
+ fitting models.
+ 3.8      Exercises
+1. Plot Time against Distance, for the worldRecords data. Ignoring
+   the obvious curvature, fit a straight line model. Use plot.lm to
+   obtain diagnostic plots. What do you notice?
+2. The data set datasets::LakeHuron has mean July average water
+   surface elevations (ft) for Lake Huron, for 1875-1972. The follow-
+   ing reates a data frame that has the same information:
+      Year=as(time( LakeHuron ), " vector ")
+      huron <- data.frame (year=Year , mean.height = LakeHuron )
+ (a) Plot mean.height against year.
+
+                                                                   data analysis – models and examples            61
+(b) To see how each year’s mean level is related to the previous year’s
+    mean level, use
+                                                                           This plots the level in each year against
+    lag.plot (huron$ mean.height )
+                                                                           the level in the previous year.
+(c) *Use the function acf() to plot the autocorrelation function.          For an explanation of the autocorrela-
+    Compare with the result from the pacf() (partial autocorrela-          tion function, look up ‘Autocorrelation’
+    tion). What do the graphs suggest?                                     on Wikepedia.
+
+
